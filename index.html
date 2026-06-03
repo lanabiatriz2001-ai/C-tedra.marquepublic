@@ -1184,11 +1184,11 @@ const Store={
     try{localStorage.removeItem(k);}catch(e){}
   }
 };
-function getUserIdFromToken(){const token=localStorage.getItem('sb-glzgqlxfvsfivyydfsbz-auth-token');if(!token)return null;try{const payload=JSON.parse(atob(token.split('.')[1]));return payload.sub;}catch(e){return null;}}
+function getUserIdFromToken(){const keys=Object.keys(localStorage).filter(k=>k.startsWith('sb-')&&k.endsWith('-auth-token'));if(keys.length===0)return null;try{const token=localStorage.getItem(keys[0]);const parsed=JSON.parse(token);return parsed.user?.id||null;}catch(e){return null;}}
 async function loadState(){try{const v=localStorage.getItem(KEY);if(v)return JSON.parse(v);}catch(e){}return defaultState();}
 async function save(){const j=JSON.stringify(state);try{localStorage.setItem(KEY,j);}catch(e){}pushStateToCloud();}
-async function pushStateToCloud(){if(!window.sb)return;const userId=getUserIdFromToken();if(!userId)return;try{await window.sb.from('app_state').upsert({user_id:userId,state:state,atualizado_em:new Date().toISOString()});}catch(e){console.warn('sync cloud:',e.message);}}
-window.catedraLoadFromCloud=async function(){if(!window.sb)return;const userId=getUserIdFromToken();if(!userId)return;const local=localStorage.getItem(KEY);const{data:row}=await window.sb.from('app_state').select('state').eq('user_id',userId).maybeSingle();if((!row||!row.state||Object.keys(row.state).length===0)&&local){const parsed=JSON.parse(local);await window.sb.from('app_state').upsert({user_id:userId,state:parsed,atualizado_em:new Date().toISOString()});localStorage.setItem(KEY,JSON.stringify(parsed));}else if(row&&row.state){localStorage.setItem(KEY,JSON.stringify(row.state));}location.reload();};
+async function pushStateToCloud(){if(!window.sb)return;const uid=getUserIdFromToken();if(!uid)return;try{await window.sb.from('app_state').upsert({user_id:uid,state:state,atualizado_em:new Date().toISOString()});}catch(e){console.warn('sync cloud:',e.message);}}
+window.catedraLoadFromCloud=async function(){if(!window.sb)return;const uid=getUserIdFromToken();if(!uid)return;const local=localStorage.getItem(KEY);const{data:row}=await window.sb.from('app_state').select('state').eq('user_id',uid).maybeSingle();if((!row||!row.state||Object.keys(row.state).length===0)&&local){const parsed=JSON.parse(local);await window.sb.from('app_state').upsert({user_id:uid,state:parsed,atualizado_em:new Date().toISOString()});localStorage.setItem(KEY,JSON.stringify(parsed));}else if(row&&row.state){localStorage.setItem(KEY,JSON.stringify(row.state));}location.reload();};
 
 function toast(msg){const t=document.getElementById('toast');document.getElementById('toast-txt').textContent=msg||'salvo';t.classList.add('show');clearTimeout(window._t);window._t=setTimeout(()=>t.classList.remove('show'),1500);}
 function todayStr(){return new Date().toISOString().slice(0,10);}
