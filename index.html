@@ -2768,7 +2768,7 @@ function rolloverDay(){
   function closePanel(){ var p=document.getElementById('repact-pop'); if(p) p.remove(); }
   window.catRepact={buildUI:buildUI,redistribute:redistribute,load:load};
   ['renderCiclo','renderDia','renderToday','renderBacklog'].forEach(function(fn){ if(typeof window[fn]==='function' && !window['__rp_'+fn]){ var o=window[fn]; window[fn]=function(){ var r=o.apply(this,arguments); try{buildUI();}catch(e){} return r; }; window['__rp_'+fn]=true; } });
-  var _navObs; try{ _navObs=new MutationObserver(function(){ if(document.getElementById('backlog-wrap')) buildUI(); }); _navObs.observe(document.body,{childList:true,subtree:true}); }catch(e){}
+  var _building=false; var _navObs; try{ _navObs=new MutationObserver(function(){ if(_building) return; var bw=document.getElementById('backlog-wrap'); if(bw && !document.getElementById('repact-bar')){ _building=true; try{buildUI();}catch(e){} _building=false; } }); _navObs.observe(document.body,{childList:true}); }catch(e){}
   try{ if(document.getElementById('backlog-wrap')) buildUI(); }catch(e){}
 })();
 </script>
