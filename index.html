@@ -6,6 +6,18 @@
 <title>Cátedra · Plataforma de Estudos</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+  /* === FIX: separadores entre grupos da sidebar === */
+.nav-label{
+  margin-top: 10px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+.nav-label:first-child{
+  margin-top: 0;
+  padding-top: 7px;
+  border-top: none;          /* o primeiro grupo não precisa de linha acima */
+}
+/* === fim do fix === */
   /* === FIX: suavizar tom de "atrasado" (vermelho -> âmbar) === */
 .rev.overdue{ border-left-color: var(--amber) !important; }
 /* === fim do fix === */
