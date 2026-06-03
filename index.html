@@ -580,7 +580,7 @@
     <div class="grid g-2" style="margin-bottom:16px;">
       <div class="card" id="countdown-card"></div>
       <div class="card">
-        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg></span>Metas da semana</h3><span class="hint" id="goal-week">semana atual</span></div>
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg></span><span id="rel-goals-title">Metas da semana</span></h3><span class="hint" id="goal-week">semana atual</span></div>
         <div id="goals"></div>
       </div>
     </div>
@@ -821,11 +821,11 @@
     <div class="card" style="margin-bottom:16px;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
         <div>
-          <h2 class="serif" style="font-size:23px;font-weight:600;letter-spacing:-.01em;">Relatório semanal</h2>
+          <h2 class="serif" id="rel-title" style="font-size:23px;font-weight:600;letter-spacing:-.01em;">Relatório semanal</h2>
           <p style="font-size:13px;color:var(--text-3);margin-top:2px;"><b id="rel-prev-lbl"></b> · <span id="rel-range"></span></p>
         </div>
         <div id="rel-actions" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <button class="btn-ghost btn-sm" id="rel-older">← Anterior</button>
+          <select id="rel-period" class="btn-ghost btn-sm" style="padding:6px 10px;border-radius:8px;cursor:pointer;"><option value="7">Semanal</option><option value="14">Quinzenal</option><option value="30">Mensal</option><option value="91">Trimestral</option><option value="182">Semestral</option><option value="365">Anual</option></select><button class="btn-ghost btn-sm" id="rel-older">← Anterior</button>
           <button class="btn-ghost btn-sm" id="rel-newer">Próxima →</button>
           <button class="btn btn-sm" id="rel-print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M8 14h8v7H8z" stroke-linejoin="round"/></svg>Imprimir / PDF</button>
         </div>
@@ -2039,12 +2039,12 @@ document.getElementById('anki-save').onclick=()=>{
 document.querySelector('[data-view=anki]').addEventListener('click',renderAnki);
 
 /* ===== relatório semanal ===== */
-let relOffset=0;
+let relOffset=0;let relPeriod=7;const REL_PERIODS={7:{lbl:"Relatório semanal",unit:"semana",units:"semanas",cur:"Semana atual",prev:"Semana passada"},14:{lbl:"Relatório quinzenal",unit:"quinzena",units:"quinzenas",cur:"Quinzena atual",prev:"Quinzena passada"},30:{lbl:"Relatório mensal",unit:"mês",units:"meses",cur:"Mês atual",prev:"Mês passado"},91:{lbl:"Relatório trimestral",unit:"trimestre",units:"trimestres",cur:"Trimestre atual",prev:"Trimestre passado"},182:{lbl:"Relatório semestral",unit:"semestre",units:"semestres",cur:"Semestre atual",prev:"Semestre passado"},365:{lbl:"Relatório anual",unit:"ano",units:"anos",cur:"Ano atual",prev:"Ano passado"}};
 function renderRelatorio(){
-  const cur=weekStart();const start=addDays(cur,-7*relOffset);const end=addDays(start,6);
+  const pcfg=REL_PERIODS[relPeriod]||REL_PERIODS[7];const cur=weekStart();const end=addDays(cur,6-relPeriod*relOffset);const start=addDays(end,-(relPeriod-1));
   const fmt=d=>new Date(d+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
   document.getElementById('rel-range').textContent=fmt(start)+' – '+new Date(end+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
-  document.getElementById('rel-prev-lbl').textContent=relOffset===0?'Semana atual':(relOffset===1?'Semana passada':(relOffset+' semanas atrás'));
+  document.getElementById('rel-prev-lbl').textContent=relOffset===0?pcfg.cur:(relOffset===1?pcfg.prev:(relOffset+' '+pcfg.units+' atrás'));{const _rt=document.getElementById('rel-title');if(_rt)_rt.textContent=pcfg.lbl;const _rp=document.getElementById('rel-period');if(_rp&&_rp.value!=String(relPeriod))_rp.value=String(relPeriod);}
   document.getElementById('rel-newer').style.visibility=relOffset>0?'visible':'hidden';
   const sess=state.sessions.filter(s=>s.date>=start&&s.date<=end);
   const min=sess.reduce((a,s)=>a+s.min,0),q=sess.reduce((a,s)=>a+s.q,0),c=sess.reduce((a,s)=>a+s.c,0);
@@ -2063,7 +2063,7 @@ function renderRelatorio(){
     kpi(sims.length,'Simulados','--purple','M9 4h6v3H9z','')+
     kpi(pg,'Páginas lidas','--amber','M4 6h16M4 12h16M4 18h10','')+
     kpi(au,'Aulas assistidas','--red','M4 5h16v12H4zM10 9l5 3-5 3z','');
-  const gH=(state.goals&&state.goals.hoursWk)||0,gQ=(state.goals&&state.goals.questionsWk)||0;
+  const _gf=relPeriod/7;const gH=Math.round(((state.goals&&state.goals.hoursWk)||0)*_gf),gQ=Math.round(((state.goals&&state.goals.questionsWk)||0)*_gf);{const _mg=document.getElementById('rel-goals-title');if(_mg)_mg.textContent='Metas · '+pcfg.unit;}
   const pH=gH>0?Math.min(100,Math.round((min/60)/gH*100)):0,pQ=gQ>0?Math.min(100,Math.round(q/gQ*100)):0;
   document.getElementById('rel-goals').innerHTML=
     goalBar('Horas',(min/60).toFixed(1)+'h / '+gH+'h ('+pH+'%)',pH,'var(--emerald)')+
@@ -2082,6 +2082,7 @@ function renderRelatorio(){
 }
 document.getElementById('rel-older').onclick=()=>{relOffset++;renderRelatorio();};
 document.getElementById('rel-newer').onclick=()=>{relOffset=Math.max(0,relOffset-1);renderRelatorio();};
+document.getElementById('rel-period').onchange=(e)=>{relPeriod=parseInt(e.target.value,10)||7;relOffset=0;renderRelatorio();};
 document.getElementById('rel-print').onclick=()=>window.print();
 document.querySelector('[data-view=relatorio]').addEventListener('click',renderRelatorio);
 
