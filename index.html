@@ -2645,6 +2645,98 @@ function rolloverDay(){
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
+
+<script>
+/* Catedra Onda 3: Metas de longo prazo */
+(function(){
+  var KEY='catedra:metas';
+  function load(){ try{return JSON.parse(localStorage.getItem(KEY))||[];}catch(e){return [];} }
+  function save(a){ try{localStorage.setItem(KEY, JSON.stringify(a));}catch(e){} }
+  function uid(){ return 'm'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+  function metricVal(m){ try{ var S=window.state||{};
+    if(m==='questoes') return (S.sessions||[]).reduce(function(a,s){return a+(s.q||0);},0);
+    if(m==='horas') return Math.round(((S.sessions||[]).reduce(function(a,s){return a+(s.min||0);},0)/60)*10)/10;
+    if(m==='dias') return (S.studyDays||[]).length;
+    if(m==='edital') return (function(){try{return editalStats().pct;}catch(e){return 0;}})();
+  }catch(e){} return 0; }
+  var METRICS={questoes:'Quest\u00f5es resolvidas',horas:'Horas de estudo',dias:'Dias de estudo',edital:'% do edital',manual:'Manual (eu atualizo)'};
+  function curVal(g){ return g.metric==='manual'? (g.prog||0): metricVal(g.metric); }
+  window.catMetas={load:load,save:save};
+  function buildSection(){
+    var vc=document.getElementById('view-conquistas'); if(!vc) return;
+    var sec=document.getElementById('metas-card');
+    if(!sec){ sec=document.createElement('div'); sec.className='card'; sec.id='metas-card'; vc.insertBefore(sec, vc.firstChild); }
+    var metas=load();
+    var rows=metas.map(function(g){
+      var cur=curVal(g), tgt=g.target||1; var pct=Math.max(0,Math.min(100,Math.round(cur/tgt*100))); var done=pct>=100;
+      var ms=[25,50,75,100].map(function(p){ var hit=pct>=p; return '<span title=\u0022'+p+'%\u0022 style=\u0022width:9px;height:9px;border-radius:50%;display:inline-block;background:'+(hit?'var(--emerald,#10b981)':'rgba(125,125,125,.25)')+'\u0022></span>'; }).join('');
+      var prazo = g.deadline? ('<span style=\u0022opacity:.7\u0022>'+ (function(){var d=new Date(g.deadline+'T00:00'); var dd=Math.ceil((d-new Date())/86400000); return dd>=0? ('faltam '+dd+'d'):(Math.abs(dd)+'d atrasada');})() +'</span>'):'';
+      var manualBtns = g.metric==='manual'? '<button data-mdec=\u0022'+g.id+'\u0022 style=\u0022border:none;background:rgba(125,125,125,.15);border-radius:6px;width:24px;height:24px;cursor:pointer\u0022>\u2212</button><button data-minc=\u0022'+g.id+'\u0022 style=\u0022border:none;background:rgba(125,125,125,.15);border-radius:6px;width:24px;height:24px;cursor:pointer\u0022>+</button>':'';
+      return '<div style=\u0022padding:10px 0;border-top:1px solid rgba(125,125,125,.12)\u0022>'
+        +'<div style=\u0022display:flex;justify-content:space-between;align-items:center;gap:8px\u0022>'
+          +'<div style=\u0022font-weight:600\u0022>'+ (done?'\u2705 ':'') + (g.name||'Meta') +'</div>'
+          +'<div style=\u0022display:flex;align-items:center;gap:6px;font-size:12px\u0022>'+prazo
+            +'<button data-medit=\u0022'+g.id+'\u0022 title=\u0022Editar\u0022 style=\u0022border:none;background:none;cursor:pointer;opacity:.6\u0022>\u270e</button>'
+            +'<button data-mdel=\u0022'+g.id+'\u0022 title=\u0022Remover\u0022 style=\u0022border:none;background:none;cursor:pointer;opacity:.6\u0022>\u2715</button>'
+          +'</div></div>'
+        +'<div style=\u0022display:flex;align-items:center;gap:8px;margin-top:6px\u0022>'
+          +'<div style=\u0022flex:1;height:8px;border-radius:6px;background:rgba(125,125,125,.18);overflow:hidden\u0022><div style=\u0022height:100%;width:'+pct+'%;background:var(--emerald,#10b981);border-radius:6px\u0022></div></div>'
+          +manualBtns+'</div>'
+        +'<div style=\u0022display:flex;justify-content:space-between;align-items:center;margin-top:5px;font-size:12px;opacity:.85\u0022>'
+          +'<span>'+METRICS[g.metric]+'</span><span>'+cur+' / '+tgt+' \u00b7 '+pct+'%</span></div>'
+        +'<div style=\u0022display:flex;gap:6px;margin-top:5px\u0022>'+ms+'</div></div>';
+    }).join('');
+    sec.innerHTML='<div class=\u0022card-h\u0022><div class=\u0022ico\u0022>\ud83c\udfaf</div><div>Metas de longo prazo</div>'
+      +'<button id=\u0022meta-add\u0022 style=\u0022margin-left:auto;border:1px solid var(--emerald,#10b981);color:var(--emerald,#10b981);background:none;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:13px\u0022>+ Nova meta</button></div>'
+      + (metas.length? rows : '<div class=\u0022hint\u0022 style=\u0022padding:10px 0;opacity:.7\u0022>Crie metas de longo prazo (ex.: resolver 2000 quest\u00f5es at\u00e9 a prova) e acompanhe o progresso com marcos.</div>');
+    wire(sec);
+  }
+  function openPop(g){ closePop();
+    var pop=document.createElement('div'); pop.id='meta-pop';
+    pop.style.cssText='position:fixed;z-index:9999;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center';
+    var opts=Object.keys(METRICS).map(function(k){return '<option value=\u0022'+k+'\u0022'+(g&&g.metric===k?' selected':'')+'>'+METRICS[k]+'</option>';}).join('');
+    pop.innerHTML='<div style=\u0022background:var(--bg,#fff);color:var(--fg,#111);border-radius:14px;padding:18px;width:320px;max-width:92vw;box-shadow:0 10px 40px rgba(0,0,0,.3)\u0022>'
+      +'<div style=\u0022font-weight:700;margin-bottom:12px\u0022>'+(g?'Editar meta':'Nova meta')+'</div>'
+      +'<label style=\u0022font-size:12px;opacity:.7\u0022>Nome</label>'
+      +'<input id=\u0022mp-name\u0022 value=\u0022'+(g?(g.name||'').replace(/\u0022/g,'&quot;'):'')+'\u0022 placeholder=\u0022Ex.: Resolver 2000 quest\u00f5es\u0022 style=\u0022width:100%;box-sizing:border-box;margin:4px 0 10px;padding:8px;border:1px solid rgba(125,125,125,.3);border-radius:8px;background:transparent;color:inherit\u0022>'
+      +'<label style=\u0022font-size:12px;opacity:.7\u0022>M\u00e9trica</label>'
+      +'<select id=\u0022mp-metric\u0022 style=\u0022width:100%;box-sizing:border-box;margin:4px 0 10px;padding:8px;border:1px solid rgba(125,125,125,.3);border-radius:8px;background:transparent;color:inherit\u0022>'+opts+'</select>'
+      +'<label style=\u0022font-size:12px;opacity:.7\u0022>Alvo</label>'
+      +'<input id=\u0022mp-target\u0022 type=\u0022number\u0022 min=\u00221\u0022 value=\u0022'+(g?(g.target||''):'')+'\u0022 placeholder=\u0022Ex.: 2000\u0022 style=\u0022width:100%;box-sizing:border-box;margin:4px 0 10px;padding:8px;border:1px solid rgba(125,125,125,.3);border-radius:8px;background:transparent;color:inherit\u0022>'
+      +'<label style=\u0022font-size:12px;opacity:.7\u0022>Prazo (opcional)</label>'
+      +'<input id=\u0022mp-deadline\u0022 type=\u0022date\u0022 value=\u0022'+(g?(g.deadline||''):'')+'\u0022 style=\u0022width:100%;box-sizing:border-box;margin:4px 0 14px;padding:8px;border:1px solid rgba(125,125,125,.3);border-radius:8px;background:transparent;color:inherit\u0022>'
+      +'<div style=\u0022display:flex;gap:8px;justify-content:flex-end\u0022>'
+        +'<button id=\u0022mp-cancel\u0022 style=\u0022border:none;background:rgba(125,125,125,.15);border-radius:8px;padding:8px 14px;cursor:pointer\u0022>Cancelar</button>'
+        +'<button id=\u0022mp-save\u0022 style=\u0022border:none;background:var(--emerald,#10b981);color:#fff;border-radius:8px;padding:8px 14px;cursor:pointer\u0022>Salvar</button>'
+      +'</div></div>';
+    document.body.appendChild(pop);
+    pop.addEventListener('click',function(e){ if(e.target===pop) closePop(); });
+    document.getElementById('mp-cancel').onclick=closePop;
+    document.getElementById('mp-save').onclick=function(){
+      var name=document.getElementById('mp-name').value.trim();
+      var metric=document.getElementById('mp-metric').value;
+      var target=parseFloat(document.getElementById('mp-target').value)||0;
+      var deadline=document.getElementById('mp-deadline').value;
+      if(!name||target<=0){ alert('Informe nome e alvo v\u00e1lido.'); return; }
+      var metas=load();
+      if(g){ var it=metas.find(function(x){return x.id===g.id;}); if(it){it.name=name;it.metric=metric;it.target=target;it.deadline=deadline;} }
+      else{ metas.push({id:uid(),name:name,metric:metric,target:target,deadline:deadline,prog:0}); }
+      save(metas); closePop(); buildSection();
+    };
+  }
+  function closePop(){ var p=document.getElementById('meta-pop'); if(p) p.remove(); }
+  function wire(sec){
+    var add=document.getElementById('meta-add'); if(add) add.onclick=function(){openPop(null);};
+    sec.querySelectorAll('[data-medit]').forEach(function(b){ b.onclick=function(){ var g=load().find(function(x){return x.id===b.getAttribute('data-medit');}); openPop(g); }; });
+    sec.querySelectorAll('[data-mdel]').forEach(function(b){ b.onclick=function(){ if(!confirm('Remover esta meta?'))return; save(load().filter(function(x){return x.id!==b.getAttribute('data-mdel');})); buildSection(); }; });
+    sec.querySelectorAll('[data-minc]').forEach(function(b){ b.onclick=function(){ var m=load(); var it=m.find(function(x){return x.id===b.getAttribute('data-minc');}); if(it){it.prog=(it.prog||0)+1; save(m); buildSection();} }; });
+    sec.querySelectorAll('[data-mdec]').forEach(function(b){ b.onclick=function(){ var m=load(); var it=m.find(function(x){return x.id===b.getAttribute('data-mdec');}); if(it){it.prog=Math.max(0,(it.prog||0)-1); save(m); buildSection();} }; });
+  }
+  if(typeof window.renderConquistas==='function' && !window.__metasPatched){ var orig=window.renderConquistas; window.renderConquistas=function(){ var r=orig.apply(this,arguments); try{buildSection();}catch(e){} return r; }; window.__metasPatched=true; }
+  window.catBuildMetas=buildSection;
+  try{ if(document.getElementById('view-conquistas')) buildSection(); }catch(e){}
+})();
+</script>
 </body>
 </html>
 
