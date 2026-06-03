@@ -1290,36 +1290,35 @@ function renderProfile(){
         }
         function cmSyncActiveFromInputs(){
           cmEnsureExams();
+          var ni=document.getElementById('e-name'), di=document.getElementById('e-date');
           var act=state.exams.filter(function(x){return x.active;})[0];
-          if(act){ act.name=(state.exam&&state.exam.name)||''; act.date=(state.exam&&state.exam.date)||''; }
+          if(act){
+            if(ni) act.name=ni.value||''; else act.name=(state.exam&&state.exam.name)||'';
+            if(di) act.date=di.value||''; else act.date=(state.exam&&state.exam.date)||'';
+            state.exam={name:act.name||'', date:act.date||''};
+          }
         }
         function cmRenderExams(){
-  cmEnsureExams();
-  var box=document.getElementById("exams-list"); if(!box) return;
-  var esc=function(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");};
-  var html="";
-  state.exams.forEach(function(ex){
-    var act=!!ex.active;
-    html+='<div class="exam-row" data-exam-row="1" style="display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--border,#2a2a3a);border-radius:10px;margin-bottom:8px;'+(act?'box-shadow:0 0 0 2px var(--accent,#4f8cff) inset;':'')+'">';
-    html+='<input type="radio" name="exam-active" '+(act?'checked':'')+' onclick="cmSetActive(\''+esc(ex.id)+'\')" title="Definir como prova ativa" style="cursor:pointer;flex:0 0 auto;">';
-    html+='<input type="text" value="'+esc(ex.name)+'" placeholder="Nome da prova" oninput="cmEditExam(\''+esc(ex.id)+'\',\'name\',this.value)" style="flex:1 1 auto;min-width:0;background:var(--bg2,#1a1a26);border:1px solid var(--border,#2a2a3a);border-radius:8px;padding:6px 8px;color:inherit;">';
-    html+='<input type="date" value="'+esc(ex.date)+'" oninput="cmEditExam(\''+esc(ex.id)+'\',\'date\',this.value)" style="flex:0 0 auto;background:var(--bg2,#1a1a26);border:1px solid var(--border,#2a2a3a);border-radius:8px;padding:6px 8px;color:inherit;">';
-    html+='<button type="button" onclick="cmRemoveExam(\''+esc(ex.id)+'\')" title="Remover" style="flex:0 0 auto;background:transparent;border:none;color:var(--muted,#8a8aa0);cursor:pointer;font-size:18px;line-height:1;">&times;</button>';
-    html+="</div>";
-  });
-  box.innerHTML=html;
-}
-function cmEditExam(id,field,val){
-  cmEnsureExams();
-  var ex=null,i; for(i=0;i<state.exams.length;i++){ if(String(state.exams[i].id)===String(id)){ ex=state.exams[i]; break; } }
-  if(!ex) return;
-  ex[field]=val;
-  if(ex.active){ state.exam=state.exam||{}; state.exam.name=ex.name; state.exam.date=ex.date; if(typeof renderAjustes==="function"){ var n=document.getElementById("e-name"), d=document.getElementById("e-date"); if(n)n.value=ex.name; if(d)d.value=ex.date; } }
-  save();
-  if(typeof renderCountdown==="function") renderCountdown();
-}
-  window.cmSetActive=function(id){
+          var box=document.getElementById('exams-list'); if(!box) return;
           cmEnsureExams();
+          if(!state.exams.length){ box.innerHTML='<div style="font-size:12.5px;color:var(--text-3)">Nenhuma prova cadastrada ainda.</div>'; return; }
+          var h='';
+          state.exams.forEach(function(ex){
+            var when = ex.date ? new Date(ex.date+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}) : 'sem data';
+            var days = ex.date ? Math.round((new Date(ex.date+'T00:00:00')-(function(){var d=new Date();d.setHours(0,0,0,0);return d;})())/86400000) : null;
+            var dlbl = (days===null)?'' : (days>0? (' · '+days+'d') : (days===0?' · hoje':' · passou'));
+            var isAct=!!ex.active;
+            h+='<div class="exam-row" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid '+(isAct?'var(--accent-bg,var(--emerald))':'var(--border)')+';border-radius:var(--r-sm);background:'+(isAct?'var(--surface-2)':'transparent')+'">';
+            h+='<button type="button" onclick="cmSetActive(\''+ex.id+'\')" title="Tornar ativa" style="width:16px;height:16px;border-radius:50%;border:2px solid '+(isAct?'var(--accent-bg,var(--emerald))':'var(--border-2)')+';background:'+(isAct?'var(--accent-bg,var(--emerald))':'transparent')+';cursor:pointer;flex:none"></button>';
+            h+='<div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+((ex.name||'Sem nome'))+'</div><div style="font-size:11.5px;color:var(--text-2)">'+when+dlbl+(isAct?' · ativa':'')+'</div></div>';
+            h+='<button type="button" onclick="cmRemoveExam(\''+ex.id+'\')" title="Remover" style="border:none;background:transparent;color:var(--text-3);cursor:pointer;font-size:15px;line-height:1;flex:none">×</button>';
+            h+='</div>';
+          });
+          box.innerHTML=h;
+        }
+        window.cmSetActive=function(id){
+          cmEnsureExams();
+          cmSyncActiveFromInputs();
           state.exams.forEach(function(x){ x.active=(x.id===id); });
           var act=state.exams.filter(function(x){return x.active;})[0];
           if(act){ state.exam={name:act.name||'', date:act.date||''}; }
@@ -1358,6 +1357,12 @@ function cmEditExam(id,field,val){
         };
 
         (function(){
+          var _t=null;
+          function _onExamInput(){
+            cmSyncActiveFromInputs();
+            if(_t) clearTimeout(_t);
+            _t=setTimeout(function(){ try{ cmRenderExams(); }catch(e){} }, 350);
+          }
           function _bindExams(){
             if(typeof window.renderAjustes==='function' && !window.renderAjustes.__cmPatched){
               var _orig=window.renderAjustes;
@@ -1366,6 +1371,9 @@ function cmEditExam(id,field,val){
             }
             var b=document.getElementById('exam-add-btn');
             if(b && !b.__cmBound){ b.__cmBound=true; b.addEventListener('click', function(){ try{ cmAddExam(); }catch(e){} }); }
+            var ni=document.getElementById('e-name'), di=document.getElementById('e-date');
+            if(ni && !ni.__cmBound){ ni.__cmBound=true; ni.addEventListener('input', _onExamInput); }
+            if(di && !di.__cmBound){ di.__cmBound=true; di.addEventListener('input', _onExamInput); }
           }
           if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _bindExams); }
           _bindExams();
@@ -2552,7 +2560,8 @@ function rolloverDay(){
       const { error } = await supabase.auth.signUp({
         email, password: senha, options: { data: { nome: $('ca-nome').value.trim() } }
       });
-Onda 1: corrige sincronizacao das multiplas provas (salva nome/data ao trocar/editar)    } else {
+      $('ca-msg').textContent = error ? error.message : 'Conta criada! Confira seu e-mail e depois entre.';
+    } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
       if (error) $('ca-msg').textContent = error.message;
     }
