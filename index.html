@@ -2879,6 +2879,19 @@ function rolloverDay(){
   try{ if(document.getElementById('backlog-wrap')) buildUI(); }catch(e){}
 })();
 </script>
+<script>
+/* FIX UX: marca cards vazios para estilo suave (apenas leitura, nao altera numeros) */
+(function(){
+  function marcarVazios(){
+    document.querySelectorAll('.stat .sv, .kpi .kv').forEach(function(el){
+      var t = el.textContent.trim();
+      el.dataset.empty = (t==='0'||t==='0%'||t==='—'||t==='0h') ? 'true' : 'false';
+    });
+  }
+  document.addEventListener('DOMContentLoaded', marcarVazios);
+  setInterval(marcarVazios, 1500);
+})();
+</script>
 </body>
 </html>
 
