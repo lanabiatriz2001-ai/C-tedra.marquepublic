@@ -2624,26 +2624,105 @@ function rolloverDay(){
 </script>
 
 <script>
-/* ===== Onda 2: subtopicos das materias do edital ===== */
+/* ===== Onda 2 (v2): subtopicos do edital — dentro de state.edital, sincronizados na nuvem ===== */
 (function(){
-  var SKEY='catedra:subtopics';
-  function getSubs(){try{return JSON.parse(localStorage.getItem(SKEY)||'{}');}catch(e){return {};}}
-  function saveSubs(o){try{localStorage.setItem(SKEY,JSON.stringify(o));}catch(e){}}
-  function titleToId(){var st={};try{st=JSON.parse(localStorage.getItem('catedra:state')||'{}');}catch(e){}var m={};(st.edital||[]).forEach(function(t){m[t.t]=t.id;});return m;}
-  function refresh(){try{if(window.renderEditalBadge)window.renderEditalBadge();}catch(e){}try{if(window.renderEditalCard)window.renderEditalCard();}catch(e){}try{if(window.renderCountdown)window.renderCountdown();}catch(e){}}
-  /* progresso do edital conta subtopicos quando existem */
-  if(typeof window.editalStats==='function'&&!window.__editalStatsPatched){window.__editalStatsPatched=true;window.editalStats=function(){var st={};try{st=JSON.parse(localStorage.getItem('catedra:state')||'{}');}catch(e){}var ed=st.edital||[];var subsAll=getSubs();var total=0,done=0;ed.forEach(function(t){var sub=subsAll[t.id];if(sub&&sub.length){total+=sub.length;done+=sub.filter(function(s){return s.done;}).length;}else{total+=1;if(t.done)done+=1;}});var pct=total?Math.round(done/total*100):0;return {done:done,pend:total-done,total:total,pct:pct};};}
-  function enhanceRows(){var map=titleToId();var subsAll=getSubs();Array.from(document.querySelectorAll('#view-edital .topic')).forEach(function(row){if(row.__subEnhanced)return;row.__subEnhanced=true;var ttEl=row.querySelector('.tt');if(!ttEl)return;var id=map[ttEl.textContent];if(!id)return;
-    var toggle=document.createElement('button');toggle.type='button';toggle.className='sub-toggle';toggle.title='Subtopicos';toggle.style.cssText='border:none;background:none;cursor:pointer;color:var(--text-3);font-size:11px;display:inline-flex;align-items:center;gap:3px;margin-left:8px;white-space:nowrap';
-    function badge(){var s=getSubs()[id]||[];var d=s.filter(function(x){return x.done;}).length;return s.length?('\u25B8 '+d+'/'+s.length):'\u25B8 subtopicos';}
-    toggle.textContent=badge();var rm=row.querySelector('.trm');if(rm)row.insertBefore(toggle,rm);else row.appendChild(toggle);
-    var panel=document.createElement('div');panel.className='sub-panel';panel.style.cssText='display:none;margin:2px 0 8px 34px;padding-left:10px;border-left:2px solid var(--border)';row.parentElement.insertBefore(panel,row.nextSibling);
-    function renderPanel(){var s=getSubs()[id]||[];panel.innerHTML='';s.forEach(function(it){var line=document.createElement('div');line.style.cssText='display:flex;align-items:center;gap:8px;padding:3px 0;font-size:13px;color:var(--text-2)';var dot=document.createElement('button');dot.type='button';dot.style.cssText='width:16px;height:16px;border-radius:5px;border:1.5px solid '+(it.done?'var(--emerald)':'var(--border)')+';background:'+(it.done?'var(--emerald)':'transparent')+';cursor:pointer;flex:0 0 auto';dot.onclick=function(){var all=getSubs();var arr=all[id]||[];var t=arr.filter(function(x){return x.id===it.id;})[0];if(t)t.done=!t.done;saveSubs(all);renderPanel();toggle.textContent=badge();refresh();};var tx=document.createElement('span');tx.textContent=it.t;tx.style.cssText='flex:1'+(it.done?';text-decoration:line-through;color:var(--text-3)':'');var x=document.createElement('button');x.type='button';x.textContent='\u2715';x.title='Remover';x.style.cssText='border:none;background:none;color:var(--text-3);cursor:pointer;font-size:12px';x.onclick=function(){var all=getSubs();all[id]=(all[id]||[]).filter(function(y){return y.id!==it.id;});if(!all[id].length)delete all[id];saveSubs(all);renderPanel();toggle.textContent=badge();refresh();};line.appendChild(dot);line.appendChild(tx);line.appendChild(x);panel.appendChild(line);});
-      var addWrap=document.createElement('div');addWrap.style.cssText='display:flex;gap:6px;margin-top:4px';var inp=document.createElement('input');inp.type='text';inp.placeholder='Novo subtopico...';inp.style.cssText='flex:1;border:1px solid var(--border);border-radius:7px;padding:5px 8px;font-size:12px;background:var(--surface-2);color:var(--text)';var addBtn=document.createElement('button');addBtn.type='button';addBtn.textContent='+';addBtn.style.cssText='border:1px solid var(--border);background:var(--surface-2);border-radius:7px;padding:0 12px;cursor:pointer;color:var(--text-2)';function doAdd(){var v=inp.value.trim();if(!v)return;var all=getSubs();if(!all[id])all[id]=[];all[id].push({id:'s'+Date.now(),t:v,done:false});saveSubs(all);inp.value='';renderPanel();toggle.textContent=badge();refresh();}addBtn.onclick=doAdd;inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();doAdd();}});addWrap.appendChild(inp);addWrap.appendChild(addBtn);panel.appendChild(addWrap);}
-    toggle.onclick=function(){if(panel.style.display==='none'){renderPanel();panel.style.display='block';}else{panel.style.display='none';}};});}
-  if(typeof window.renderEdital==='function'&&!window.__editalSubPatched){window.__editalSubPatched=true;var _re=window.renderEdital;window.renderEdital=function(){var r=_re.apply(this,arguments);try{enhanceRows();}catch(e){}return r;};}
-  function init(){try{enhanceRows();}catch(e){}try{refresh();}catch(e){}}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+  var MIGFLAG = "catedra:subtopics:migrated";
+  var LEGACY = "catedra:subtopics";
+  function liveState(){ try{ if(typeof state!=="undefined" && state) return state; }catch(e){} return (window.state||null); }
+  function persist(){ try{ if(typeof save==="function"){ save(); return; } }catch(e){} var s=liveState(); if(s){ try{ localStorage.setItem("catedra:state", JSON.stringify(s)); }catch(e){} } }
+  function uid(){ return "s"+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+  function editalArr(){ var s=liveState(); return (s&&s.edital)||[]; }
+  function subsOf(topic){ if(!topic) return []; if(!Array.isArray(topic.subs)) topic.subs=[]; return topic.subs; }
+  function migrate(){
+    if(localStorage.getItem(MIGFLAG)) return;
+    var raw=null; try{ raw=localStorage.getItem(LEGACY); }catch(e){}
+    if(!raw){ try{localStorage.setItem(MIGFLAG,"1");}catch(e){} return; }
+    var legacy={}; try{ legacy=JSON.parse(raw)||{}; }catch(e){ legacy={}; }
+    var ed=editalArr(); if(!ed.length) return;
+    var byId={}, byTitle={};
+    ed.forEach(function(tp){ byId[tp.id]=tp; byTitle[(tp.t||"").trim()]=tp; });
+    var changed=false;
+    Object.keys(legacy).forEach(function(key){
+      var arr=legacy[key]; if(!arr||!arr.length) return;
+      var tp=byId[key]||byTitle[(key||"").trim()];
+      if(!tp) return;
+      if(!Array.isArray(tp.subs)) tp.subs=[];
+      arr.forEach(function(it){
+        var txt=(it&&(it.t||it.text)||"").trim(); if(!txt) return;
+        var exists=tp.subs.some(function(s){ return (s.t||"").trim()===txt; });
+        if(!exists){ tp.subs.push({ id: it.id||uid(), t: txt, done: !!(it&&it.done) }); changed=true; }
+      });
+    });
+    try{ localStorage.setItem(MIGFLAG,"1"); }catch(e){}
+    if(changed){ persist(); }
+  }
+  function refresh(){
+    try{ if(window.renderEditalBadge) window.renderEditalBadge(); }catch(e){}
+    try{ if(window.renderEditalCard) window.renderEditalCard(); }catch(e){}
+    try{ if(window.renderCountdown) window.renderCountdown(); }catch(e){}
+    try{ if(window.renderHome) window.renderHome(); }catch(e){}
+  }
+  if(typeof window.editalStats==="function" && !window.__editalStatsPatchedV2){
+    window.__editalStatsPatchedV2=true;
+    window.editalStats=function(){
+      var ed=editalArr(); var total=0, done=0;
+      ed.forEach(function(tp){
+        var sub=Array.isArray(tp.subs)?tp.subs:null;
+        if(sub && sub.length){ total+=sub.length; done+=sub.filter(function(s){return s.done;}).length; }
+        else { total+=1; if(tp.done) done+=1; }
+      });
+      var pct=total?Math.round(done/total*100):0;
+      return { done:done, pend:total-done, total:total, pct:pct };
+    };
+  }
+  function enhanceRows(){
+    var ed=editalArr(); if(!ed.length) return;
+    var byTitle={}; ed.forEach(function(tp){ byTitle[(tp.t||"").trim()]=tp; });
+    Array.from(document.querySelectorAll("#view-edital .topic")).forEach(function(row){
+      if(row.__subEnhancedV2) return; row.__subEnhancedV2=true;
+      var ttEl=row.querySelector(".tt"); if(!ttEl) return;
+      var topic=byTitle[(ttEl.textContent||"").trim()]; if(!topic) return;
+      var toggle=document.createElement("button"); toggle.type="button"; toggle.className="sub-toggle"; toggle.title="Subtopicos";
+      toggle.style.cssText="border:none;background:none;cursor:pointer;color:var(--text-3);font-size:11px;display:inline-flex;align-items:center;gap:3px;margin-left:8px;white-space:nowrap";
+      function badge(){ var s=subsOf(topic); var d=s.filter(function(x){return x.done;}).length; return s.length?("\u25B8 "+d+"/"+s.length):"\u25B8 subtopicos"; }
+      toggle.textContent=badge();
+      var rm=row.querySelector(".trm"); if(rm) row.insertBefore(toggle,rm); else row.appendChild(toggle);
+      var panel=document.createElement("div"); panel.className="sub-panel"; panel.style.cssText="display:none;width:100%;padding:6px 0 4px 26px";
+      row.appendChild(panel);
+      function renderPanel(){
+        panel.innerHTML="";
+        var arr=subsOf(topic);
+        arr.forEach(function(it){
+          var rowi=document.createElement("div"); rowi.style.cssText="display:flex;align-items:center;gap:8px;padding:3px 0;font-size:13px;color:var(--text-2)";
+          var dot=document.createElement("button"); dot.type="button";
+          dot.style.cssText="width:16px;height:16px;border-radius:5px;border:1.5px solid "+(it.done?"var(--emerald)":"var(--border)")+";background:"+(it.done?"var(--emerald)":"transparent")+";cursor:pointer;flex:0 0 auto";
+          dot.onclick=function(){ it.done=!it.done; persist(); renderPanel(); toggle.textContent=badge(); refresh(); };
+          var tx=document.createElement("span"); tx.textContent=it.t; tx.style.cssText="flex:1"+(it.done?";text-decoration:line-through;color:var(--text-3)":"");
+          var x=document.createElement("button"); x.type="button"; x.textContent="\u2715"; x.title="Remover";
+          x.style.cssText="border:none;background:none;color:var(--text-3);cursor:pointer;font-size:12px";
+          x.onclick=function(){ var a=subsOf(topic); var k=a.indexOf(it); if(k>=0) a.splice(k,1); persist(); renderPanel(); toggle.textContent=badge(); refresh(); };
+          rowi.appendChild(dot); rowi.appendChild(tx); rowi.appendChild(x); panel.appendChild(rowi);
+        });
+        var addWrap=document.createElement("div"); addWrap.style.cssText="display:flex;gap:6px;margin-top:6px";
+        var inp=document.createElement("input"); inp.type="text"; inp.placeholder="Novo subtopico";
+        inp.style.cssText="flex:1;border:1px solid var(--border);border-radius:7px;padding:5px 8px;font-size:12px;background:var(--surface-2);color:var(--text)";
+        var addBtn=document.createElement("button"); addBtn.type="button"; addBtn.textContent="+";
+        addBtn.style.cssText="border:1px solid var(--border);background:var(--surface-2);border-radius:7px;padding:0 12px;cursor:pointer;color:var(--text-2)";
+        function doAdd(){ var v=inp.value.trim(); if(!v) return; var a=subsOf(topic); a.push({ id:uid(), t:v, done:false }); persist(); inp.value=""; renderPanel(); toggle.textContent=badge(); refresh(); inp.focus(); }
+        addBtn.onclick=doAdd;
+        inp.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); doAdd(); } });
+        addWrap.appendChild(inp); addWrap.appendChild(addBtn); panel.appendChild(addWrap);
+      }
+      toggle.onclick=function(){ if(panel.style.display==="none"){ renderPanel(); panel.style.display="block"; } else { panel.style.display="none"; } };
+    });
+  }
+  if(typeof window.renderEdital==="function" && !window.__editalSubPatchedV2){
+    window.__editalSubPatchedV2=true; var _re=window.renderEdital;
+    window.renderEdital=function(){ var r=_re.apply(this,arguments); try{ enhanceRows(); }catch(e){} return r; };
+  }
+  function init(){ try{ migrate(); }catch(e){} try{ enhanceRows(); }catch(e){} try{ refresh(); }catch(e){} }
+  function boot(attempts){ attempts=attempts||0; if(editalArr().length || attempts>40){ init(); return; } setTimeout(function(){ boot(attempts+1); }, 150); }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",function(){ boot(0); }); else boot(0);
 })();
 </script>
 
