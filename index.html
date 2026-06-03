@@ -1184,38 +1184,45 @@ const Store={
     try{localStorage.removeItem(k);}catch(e){}
   }
 };
-function catedraGetUid(){
+const SUPA_URL  = 'https://glzgqlxfvsfivyydfsbz.supabase.co';
+const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdsemdxbHhmdnNmaXZ5eWRmc2J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0OTU0OTMsImV4cCI6MjA5NjA3MTQ5M30.BZx5_kjbDZfNSccZOmkr46UwuRjyYpj_8OpUGmP43Yg';
+function catedraAuth(){
   try{
     const k = Object.keys(localStorage).find(x => x.startsWith('sb-') && x.endsWith('-auth-token'));
     if(!k) return null;
     const v = JSON.parse(localStorage.getItem(k));
-    return (v && v.user && v.user.id) ? v.user.id : null;
+    if(!v || !v.access_token || !v.user) return null;
+    return { uid: v.user.id, token: v.access_token };
   }catch(e){ return null; }
 }
 async function loadState(){try{const v=localStorage.getItem(KEY);if(v)return JSON.parse(v);}catch(e){}return defaultState();}
 async function save(){const j=JSON.stringify(state);try{localStorage.setItem(KEY,j);}catch(e){}pushStateToCloud();}
 async function pushStateToCloud(){
-  const uid = catedraGetUid();
-  if(!uid) return;
+  const a = catedraAuth();
+  if(!a) return;
   try{
-    await window.sb.from('app_state').upsert(
-      { user_id: uid, state: state, atualizado_em: new Date().toISOString() },
-      { onConflict: 'user_id' }
-    );
+    await fetch(SUPA_URL + '/rest/v1/app_state', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_ANON,
+        'Authorization': 'Bearer ' + a.token,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
+      },
+      body: JSON.stringify({ user_id: a.uid, state: state, atualizado_em: new Date().toISOString() })
+    });
   }catch(e){ console.error('pushStateToCloud', e); }
 }
 async function catedraLoadFromCloud(){
-  const uid = catedraGetUid();
-  if(!uid) return;
+  const a = catedraAuth();
+  if(!a) return;
   try{
-    const { data, error } = await window.sb
-      .from('app_state')
-      .select('state')
-      .eq('user_id', uid)
-      .maybeSingle();
-    if(error){ console.error('loadFromCloud', error); return; }
-    if(data && data.state){
-      state = data.state;
+    const r = await fetch(SUPA_URL + '/rest/v1/app_state?user_id=eq.' + a.uid + '&select=state', {
+      headers: { 'apikey': SUPA_ANON, 'Authorization': 'Bearer ' + a.token }
+    });
+    const rows = await r.json();
+    if(Array.isArray(rows) && rows[0] && rows[0].state){
+      state = rows[0].state;
       localStorage.setItem('catedra:state', JSON.stringify(state));
       if(typeof initAll === 'function') initAll();
     }
