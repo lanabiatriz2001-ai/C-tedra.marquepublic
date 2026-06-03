@@ -557,6 +557,7 @@
       <span class="exam-pill" id="exam-pill" style="display:none"></span>
       <button class="icon-btn" id="focus-btn" title="Modo foco"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.5"/></svg></button>
       <button class="icon-btn" id="theme-btn" title="Aparência"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="13.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="17.5" cy="10.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="8.5" cy="7.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="6.5" cy="12.5" r="1.5" fill="currentColor" stroke="none"/><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.2 0-1 .8-1.5 1.8-1.5H16a6 6 0 0 0 6-6c0-5-4.5-8-10-8Z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn" id="logout-btn" title="Sair" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 3l4 4-4 4M20 7H9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <button class="btn btn-sm" id="quick-log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg><span id="qt-min">0</span> min · Registrar</button>
     </div>
   </div>
@@ -1183,8 +1184,10 @@ const Store={
     try{localStorage.removeItem(k);}catch(e){}
   }
 };
-async function loadState(){try{const r=await Store.get(KEY);if(r&&r.value)return JSON.parse(r.value);}catch(e){}return defaultState();}
-async function save(){try{await Store.set(KEY,JSON.stringify(state));}catch(e){}}
+async function loadState(){try{const v=localStorage.getItem(KEY);if(v)return JSON.parse(v);}catch(e){}return defaultState();}
+async function save(){const j=JSON.stringify(state);try{localStorage.setItem(KEY,j);}catch(e){}pushStateToCloud();}
+async function pushStateToCloud(){if(!window.sb)return;const{data:{user}}=await window.sb.auth.getUser();if(!user)return;try{await window.sb.from('app_state').upsert({user_id:user.id,state:state,atualizado_em:new Date().toISOString()});}catch(e){console.warn('sync cloud:',e.message);}}
+window.catedraLoadFromCloud=async function(){if(!window.sb)return;const{data:{user}}=await window.sb.auth.getUser();if(!user)return;const local=localStorage.getItem(KEY);const{data:row}=await window.sb.from('app_state').select('state').eq('user_id',user.id).maybeSingle();if((!row||!row.state||Object.keys(row.state).length===0)&&local){const parsed=JSON.parse(local);await window.sb.from('app_state').upsert({user_id:user.id,state:parsed,atualizado_em:new Date().toISOString()});localStorage.setItem(KEY,JSON.stringify(parsed));}else if(row&&row.state){localStorage.setItem(KEY,JSON.stringify(row.state));}location.reload();};
 
 function toast(msg){const t=document.getElementById('toast');document.getElementById('toast-txt').textContent=msg||'salvo';t.classList.add('show');clearTimeout(window._t);window._t=setTimeout(()=>t.classList.remove('show'),1500);}
 function todayStr(){return new Date().toISOString().slice(0,10);}
@@ -2021,8 +2024,8 @@ document.getElementById('import-file').onchange=function(e){
       const r=mergeData(data);
       syncDiscs();refreshDiscSelects();
       await save();initAll();renderEdital&&renderEditalCard();
-      const _p=[];if(r.addedTopics)_p.push('+'+r.addedTopics+' tópico(s)');if(r.updatedTopics)_p.push(r.updatedTopics+' atualizado(s)');if(r.addedSessions)_p.push('+'+r.addedSessions+' sessão(ões)');if(r.addedRevs)_p.push('+'+r.addedRevs+' revisão(ões)');if(r.addedDays)_p.push('+'+r.addedDays+' dia(s)');if(r.addedDiscs)_p.push('+'+r.addedDiscs+' disciplina(s)');if(r.cfg)_p.push('configurações');
-      toast(_p.length?('mesclado: '+_p.join(', ')):'nada novo para mesclar ✓');
+      const p=[];if(r.addedTopics)p.push('+'+r.addedTopics+' tópico(s)');if(r.updatedTopics)p.push(r.updatedTopics+' atualizado(s)');if(r.addedSessions)p.push('+'+r.addedSessions+' sessão(ões)');if(r.addedRevs)p.push('+'+r.addedRevs+' revisão(ões)');if(r.addedDays)p.push('+'+r.addedDays+' dia(s)');if(r.addedDiscs)p.push('+'+r.addedDiscs+' disciplina(s)');if(r.cfg)p.push('configurações');
+      toast(p.length?('mesclado: '+p.join(', ')):'nada novo para mesclar ✓');
       e.target.value='';return;
     }
     if(!('sessions'in data)&&!('checks'in data)&&!('edital'in data)){
@@ -2323,5 +2326,73 @@ function rolloverDay(){
   save();
 }
 </script>
+
+<!-- ===== Supabase + Login (Cátedra) ===== -->
+<div id="catedra-auth" style="display:none;position:fixed;inset:0;z-index:9999;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:inherit;">
+  <div style="background:#fff;border-radius:16px;padding:40px 36px;width:340px;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+      <div style="width:34px;height:34px;border-radius:9px;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;">C</div>
+      <div style="font-size:20px;font-weight:700;color:#0f172a;">Cátedra</div>
+    </div>
+    <p style="color:#64748b;font-size:13px;margin:0 0 22px;">Estudos jurídicos · acesse sua conta</p>
+    <input id="ca-email" type="email" placeholder="seu@email.com" style="width:100%;box-sizing:border-box;padding:11px 12px;margin-bottom:10px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px;">
+    <input id="ca-senha" type="password" placeholder="senha" style="width:100%;box-sizing:border-box;padding:11px 12px;margin-bottom:8px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px;">
+    <input id="ca-nome" type="text" placeholder="seu nome (só no cadastro)" style="width:100%;box-sizing:border-box;padding:11px 12px;margin-bottom:14px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px;display:none;">
+    <button id="ca-btn" style="width:100%;padding:12px;background:#2563eb;color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;">Entrar</button>
+    <p id="ca-msg" style="color:#dc2626;font-size:12px;min-height:16px;margin:10px 0 0;text-align:center;"></p>
+    <p style="text-align:center;font-size:13px;color:#64748b;margin:12px 0 0;">
+      <a id="ca-toggle" href="#" style="color:#2563eb;text-decoration:none;">Não tem conta? Cadastre-se</a>
+    </p>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  const supabase = createClient(
+    'https://glzgqlxfvsfivyydfsbz.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdsemdxbHhmdnNmaXZ5eWRmc2J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0OTU0OTMsImV4cCI6MjA5NjA3MTQ5M30.BZx5_kjbDZfNSccZOmkr46UwuRjyYpj_8OpUGmP43Yg'
+  );
+  window.sb = supabase;
+  let modoCadastro = false;
+  const $ = id => document.getElementById(id);
+  const authBox = $('catedra-auth');
+  $('ca-toggle').onclick = (e) => {
+    e.preventDefault();
+    modoCadastro = !modoCadastro;
+    $('ca-nome').style.display = modoCadastro ? 'block' : 'none';
+    $('ca-btn').textContent = modoCadastro ? 'Cadastrar' : 'Entrar';
+    $('ca-toggle').textContent = modoCadastro ? 'Já tem conta? Entrar' : 'Não tem conta? Cadastre-se';
+    $('ca-msg').textContent = '';
+  };
+  $('ca-btn').onclick = async () => {
+    const email = $('ca-email').value.trim();
+    const senha = $('ca-senha').value;
+    $('ca-msg').textContent = '';
+    if (!email || !senha) { $('ca-msg').textContent = 'Preencha e-mail e senha.'; return; }
+    if (modoCadastro) {
+      const { error } = await supabase.auth.signUp({
+        email, password: senha, options: { data: { nome: $('ca-nome').value.trim() } }
+      });
+      $('ca-msg').textContent = error ? error.message : 'Conta criada! Confira seu e-mail e depois entre.';
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+      if (error) $('ca-msg').textContent = error.message;
+    }
+  };
+  supabase.auth.onAuthStateChange(async (_e, session) => {
+    if (session) {
+      authBox.style.display = 'none';
+      $('logout-btn').style.display = '';
+      await window.catedraLoadFromCloud();
+    } else {
+      authBox.style.display = 'flex';
+      $('logout-btn').style.display = 'none';
+    }
+  });
+  $('logout-btn').onclick = async () => {
+    await supabase.auth.signOut();
+  };
+</script>
+
 </body>
 </html>
