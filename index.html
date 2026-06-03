@@ -1198,7 +1198,7 @@ async function pushStateToCloud(){
   const uid = catedraGetUid();
   if(!uid) return;
   try{
-    await sb.from('app_state').upsert(
+    await window.sb.from('app_state').upsert(
       { user_id: uid, state: state, atualizado_em: new Date().toISOString() },
       { onConflict: 'user_id' }
     );
@@ -1208,7 +1208,7 @@ async function catedraLoadFromCloud(){
   const uid = catedraGetUid();
   if(!uid) return;
   try{
-    const { data, error } = await sb
+    const { data, error } = await window.sb
       .from('app_state')
       .select('state')
       .eq('user_id', uid)
@@ -2385,7 +2385,15 @@ function rolloverDay(){
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
   const supabase = createClient(
     'https://glzgqlxfvsfivyydfsbz.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdsemdxbHhmdnNmaXZ5eWRmc2J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0OTU0OTMsImV4cCI6MjA5NjA3MTQ5M30.BZx5_kjbDZfNSccZOmkr46UwuRjyYpj_8OpUGmP43Yg'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdsemdxbHhmdnNmaXZ5eWRmc2J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0OTU0OTMsImV4cCI6MjA5NjA3MTQ5M30.BZx5_kjbDZfNSccZOmkr46UwuRjyYpj_8OpUGmP43Yg',
+    {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        storageKey: 'sb-glzgqlxfvsfivyydfsbz-auth-token',
+        lock: async (name, acquireTimeout, fn) => await fn()
+      }
+    }
   );
   window.sb = supabase;
   let modoCadastro = false;
