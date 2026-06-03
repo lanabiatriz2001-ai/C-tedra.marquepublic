@@ -19,6 +19,18 @@
   #quick-log{ flex: 1 1 100%; justify-content: center; order: 5; }
 }
 /* === fim do fix === */
+  /* === FIX: cards KPI em telas estreitas === */
+@media (max-width: 420px){
+  .kpis{ gap: 10px; }
+  .kpi{ padding: 14px 14px; }
+  .kpi .kv{ font-size: 24px; }            /* número não estoura mais a coluna */
+  .kpi .kc{ width: 26px; height: 26px; margin-bottom: 9px; }
+}
+/* opcional: 1 coluna em telas mínimas, se preferir cards maiores */
+@media (max-width: 340px){
+  .kpis{ grid-template-columns: 1fr; }
+}
+/* === fim do fix === */
   :root{
     --ink:#0e1116;
     --sidebar:#11151b;
