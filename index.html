@@ -1186,6 +1186,7 @@ const Store={
 };
 const SUPA_URL  = 'https://glzgqlxfvsfivyydfsbz.supabase.co';
 const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdsemdxbHhmdnNmaXZ5eWRmc2J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0OTU0OTMsImV4cCI6MjA5NjA3MTQ5M30.BZx5_kjbDZfNSccZOmkr46UwuRjyYpj_8OpUGmP43Yg';
+let cloudLoaded = false;
 function catedraAuth(){
   try{
     const k = Object.keys(localStorage).find(x => x.startsWith('sb-') && x.endsWith('-auth-token'));
@@ -1198,6 +1199,7 @@ function catedraAuth(){
 async function loadState(){try{const v=localStorage.getItem(KEY);if(v)return JSON.parse(v);}catch(e){}return defaultState();}
 async function save(){const j=JSON.stringify(state);try{localStorage.setItem(KEY,j);}catch(e){}pushStateToCloud();}
 async function pushStateToCloud(){
+  if(!cloudLoaded) return;
   const a = catedraAuth();
   if(!a) return;
   try{
@@ -1214,9 +1216,9 @@ async function pushStateToCloud(){
   }catch(e){ console.error('pushStateToCloud', e); }
 }
 async function catedraLoadFromCloud(){
-  const a = catedraAuth();
-  if(!a) return;
   try{
+    const a = catedraAuth();
+    if(!a) return;
     const r = await fetch(SUPA_URL + '/rest/v1/app_state?user_id=eq.' + a.uid + '&select=state', {
       headers: { 'apikey': SUPA_ANON, 'Authorization': 'Bearer ' + a.token }
     });
@@ -1227,6 +1229,7 @@ async function catedraLoadFromCloud(){
       if(typeof initAll === 'function') initAll();
     }
   }catch(e){ console.error('catedraLoadFromCloud', e); }
+  finally{ cloudLoaded = true; }
 }
 window.catedraLoadFromCloud = catedraLoadFromCloud;
 window.pushStateToCloud = pushStateToCloud;
