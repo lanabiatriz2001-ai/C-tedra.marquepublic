@@ -2737,6 +2737,41 @@ function rolloverDay(){
   try{ if(document.getElementById('view-conquistas')) buildSection(); }catch(e){}
 })();
 </script>
+
+<script>
+/* Catedra Onda 3: Repactuar revisoes atrasadas */
+(function(){
+  var KEY='catedra:repact';
+  function S(){ try{ if(typeof state!=='undefined'&&state) return state; }catch(e){} return window.state||{}; }
+  function load(){ try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return {};} }
+  function save(o){ try{localStorage.setItem(KEY, JSON.stringify(o));}catch(e){} }
+  function iso(d){ return d.toISOString().slice(0,10); }
+  function isoToBR(s){ var p=s.split('-'); return p[2]+'/'+p[1]; }
+  function bl(){ return (S().backlog)||[]; }
+  function redistribute(perDay){ var L=bl(); var plan={}; var d=new Date(); d.setHours(0,0,0,0); var c=0; L.forEach(function(b){ plan[b.id]=iso(d); c++; if(c>=perDay){c=0;d=new Date(d.getTime()+86400000);} }); save(plan); return plan; }
+  function buildUI(){ var bw=document.getElementById('backlog-wrap'); if(!bw) return; var L=bl(); if(!L.length){ var ex=document.getElementById('repact-bar'); if(ex) ex.remove(); return; }
+    var plan=load(); var bar=document.getElementById('repact-bar');
+    if(!bar){ bar=document.createElement('div'); bar.id='repact-bar'; bar.style.cssText='display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 4px'; bw.parentNode.insertBefore(bar,bw); }
+    var hasPlan=Object.keys(plan).length>0;
+    bar.innerHTML='<button id=\u0022repact-btn\u0022 style=\u0022border:1px solid var(--emerald,#10b981);color:var(--emerald,#10b981);background:none;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:13px;font-weight:600\u0022>\u21bb Repactuar atrasadas</button>'+(hasPlan?'<button id=\u0022repact-undo\u0022 style=\u0022border:none;background:rgba(125,125,125,.15);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:13px\u0022>Desfazer</button><span style=\u0022font-size:12px;opacity:.7\u0022>plano ativo</span>':'');
+    document.getElementById('repact-btn').onclick=openPanel;
+    var u=document.getElementById('repact-undo'); if(u) u.onclick=function(){localStorage.removeItem(KEY); buildUI();};
+    bw.querySelectorAll('.blk').forEach(function(el,i){ var b=L[i]; if(!b)return; var old=el.querySelector('.repact-badge'); if(old)old.remove(); if(plan[b.id]){ var bd=document.createElement('div'); bd.className='repact-badge'; bd.style.cssText='font-size:12px;color:var(--emerald,#10b981);font-weight:600;margin-top:4px'; var today=iso(new Date()); bd.textContent=(plan[b.id]===today?'\ud83d\udcc5 revisar hoje':'\ud83d\udcc5 repactuado para '+isoToBR(plan[b.id])); (el.querySelector('.blk-m')||el).appendChild(bd); } });
+  }
+  function openPanel(){ closePanel(); var n=bl().length; var pop=document.createElement('div'); pop.id='repact-pop'; pop.style.cssText='position:fixed;z-index:9999;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center';
+    pop.innerHTML='<div style=\u0022background:var(--bg,#fff);color:var(--fg,#111);border-radius:14px;padding:18px;width:340px;max-width:92vw;box-shadow:0 10px 40px rgba(0,0,0,.3)\u0022><div style=\u0022font-weight:700;margin-bottom:6px\u0022>Repactuar atrasadas</div><div style=\u0022font-size:13px;opacity:.75;margin-bottom:12px\u0022>Voc\u00ea tem <b>'+n+'</b> bloco(s) atrasado(s). Vou distribu\u00ed-los nos pr\u00f3ximos dias para recuperar sem sobrecarregar.</div><label style=\u0022font-size:12px;opacity:.7\u0022>Blocos por dia</label><input id=\u0022rp-perday\u0022 type=\u0022number\u0022 min=\u00221\u0022 max=\u0022'+n+'\u0022 value=\u00222\u0022 style=\u0022width:100%;box-sizing:border-box;margin:4px 0 10px;padding:8px;border:1px solid rgba(125,125,125,.3);border-radius:8px;background:transparent;color:inherit\u0022><div id=\u0022rp-preview\u0022 style=\u0022font-size:12px;opacity:.8;background:rgba(125,125,125,.08);border-radius:8px;padding:8px;margin-bottom:14px;max-height:140px;overflow:auto\u0022></div><div style=\u0022display:flex;gap:8px;justify-content:flex-end\u0022><button id=\u0022rp-cancel\u0022 style=\u0022border:none;background:rgba(125,125,125,.15);border-radius:8px;padding:8px 14px;cursor:pointer\u0022>Cancelar</button><button id=\u0022rp-apply\u0022 style=\u0022border:none;background:var(--emerald,#10b981);color:#fff;border-radius:8px;padding:8px 14px;cursor:pointer\u0022>Aplicar</button></div></div>';
+    document.body.appendChild(pop); pop.addEventListener('click',function(e){if(e.target===pop)closePanel();}); document.getElementById('rp-cancel').onclick=closePanel;
+    function preview(){ var pd=Math.max(1,parseInt(document.getElementById('rp-perday').value)||1); var L=bl(); var d=new Date(); d.setHours(0,0,0,0); var c=0; var groups={}; L.forEach(function(b){var k=iso(d); (groups[k]=groups[k]||[]).push(b.tag||b.t); c++; if(c>=pd){c=0;d=new Date(d.getTime()+86400000);}}); var lines=Object.keys(groups).map(function(k){var lbl=(k===iso(new Date()))?'Hoje':isoToBR(k); return '<div style=\u0022padding:2px 0\u0022><b>'+lbl+':</b> '+groups[k].join(', ')+'</div>';}); document.getElementById('rp-preview').innerHTML=lines.join(''); }
+    document.getElementById('rp-perday').addEventListener('input',preview); preview();
+    document.getElementById('rp-apply').onclick=function(){ var pd=Math.max(1,parseInt(document.getElementById('rp-perday').value)||1); redistribute(pd); closePanel(); buildUI(); };
+  }
+  function closePanel(){ var p=document.getElementById('repact-pop'); if(p) p.remove(); }
+  window.catRepact={buildUI:buildUI,redistribute:redistribute,load:load};
+  ['renderCiclo','renderDia','renderToday','renderBacklog'].forEach(function(fn){ if(typeof window[fn]==='function' && !window['__rp_'+fn]){ var o=window[fn]; window[fn]=function(){ var r=o.apply(this,arguments); try{buildUI();}catch(e){} return r; }; window['__rp_'+fn]=true; } });
+  var _navObs; try{ _navObs=new MutationObserver(function(){ if(document.getElementById('backlog-wrap')) buildUI(); }); _navObs.observe(document.body,{childList:true,subtree:true}); }catch(e){}
+  try{ if(document.getElementById('backlog-wrap')) buildUI(); }catch(e){}
+})();
+</script>
 </body>
 </html>
 
