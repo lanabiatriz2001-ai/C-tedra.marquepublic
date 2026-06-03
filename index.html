@@ -31,6 +31,9 @@
   .kpis{ grid-template-columns: 1fr; }
 }
 /* === fim do fix === */
+  /* === FIX: suavizar valores zerados nos cards de resumo === */
+  .stat .sv[data-empty="true"], .kpi .kv[data-empty="true"]{ color: var(--text-3); font-weight: 500; }
+  /* === fim do fix === */
   :root{
     --ink:#0e1116;
     --sidebar:#11151b;
