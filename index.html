@@ -1272,21 +1272,46 @@ function renderProfile(){
   document.getElementById('datep').textContent=p.goal?date+' · '+p.goal:date;
 }
 function renderCountdown(){
-  const card=document.getElementById('countdown-card');const dte=daysToExam();
-  if(dte===null){
-    card.innerHTML='<div class="card-h"><h3><span class="ico">'+ICO_CLOCK+'</span>Contagem regressiva</h3></div><div class="empty">Defina a data da sua prova em <b>Ajustes</b> para ativar o countdown.</div>';
-    document.getElementById('exam-pill').style.display='none';return;
+  var card=document.getElementById('countdown-card');
+  var pill=document.getElementById('exam-pill');
+  if(!card) return;
+  var exam=(state.exam&&state.exam.date)?state.exam:null;
+  if(!exam){
+    card.innerHTML='<div class="card-h"><span class="ico">⏳</span>Contagem regressiva</div><div class="empty">Defina a data da sua prova em Ajustes para ativar o countdown.</div>';
+    if(pill){pill.style.display='none';pill.innerHTML='';}
+    return;
   }
-  const nm=state.exam.name||'Sua prova';
-  const dlabel=new Date(state.exam.date+'T00:00:00').toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'});
-  let big=dte,sub='dias para a prova';
-  if(dte===0){big='Hoje';sub='é o grande dia! 🍀';}
-  else if(dte<0){big=Math.abs(dte);sub='dias desde a prova';}
-  card.innerHTML='<div class="card-h"><h3><span class="ico">'+ICO_CLOCK+'</span>Contagem regressiva</h3></div>'+
-    '<div class="countdown"><div class="cd-num">'+big+'</div><div class="cd-meta"><div class="l">'+sub+'</div><div class="n2">'+nm+'</div><div class="d2">'+dlabel+'</div></div></div>';
-  const pill=document.getElementById('exam-pill');
-  if(dte>=0){pill.style.display='inline-flex';pill.textContent=(dte===0?'Prova hoje 🍀':'Faltam '+dte+' dias')+' · '+nm;}
-  else pill.style.display='none';
+  var today=new Date();today.setHours(0,0,0,0);
+  var d=new Date(exam.date+'T00:00:00');
+  var days=Math.round((d-today)/86400000);
+  var ed=Array.isArray(state.edital)?state.edital:[];
+  var total=ed.length;
+  var done=ed.filter(function(x){return x.done;}).length;
+  var rem=total-done;
+  var pct=total?Math.round(done/total*100):0;
+  var perDay=(days>0&&rem>0)?(rem/days):0;
+  var perWeek=perDay*7;
+  var fmt=d.toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'});
+  var name=(exam.name||'').trim();
+  var ritmo='', rcls='ok';
+  if(days<=0){ritmo='Dia da prova chegou — boa prova!';rcls='warn';}
+  else if(rem<=0){ritmo='Edital 100% percorrido 🎉 foco em revisões!';rcls='good';}
+  else if(perDay<=1.5){ritmo='Ritmo tranquilo: ~'+perDay.toFixed(1)+' tópicos/dia.';rcls='good';}
+  else if(perDay<=4){ritmo='Ritmo firme: ~'+perDay.toFixed(1)+' tópicos/dia.';rcls='ok';}
+  else{ritmo='Ritmo puxado: ~'+perDay.toFixed(1)+' tópicos/dia. Considere priorizar incidência alta.';rcls='warn';}
+  var top = days<=0 ? 'Hoje' : days;
+  var lab = days<=0 ? 'a prova é hoje' : (days===1?'dia para a prova':'dias para a prova');
+  var html='';
+  html+='<div class="card-h"><span class="ico">⏳</span>Contagem regressiva</div>';
+  html+='<div class="countdown"><div class="cd-num">'+top+'</div><div class="cd-meta"><div class="l">'+lab+'</div><div class="n2">'+(name?name+' · ':'')+fmt+'</div></div></div>';
+  html+='<div class="cd-prog" style="margin-top:12px"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-2);margin-bottom:4px"><span>Edital percorrido</span><span>'+done+'/'+total+' · '+pct+'%</span></div><div style="height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden"><div style="height:100%;width:'+pct+'%;background:var(--accent-bg,var(--emerald));border-radius:99px"></div></div></div>';
+  if(days>0&&rem>0){
+    html+='<div style="display:flex;gap:8px;margin-top:10px"><div style="flex:1;background:var(--surface-2);border-radius:var(--r-sm);padding:8px 10px"><div style="font-size:18px;font-weight:700">'+(perDay<10?perDay.toFixed(1):Math.round(perDay))+'</div><div style="font-size:11px;color:var(--text-2)">tópicos/dia p/ chegar pronta</div></div><div style="flex:1;background:var(--surface-2);border-radius:var(--r-sm);padding:8px 10px"><div style="font-size:18px;font-weight:700">'+Math.round(perWeek)+'</div><div style="font-size:11px;color:var(--text-2)">tópicos/semana</div></div></div>';
+  }
+  var rcolor = rcls==='warn'?'var(--amber)':(rcls==='good'?'var(--emerald)':'var(--text-2)');
+  html+='<div style="margin-top:10px;font-size:12.5px;color:'+rcolor+'">'+ritmo+'</div>';
+  card.innerHTML=html;
+  if(pill){pill.style.display='';pill.innerHTML=(days<=0?'Prova hoje':(days+'d'))+(name?' · '+name:'');}
 }
 function goalBar(l,v,p,col){return '<div class="goal"><div class="gh"><span class="gl">'+l+'</span><span class="gv">'+v+'</span></div><div class="gbar"><i style="width:'+p+'%;background:'+col+'"></i></div></div>';}
 function renderGoals(){
