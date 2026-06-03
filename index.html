@@ -907,6 +907,11 @@
         <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 3v18M5 4h11l-2 3 2 3H5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Sua prova</h3></div>
         <div class="field" style="margin-bottom:13px;"><label>Nome / cargo</label><input id="e-name" placeholder="ex.: PGM/PVH"></div>
         <div class="field"><label>Data da prova</label><input id="e-date" type="date"></div>
+          <div class="field" style="margin-top:6px">
+            <label>MINHAS PROVAS</label>
+            <div id="exams-list" style="display:flex;flex-direction:column;gap:6px"></div>
+            <button type="button" id="exam-add-btn" class="btn-ghost" style="margin-top:8px;align-self:flex-start;font-size:13px;padding:6px 12px;border:1px dashed var(--border-2);border-radius:var(--r-sm);background:transparent;color:var(--text-2);cursor:pointer">+ Adicionar prova</button>
+          </div>
         <div class="tip" style="margin-top:16px;"><div class="d"></div><p>Aciona a contagem regressiva no painel e no topo da tela.</p></div>
       </div>
       <div class="card">
@@ -1271,7 +1276,96 @@ function renderProfile(){
   const date=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
   document.getElementById('datep').textContent=p.goal?date+' · '+p.goal:date;
 }
-function renderCountdown(){
+
+        function cmEnsureExams(){
+          if(!Array.isArray(state.exams)) state.exams=[];
+          state.exam=state.exam||{name:'',date:''};
+          if(state.exams.length===0 && (state.exam.name||state.exam.date)){
+            state.exams.push({id:'ex'+Date.now(), name:state.exam.name||'', date:state.exam.date||'', active:true});
+          }
+          var anyActive=state.exams.some(function(x){return x.active;});
+          if(!anyActive && state.exams.length){ state.exams[0].active=true; }
+          var act=state.exams.filter(function(x){return x.active;})[0];
+          if(act){ state.exam={name:act.name||'', date:act.date||''}; }
+        }
+        function cmSyncActiveFromInputs(){
+          cmEnsureExams();
+          var act=state.exams.filter(function(x){return x.active;})[0];
+          if(act){ act.name=(state.exam&&state.exam.name)||''; act.date=(state.exam&&state.exam.date)||''; }
+        }
+        function cmRenderExams(){
+          var box=document.getElementById('exams-list'); if(!box) return;
+          cmEnsureExams();
+          if(!state.exams.length){ box.innerHTML='<div style="font-size:12.5px;color:var(--text-3)">Nenhuma prova cadastrada ainda.</div>'; return; }
+          var h='';
+          state.exams.forEach(function(ex){
+            var when = ex.date ? new Date(ex.date+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}) : 'sem data';
+            var days = ex.date ? Math.round((new Date(ex.date+'T00:00:00')-(function(){var d=new Date();d.setHours(0,0,0,0);return d;})())/86400000) : null;
+            var dlbl = (days===null)?'' : (days>0? (' · '+days+'d') : (days===0?' · hoje':' · passou'));
+            var isAct=!!ex.active;
+            h+='<div class="exam-row" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid '+(isAct?'var(--accent-bg,var(--emerald))':'var(--border)')+';border-radius:var(--r-sm);background:'+(isAct?'var(--surface-2)':'transparent')+'">';
+            h+='<button type="button" onclick="cmSetActive(\''+ex.id+'\')" title="Tornar ativa" style="width:16px;height:16px;border-radius:50%;border:2px solid '+(isAct?'var(--accent-bg,var(--emerald))':'var(--border-2)')+';background:'+(isAct?'var(--accent-bg,var(--emerald))':'transparent')+';cursor:pointer;flex:none"></button>';
+            h+='<div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+((ex.name||'Sem nome'))+'</div><div style="font-size:11.5px;color:var(--text-2)">'+when+dlbl+(isAct?' · ativa':'')+'</div></div>';
+            h+='<button type="button" onclick="cmRemoveExam(\''+ex.id+'\')" title="Remover" style="border:none;background:transparent;color:var(--text-3);cursor:pointer;font-size:15px;line-height:1;flex:none">×</button>';
+            h+='</div>';
+          });
+          box.innerHTML=h;
+        }
+        window.cmSetActive=function(id){
+          cmEnsureExams();
+          state.exams.forEach(function(x){ x.active=(x.id===id); });
+          var act=state.exams.filter(function(x){return x.active;})[0];
+          if(act){ state.exam={name:act.name||'', date:act.date||''}; }
+          var ni=document.getElementById('e-name'), di=document.getElementById('e-date');
+          if(ni) ni.value=state.exam.name||''; if(di) di.value=state.exam.date||'';
+          try{ save(); }catch(e){}
+          try{ renderCountdown(); }catch(e){}
+          cmRenderExams();
+        };
+        window.cmAddExam=function(){
+          cmEnsureExams();
+          cmSyncActiveFromInputs();
+          var ne={id:'ex'+Date.now()+Math.floor(Math.random()*1000), name:'', date:'', active:true};
+          state.exams.forEach(function(x){x.active=false;});
+          state.exams.push(ne);
+          state.exam={name:'', date:''};
+          var ni=document.getElementById('e-name'), di=document.getElementById('e-date');
+          if(ni){ ni.value=''; ni.focus(); } if(di) di.value='';
+          try{ save(); }catch(e){}
+          try{ renderCountdown(); }catch(e){}
+          cmRenderExams();
+        };
+        window.cmRemoveExam=function(id){
+          cmEnsureExams();
+          var wasActive=state.exams.some(function(x){return x.id===id && x.active;});
+          state.exams=state.exams.filter(function(x){return x.id!==id;});
+          if(wasActive){
+            if(state.exams.length){ state.exams[0].active=true; state.exam={name:state.exams[0].name||'', date:state.exams[0].date||''}; }
+            else { state.exam={name:'', date:''}; }
+            var ni=document.getElementById('e-name'), di=document.getElementById('e-date');
+            if(ni) ni.value=state.exam.name||''; if(di) di.value=state.exam.date||'';
+          }
+          try{ save(); }catch(e){}
+          try{ renderCountdown(); }catch(e){}
+          cmRenderExams();
+        };
+
+        (function(){
+          function _bindExams(){
+            if(typeof window.renderAjustes==='function' && !window.renderAjustes.__cmPatched){
+              var _orig=window.renderAjustes;
+              window.renderAjustes=function(){ var r=_orig.apply(this,arguments); try{ cmRenderExams(); }catch(e){} return r; };
+              window.renderAjustes.__cmPatched=true;
+            }
+            var b=document.getElementById('exam-add-btn');
+            if(b && !b.__cmBound){ b.__cmBound=true; b.addEventListener('click', function(){ try{ cmAddExam(); }catch(e){} }); }
+          }
+          if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _bindExams); }
+          _bindExams();
+          setTimeout(_bindExams, 1500);
+        })();
+
+        function renderCountdown(){
   var card=document.getElementById('countdown-card');
   var pill=document.getElementById('exam-pill');
   if(!card) return;
