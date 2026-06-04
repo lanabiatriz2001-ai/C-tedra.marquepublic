@@ -2743,22 +2743,126 @@ function rolloverDay(){
 }
 </script>
 
-<!-- ===== Supabase + Login (Cátedra) ===== -->
-<div id="catedra-auth" style="display:none;position:fixed;inset:0;z-index:9999;background:#0f172a;display:flex;align-items:center;justify-content:center;font-family:inherit;">
-  <div style="background:#fff;border-radius:16px;padding:40px 36px;width:340px;box-shadow:0 20px 60px rgba(0,0,0,.3);">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-      <div style="width:34px;height:34px;border-radius:9px;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;">C</div>
-      <div style="font-size:20px;font-weight:700;color:#0f172a;">Cátedra</div>
-    </div>
-    <p style="color:#64748b;font-size:13px;margin:0 0 22px;">Estudos jurídicos · acesse sua conta</p>
-    <input id="ca-email" type="email" placeholder="seu@email.com" style="width:100%;box-sizing:border-box;padding:11px 12px;margin-bottom:10px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px;">
-    <input id="ca-senha" type="password" placeholder="senha" style="width:100%;box-sizing:border-box;padding:11px 12px;margin-bottom:8px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px;">
-    <input id="ca-nome" type="text" placeholder="seu nome (só no cadastro)" style="width:100%;box-sizing:border-box;padding:11px 12px;margin-bottom:14px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px;display:none;">
-    <button id="ca-btn" style="width:100%;padding:12px;background:#2563eb;color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;">Entrar</button>
-    <p id="ca-msg" style="color:#dc2626;font-size:12px;min-height:16px;margin:10px 0 0;text-align:center;"></p>
-    <p style="text-align:center;font-size:13px;color:#64748b;margin:12px 0 0;">
-      <a id="ca-toggle" href="#" style="color:#2563eb;text-decoration:none;">Não tem conta? Cadastre-se</a>
-    </p>
+<!-- ===== Supabase + Login (Cátedra) · layout novo + sincronização ===== -->
+<style>
+  #catedra-auth{
+    position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;
+    padding:26px;background:
+      radial-gradient(circle at 16% 18%,rgba(12,138,91,.24),transparent 32%),
+      radial-gradient(circle at 82% 8%,rgba(176,132,51,.20),transparent 34%),
+      linear-gradient(135deg,#0e1116 0%,#161b24 54%,#0b0f14 100%);
+    font-family:'Hanken Grotesk',sans-serif;color:#eef0f2;overflow:auto;
+  }
+  #catedra-auth *{box-sizing:border-box;}
+  .ca-auth-shell{width:min(1040px,100%);display:grid;grid-template-columns:1.02fr .98fr;gap:0;border:1px solid rgba(255,255,255,.12);border-radius:28px;overflow:hidden;background:rgba(255,255,255,.07);box-shadow:0 30px 90px rgba(0,0,0,.36);backdrop-filter:blur(18px);}
+  .ca-auth-hero{padding:42px;min-height:620px;background:
+    linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.02)),
+    radial-gradient(circle at 18% 14%,rgba(12,138,91,.30),transparent 36%);
+    display:flex;flex-direction:column;justify-content:space-between;gap:30px;position:relative;overflow:hidden;
+  }
+  .ca-auth-hero:after{content:"";position:absolute;right:-96px;bottom:-120px;width:330px;height:330px;border-radius:50%;border:1px solid rgba(255,255,255,.10);box-shadow:inset 0 0 80px rgba(255,255,255,.04);}
+  .ca-brand-line{display:flex;align-items:center;gap:13px;position:relative;z-index:1;}
+  .ca-brand-mark{width:46px;height:46px;border-radius:15px;background:linear-gradient(145deg,#0c8a5b,#0a7049);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 34px rgba(12,138,91,.35);font-family:'Newsreader',serif;font-size:25px;font-weight:700;color:#fff;}
+  .ca-brand-name{font-family:'Newsreader',serif;font-size:26px;font-weight:600;letter-spacing:-.01em;color:#fff;line-height:1;}
+  .ca-brand-sub{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(238,240,242,.48);margin-top:4px;font-weight:700;}
+  .ca-hero-copy{position:relative;z-index:1;max-width:440px;}
+  .ca-kicker{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:800;color:#bfe6d3;background:rgba(12,138,91,.14);border:1px solid rgba(191,230,211,.20);padding:7px 10px;border-radius:999px;margin-bottom:18px;}
+  .ca-hero-copy h2{font-family:'Newsreader',serif;font-size:clamp(34px,5vw,54px);font-weight:600;line-height:.96;letter-spacing:-.04em;margin:0 0 14px;color:#fff;}
+  .ca-hero-copy p{font-size:14px;line-height:1.62;color:rgba(238,240,242,.68);margin:0;}
+  .ca-proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;position:relative;z-index:1;}
+  .ca-proof{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.06);border-radius:16px;padding:14px 13px;}
+  .ca-proof b{display:block;font-family:'Newsreader',serif;font-size:24px;font-weight:600;color:#fff;line-height:1;}
+  .ca-proof span{display:block;color:rgba(238,240,242,.52);font-size:11.5px;margin-top:6px;line-height:1.25;}
+  .ca-auth-card{background:#fbfbfa;color:#16191e;padding:36px;display:flex;flex-direction:column;justify-content:center;}
+  .ca-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:22px;}
+  .ca-card-head h3{font-family:'Newsreader',serif;font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 4px;color:#101418;}
+  .ca-card-head p{font-size:13px;color:#6a7079;line-height:1.45;margin:0;}
+  .ca-sync-pill{flex-shrink:0;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#0a7049;background:#e6f5ee;border:1px solid #bfe6d3;border-radius:999px;padding:7px 10px;white-space:nowrap;}
+  .ca-tabs{display:grid;grid-template-columns:1fr 1fr;margin-bottom:16px;background:#eef0ed;border:1px solid #e1e3de;border-radius:14px;padding:4px;}
+  .ca-tab{border:0;background:transparent;color:#6a7079;border-radius:10px;padding:10px 12px;font-size:13px;font-weight:800;cursor:pointer;}
+  .ca-tab.active{background:#fff;color:#11151b;box-shadow:0 1px 3px rgba(16,22,30,.08);}
+  .ca-field{position:relative;margin-bottom:11px;}
+  .ca-field label{display:block;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#6a7079;margin:0 0 6px 2px;}
+  .ca-field input{width:100%;border:1px solid #deded6;background:#fff;color:#16191e;border-radius:13px;padding:13px 14px;font:inherit;font-size:14px;transition:.16s;}
+  .ca-field input:focus{outline:none;border-color:#0c8a5b;box-shadow:0 0 0 4px rgba(12,138,91,.12);}
+  .ca-primary{width:100%;border:0;background:#0c8a5b;color:#fff;border-radius:13px;padding:13px 16px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 8px 20px rgba(12,138,91,.23);}
+  .ca-primary:hover{background:#0a7049;transform:translateY(-1px);}
+  .ca-secondary-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px;}
+  .ca-light-btn{border:1px solid #deded6;background:#fff;color:#4b5563;border-radius:13px;padding:11px 12px;font-size:12.5px;font-weight:800;cursor:pointer;}
+  .ca-light-btn:hover{border-color:#9aa0a8;color:#16191e;background:#f6f7f5;}
+  #ca-msg{min-height:18px;margin:11px 0 0;text-align:center;font-size:12px;color:#c0392f;line-height:1.35;}
+  #ca-msg.ok{color:#0a7049;}
+  .ca-divider{display:flex;align-items:center;gap:12px;margin:22px 0 15px;color:#8a929c;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;}
+  .ca-divider:before,.ca-divider:after{content:"";height:1px;background:#e4e5df;flex:1;}
+  .ca-sync-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .ca-sync-option{border:1px solid #deded6;background:#fff;border-radius:14px;padding:11px 11px;text-align:left;display:flex;align-items:center;gap:10px;color:#16191e;cursor:pointer;min-height:66px;}
+  .ca-sync-option:hover{border-color:#9aa0a8;background:#f6f7f5;}
+  .ca-sync-option.active{border-color:#0c8a5b;box-shadow:0 0 0 3px rgba(12,138,91,.12);background:#f7fcfa;}
+  .ca-cloud-ico{width:32px;height:32px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:#eef0ed;color:#11151b;flex-shrink:0;font-size:16px;font-weight:900;}
+  .ca-sync-option.active .ca-cloud-ico{background:#0c8a5b;color:#fff;}
+  .ca-sync-main{font-size:13px;font-weight:800;line-height:1.1;}
+  .ca-sync-sub{font-size:11.3px;color:#6a7079;margin-top:3px;line-height:1.25;}
+  .ca-sync-note{font-size:12px;color:#6a7079;line-height:1.45;background:#f1f5f3;border:1px solid #e1e5df;border-radius:13px;padding:11px 12px;margin-top:11px;}
+  .ca-sync-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px;}
+  @media(max-width:900px){.ca-auth-shell{grid-template-columns:1fr;}.ca-auth-hero{min-height:auto;padding:30px;}.ca-proof-grid{grid-template-columns:1fr 1fr 1fr;}.ca-auth-card{padding:30px;}}
+  @media(max-width:560px){#catedra-auth{padding:14px;align-items:flex-start}.ca-auth-shell{border-radius:22px}.ca-auth-hero{padding:24px}.ca-auth-card{padding:24px}.ca-proof-grid,.ca-sync-grid,.ca-secondary-row,.ca-sync-actions{grid-template-columns:1fr}.ca-card-head{display:block}.ca-sync-pill{display:inline-flex;margin-top:12px}.ca-hero-copy h2{font-size:34px}}
+</style>
+
+<div id="catedra-auth" aria-hidden="true">
+  <div class="ca-auth-shell">
+    <section class="ca-auth-hero">
+      <div class="ca-brand-line">
+        <div class="ca-brand-mark">C</div>
+        <div><div class="ca-brand-name">Cátedra</div><div class="ca-brand-sub">Estudos Jurídicos</div></div>
+      </div>
+      <div class="ca-hero-copy">
+        <div class="ca-kicker">Painel privado de estudos</div>
+        <h2>Seu ciclo, revisões e progresso em um só lugar.</h2>
+        <p>Entre para carregar seus dados salvos na nuvem ou continue localmente com backup por arquivo. Ideal para alternar entre notebook, tablet e celular sem perder o histórico.</p>
+      </div>
+      <div class="ca-proof-grid">
+        <div class="ca-proof"><b>Cloud</b><span>Sincronização com Supabase</span></div>
+        <div class="ca-proof"><b>JSON</b><span>Backup para iCloud Drive</span></div>
+        <div class="ca-proof"><b>Offline</b><span>Uso local no dispositivo</span></div>
+      </div>
+    </section>
+
+    <section class="ca-auth-card">
+      <div class="ca-card-head">
+        <div><h3 id="ca-title">Entrar</h3><p id="ca-subtitle">Acesse sua conta Cátedra para sincronização automática.</p></div>
+        <div class="ca-sync-pill" id="ca-provider-label">Supabase Cloud</div>
+      </div>
+
+      <div class="ca-tabs" role="tablist" aria-label="Modo de acesso">
+        <button type="button" class="ca-tab active" id="ca-login-tab">Entrar</button>
+        <button type="button" class="ca-tab" id="ca-register-tab">Cadastrar</button>
+      </div>
+
+      <div class="ca-field"><label for="ca-email">E-mail</label><input id="ca-email" type="email" autocomplete="email" placeholder="seu@email.com"></div>
+      <div class="ca-field"><label for="ca-senha">Senha</label><input id="ca-senha" type="password" autocomplete="current-password" placeholder="sua senha"></div>
+      <div class="ca-field" id="ca-name-wrap" style="display:none;"><label for="ca-nome">Nome</label><input id="ca-nome" type="text" autocomplete="name" placeholder="seu nome"></div>
+
+      <button id="ca-btn" class="ca-primary" type="button">Entrar e sincronizar</button>
+      <div class="ca-secondary-row">
+        <button id="ca-offline-btn" class="ca-light-btn" type="button">Continuar local</button>
+        <button id="ca-clear-local" class="ca-light-btn" type="button">Voltar ao login</button>
+      </div>
+      <p id="ca-msg"></p>
+
+      <div class="ca-divider">Sincronização</div>
+      <div class="ca-sync-grid" id="ca-sync-grid">
+        <button class="ca-sync-option active" type="button" data-provider="supabase"><span class="ca-cloud-ico">S</span><span><span class="ca-sync-main">Supabase</span><span class="ca-sync-sub">automática com login</span></span></button>
+        <button class="ca-sync-option" type="button" data-provider="icloud"><span class="ca-cloud-ico">☁</span><span><span class="ca-sync-main">iCloud Drive</span><span class="ca-sync-sub">backup JSON manual</span></span></button>
+        <button class="ca-sync-option" type="button" data-provider="gdrive"><span class="ca-cloud-ico">G</span><span><span class="ca-sync-main">Google Drive</span><span class="ca-sync-sub">preparado para API</span></span></button>
+        <button class="ca-sync-option" type="button" data-provider="onedrive"><span class="ca-cloud-ico">1D</span><span><span class="ca-sync-main">OneDrive</span><span class="ca-sync-sub">preparado para API</span></span></button>
+      </div>
+      <div class="ca-sync-note" id="ca-sync-note">Supabase é a sincronização automática já conectada ao login. iCloud Drive funciona como backup: exporte o JSON e salve na pasta iCloud Drive.</div>
+      <div class="ca-sync-actions">
+        <button id="ca-export-cloud" class="ca-light-btn" type="button">Exportar backup</button>
+        <button id="ca-import-cloud" class="ca-light-btn" type="button">Importar backup</button>
+      </div>
+      <input id="ca-sync-file" type="file" accept="application/json,.json" style="display:none;">
+    </section>
   </div>
 </div>
 
@@ -2772,50 +2876,163 @@ function rolloverDay(){
         persistSession: true,
         autoRefreshToken: true,
         storageKey: 'sb-glzgqlxfvsfivyydfsbz-auth-token',
-        lock: async (name, acquireTimeout, fn) => await fn()
+        lock: async (_name, _acquireTimeout, fn) => await fn()
       }
     }
   );
   window.sb = supabase;
-  let modoCadastro = false;
-  const $ = id => document.getElementById(id);
-  const authBox = $('catedra-auth');
-  $('ca-toggle').onclick = (e) => {
-    e.preventDefault();
-    modoCadastro = !modoCadastro;
-    $('ca-nome').style.display = modoCadastro ? 'block' : 'none';
-    $('ca-btn').textContent = modoCadastro ? 'Cadastrar' : 'Entrar';
-    $('ca-toggle').textContent = modoCadastro ? 'Já tem conta? Entrar' : 'Não tem conta? Cadastre-se';
-    $('ca-msg').textContent = '';
+
+  const q = id => document.getElementById(id);
+  const authBox = q('catedra-auth');
+  const AUTH_MODE_KEY = 'catedra:auth-mode';
+  const PROVIDER_KEY = 'catedra:sync-provider';
+  const STATE_KEY = 'catedra:state';
+  const providers = {
+    supabase: { label:'Supabase Cloud', note:'Supabase é a sincronização automática já conectada ao login. Ao entrar, seus dados são carregados da tabela app_state e salvos novamente quando houver alterações.' },
+    icloud: { label:'iCloud Drive', note:'iCloud Drive, em HTML puro, não permite sincronização automática sem CloudKit/back-end. Use Exportar backup e salve o arquivo JSON na pasta iCloud Drive; depois importe em outro dispositivo.' },
+    gdrive: { label:'Google Drive', note:'Google Drive exige OAuth e integração com API própria. A opção visual está preparada; por enquanto use exportação/importação JSON ou mantenha Supabase para sync automático.' },
+    onedrive: { label:'OneDrive', note:'OneDrive exige OAuth e Microsoft Graph. A opção visual está preparada; por enquanto use exportação/importação JSON ou mantenha Supabase para sync automático.' }
   };
-  $('ca-btn').onclick = async () => {
-    const email = $('ca-email').value.trim();
-    const senha = $('ca-senha').value;
-    $('ca-msg').textContent = '';
-    if (!email || !senha) { $('ca-msg').textContent = 'Preencha e-mail e senha.'; return; }
-    if (modoCadastro) {
-      const { error } = await supabase.auth.signUp({
-        email, password: senha, options: { data: { nome: $('ca-nome').value.trim() } }
-      });
-      $('ca-msg').textContent = error ? error.message : 'Conta criada! Confira seu e-mail e depois entre.';
-    } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
-      if (error) $('ca-msg').textContent = error.message;
+  let modoCadastro = false;
+
+  function msg(text, ok=false){
+    const el=q('ca-msg');
+    el.textContent = text || '';
+    el.classList.toggle('ok', !!ok);
+  }
+  function provider(){
+    const p = localStorage.getItem(PROVIDER_KEY) || 'supabase';
+    return providers[p] ? p : 'supabase';
+  }
+  function setProvider(p){
+    if(!providers[p]) p = 'supabase';
+    localStorage.setItem(PROVIDER_KEY, p);
+    q('ca-provider-label').textContent = providers[p].label;
+    q('ca-sync-note').textContent = providers[p].note;
+    document.querySelectorAll('.ca-sync-option').forEach(btn => btn.classList.toggle('active', btn.dataset.provider === p));
+    q('ca-btn').textContent = modoCadastro ? 'Cadastrar conta' : (p === 'supabase' ? 'Entrar e sincronizar' : 'Entrar');
+  }
+  function setMode(isRegister){
+    modoCadastro = !!isRegister;
+    q('ca-login-tab').classList.toggle('active', !modoCadastro);
+    q('ca-register-tab').classList.toggle('active', modoCadastro);
+    q('ca-name-wrap').style.display = modoCadastro ? 'block' : 'none';
+    q('ca-title').textContent = modoCadastro ? 'Criar conta' : 'Entrar';
+    q('ca-subtitle').textContent = modoCadastro ? 'Cadastre-se para salvar seus estudos na nuvem.' : 'Acesse sua conta Cátedra para sincronização automática.';
+    q('ca-btn').textContent = modoCadastro ? 'Cadastrar conta' : (provider() === 'supabase' ? 'Entrar e sincronizar' : 'Entrar');
+    msg('');
+  }
+  function hideAuth(){
+    authBox.style.display = 'none';
+    authBox.setAttribute('aria-hidden', 'true');
+  }
+  function showAuth(){
+    authBox.style.display = 'flex';
+    authBox.setAttribute('aria-hidden', 'false');
+  }
+  function localMode(){ return localStorage.getItem(AUTH_MODE_KEY) === 'local'; }
+  function filenameFor(p){ return 'catedra-backup-' + p + '-' + new Date().toISOString().slice(0,10) + '.json'; }
+  function exportBackup(){
+    const p = provider();
+    const raw = localStorage.getItem(STATE_KEY) || '{}';
+    let parsed = {};
+    try{ parsed = JSON.parse(raw); }catch(_e){ parsed = {}; }
+    const payload = {
+      app: 'Catedra',
+      version: 1,
+      provider: p,
+      exportedAt: new Date().toISOString(),
+      state: parsed
+    };
+    const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filenameFor(p);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    msg(p === 'icloud' ? 'Backup gerado. Salve o arquivo na pasta iCloud Drive.' : 'Backup JSON exportado.', true);
+  }
+  function importBackupFile(file){
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const json = JSON.parse(String(reader.result || '{}'));
+        const incoming = json.state || json;
+        localStorage.setItem(STATE_KEY, JSON.stringify(incoming));
+        msg('Backup importado. Recarregando a plataforma...', true);
+        setTimeout(() => location.reload(), 600);
+      }catch(_e){ msg('Arquivo inválido. Importe um JSON exportado pelo Cátedra.'); }
+    };
+    reader.readAsText(file);
+  }
+
+  q('ca-login-tab').onclick = () => setMode(false);
+  q('ca-register-tab').onclick = () => setMode(true);
+  document.querySelectorAll('.ca-sync-option').forEach(btn => btn.onclick = () => setProvider(btn.dataset.provider));
+  q('ca-export-cloud').onclick = exportBackup;
+  q('ca-import-cloud').onclick = () => q('ca-sync-file').click();
+  q('ca-sync-file').onchange = e => importBackupFile(e.target.files && e.target.files[0]);
+  q('ca-clear-local').onclick = () => { localStorage.removeItem(AUTH_MODE_KEY); showAuth(); msg('Modo local desativado. Entre com sua conta para sincronizar.', true); };
+  q('ca-offline-btn').onclick = () => {
+    localStorage.setItem(AUTH_MODE_KEY, 'local');
+    hideAuth();
+    if(q('logout-btn')) q('logout-btn').style.display = '';
+    msg('');
+  };
+
+  q('ca-btn').onclick = async () => {
+    const email = q('ca-email').value.trim();
+    const senha = q('ca-senha').value;
+    msg('');
+    if (!email || !senha) { msg('Preencha e-mail e senha.'); return; }
+    q('ca-btn').disabled = true;
+    try{
+      if (modoCadastro) {
+        const { error } = await supabase.auth.signUp({
+          email, password: senha, options: { data: { nome: q('ca-nome').value.trim() } }
+        });
+        msg(error ? error.message : 'Conta criada. Confira seu e-mail e depois entre.', !error);
+      } else {
+        localStorage.removeItem(AUTH_MODE_KEY);
+        const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+        if (error) msg(error.message);
+      }
+    } finally {
+      q('ca-btn').disabled = false;
     }
   };
+
   supabase.auth.onAuthStateChange(async (_e, session) => {
     if (session) {
-      authBox.style.display = 'none';
-      $('logout-btn').style.display = '';
-      await window.catedraLoadFromCloud();
+      hideAuth();
+      if(q('logout-btn')) q('logout-btn').style.display = '';
+      if (provider() === 'supabase' && typeof window.catedraLoadFromCloud === 'function') await window.catedraLoadFromCloud();
+    } else if (localMode()) {
+      hideAuth();
+      if(q('logout-btn')) q('logout-btn').style.display = '';
     } else {
-      authBox.style.display = 'flex';
-      $('logout-btn').style.display = 'none';
+      showAuth();
+      if(q('logout-btn')) q('logout-btn').style.display = 'none';
     }
   });
-  $('logout-btn').onclick = async () => {
-    await supabase.auth.signOut();
-  };
+
+  if(q('logout-btn')){
+    q('logout-btn').onclick = async () => {
+      if(localMode()){
+        localStorage.removeItem(AUTH_MODE_KEY);
+        showAuth();
+        q('logout-btn').style.display = 'none';
+      }else{
+        await supabase.auth.signOut();
+      }
+    };
+  }
+  setMode(false);
+  setProvider(provider());
 </script>
 
 
