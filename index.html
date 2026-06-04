@@ -2913,7 +2913,42 @@ function rolloverDay(){
   setInterval(marcarVazios, 1500);
 })();
 </script>
-</body>
+<script>
+/* === FIX UX: guias (abas) por disciplina no Edital === */
+(function(){
+  var DISCS = ["Direito Constitucional","Direito Administrativo","Direito Civil","Processo Civil","Direito Penal","Processo Penal","Direito Tributário","Direito Eleitoral","Direito Ambiental","Direito do Consumidor","Direito Financeiro","Direito Agrário","Direito Empresarial","Direito da Criança e do Adolescente","Direitos Humanos"];
+
+  function abbrev(name){
+    if(name.indexOf("Direitos Humanos")===0) return "Dir. Humanos";
+    return name.replace(/^Direito\s+/,"D. ").replace(/^Processo\s+/,"Proc. ");
+  }
+
+  function build(){
+    var list = document.getElementById("edital-list");
+    if(!list || list.dataset.tabsReady === "1") return;
+    var cards = Array.prototype.slice.call(list.children);
+    if(cards.length < 2) return;
+
+    // monta a barra de abas
+    var bar = document.createElement("div");
+    bar.className = "edital-tabs";
+    bar.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;";
+
+    function makeTab(label, key){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = label;
+      b.dataset.key = key;
+      b.style.cssText = "font-size:12px;font-weight:600;padding:6px 11px;border-radius:99px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;transition:.15s;";
+      b.addEventListener("click", function(){ select(key); });
+      return b;
+    }
+
+    function discOfCard(card){
+      var txt = (card.textContent||"").trim();
+      for(var i=0;i<DISCS.length;i++){ if(txt.indexOf(DISCS[i])===0) return DISCS[i]; }
+      return null;
+      </body>
 </html>
 
 <script>
