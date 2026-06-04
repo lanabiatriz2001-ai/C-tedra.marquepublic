@@ -571,6 +571,72 @@
   .cal-rep{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--text-2);margin-top:12px;}
   .cal-rep input[type=checkbox]{width:16px;height:16px;accent-color:var(--emerald);}
   .cal-rep input[type=number]{font-family:inherit;font-size:13px;color:var(--text);background:var(--surface-2);border:1px solid var(--border-2);border-radius:7px;padding:5px 7px;}
+
+
+  /* ===== UX: Anki como analisador de retenção + Caderno de Erros acionável ===== */
+  .ux-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-bottom:16px;align-items:stretch;}
+  @media(max-width:880px){.ux-hero{grid-template-columns:1fr;}}
+  .ux-title{font-family:'Newsreader',serif;font-size:clamp(28px,4vw,46px);font-weight:600;line-height:1;letter-spacing:-.03em;margin:6px 0 8px;}
+  .ux-sub{font-size:13.5px;color:var(--text-2);line-height:1.55;max-width:680px;}
+  .ux-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+  .ux-pill{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-radius:999px;padding:6px 10px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);display:inline-flex;align-items:center;gap:6px;}
+  .ux-pill.good{background:var(--emerald-soft);border-color:var(--emerald-ring);color:var(--emerald-d);}
+  .ux-pill.warn{background:var(--amber-soft);border-color:color-mix(in srgb,var(--amber) 35%,transparent);color:var(--amber);}
+  .ux-pill.bad{background:var(--red-soft);border-color:color-mix(in srgb,var(--red) 30%,transparent);color:var(--red);}
+  .ux-panel{background:linear-gradient(135deg,var(--surface),var(--surface-2));border:1px solid var(--border);border-radius:var(--r);padding:22px;box-shadow:var(--sh-sm);}
+  .ux-panel.dark{background:radial-gradient(circle at 10% 0%,color-mix(in srgb,var(--emerald) 20%,transparent),transparent 42%),var(--ink);color:#fff;border-color:transparent;}
+  .ux-panel.dark .ux-sub,.ux-panel.dark .hint{color:rgba(255,255,255,.62);}
+  .retention-score{font-family:'Newsreader',serif;font-size:clamp(62px,10vw,96px);font-weight:600;line-height:.95;letter-spacing:-.05em;}
+  .retention-score small{font-size:.42em;font-weight:500;opacity:.8;}
+  .retention-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px;}
+  @media(max-width:560px){.retention-meta{grid-template-columns:1fr;}}
+  .retention-meta .mini{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:11px 12px;}
+  .retention-meta .mini b{font-size:18px;font-family:'Newsreader',serif;font-weight:600;display:block;}
+  .retention-meta .mini span{font-size:11.5px;color:rgba(255,255,255,.58);display:block;margin-top:2px;}
+  .retention-bar{height:12px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:16px;border:1px solid rgba(255,255,255,.10);}
+  .retention-bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--red),var(--amber),var(--emerald));transition:width .5s cubic-bezier(.3,.8,.3,1);}
+  .ux-form-card .field input,.ux-form-card .field select,.ux-form-card .field textarea{font-size:15px;}
+  .ux-form-card textarea{min-height:78px;}
+  .metric-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;margin-top:16px;}
+  @media(max-width:760px){.metric-strip{grid-template-columns:repeat(2,1fr);}}
+  .metric-strip .m{background:var(--surface);padding:14px 15px;}
+  .metric-strip .m b{display:block;font-family:'Newsreader',serif;font-size:24px;font-weight:600;line-height:1;}
+  .metric-strip .m span{display:block;font-size:11.5px;color:var(--text-3);margin-top:5px;}
+  .insight-list{display:grid;gap:10px;}
+  .insight{border:1px solid var(--border);background:var(--surface-2);border-radius:var(--r-sm);padding:13px 14px;display:flex;gap:11px;align-items:flex-start;}
+  .insight .dot{width:10px;height:10px;border-radius:50%;background:var(--emerald);margin-top:5px;flex-shrink:0;}
+  .insight.warn .dot{background:var(--amber);}.insight.bad .dot{background:var(--red);}.insight.info .dot{background:var(--purple);}
+  .insight b{font-size:13.5px;display:block;margin-bottom:2px;}
+  .insight p{font-size:12.5px;color:var(--text-2);line-height:1.5;margin:0;}
+  .compact-table .htable td,.compact-table .htable th{padding:10px 11px;}
+  .ux-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .ux-toolbar input,.ux-toolbar select{font-family:inherit;font-size:12.5px;color:var(--text);background:var(--surface-2);border:1px solid var(--border-2);border-radius:9px;padding:8px 10px;}
+  .ux-toolbar input{min-width:220px;}
+  @media(max-width:560px){.ux-toolbar{width:100%;}.ux-toolbar input,.ux-toolbar select{width:100%;min-width:0;}}
+  .error-layout{display:grid;grid-template-columns:.85fr 1.15fr;gap:16px;align-items:start;}
+  @media(max-width:980px){.error-layout{grid-template-columns:1fr;}}
+  .error-capture{position:sticky;top:92px;}
+  @media(max-width:980px){.error-capture{position:static;}}
+  .error-list{display:grid;gap:10px;}
+  .err-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:15px 16px;box-shadow:var(--sh-sm);transition:all .16s;position:relative;overflow:hidden;}
+  .err-card:hover{border-color:var(--border-2);box-shadow:var(--sh-md);transform:translateY(-1px);}
+  .err-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--amber);}
+  .err-card.resolvido{opacity:.68;}.err-card.resolvido::before{background:var(--emerald);} .err-card.revisar::before{background:var(--purple);} .err-card.pendente::before{background:var(--amber);}
+  .err-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px;}
+  .err-title{font-size:14.5px;font-weight:700;letter-spacing:-.01em;}
+  .err-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;}
+  .err-note{font-size:13px;color:var(--text-2);line-height:1.5;margin:9px 0 0;}
+  .err-fix{font-size:12.5px;line-height:1.5;margin-top:10px;padding:10px 11px;border:1px solid var(--border);background:var(--surface-2);border-radius:10px;color:var(--text-2);}
+  .err-fix b{color:var(--text);}
+  .err-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;}
+  .err-actions button{font-size:12px;padding:7px 10px;border-radius:9px;}
+  .err-cause{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-3);}
+  .status-chip{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;border-radius:999px;padding:4px 9px;background:var(--amber-soft);color:var(--amber);white-space:nowrap;}
+  .status-chip.revisar{background:var(--purple-soft);color:var(--purple);}
+  .status-chip.resolvido{background:var(--emerald-soft);color:var(--emerald-d);}
+  .status-chip.pendente{background:var(--amber-soft);color:var(--amber);}
+  .empty-state{border:1px dashed var(--border-2);border-radius:var(--r-sm);padding:28px;text-align:center;color:var(--text-3);font-size:13px;background:var(--surface-2);}
+
 </style>
 </head>
 <body>
@@ -595,7 +661,7 @@
     <div class="nav-label">Desempenho</div>
     <button class="nav-item" data-view="revisoes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v4h-4" stroke-linecap="round" stroke-linejoin="round"/></svg>Revisões<span class="nav-badge" id="nav-rev" style="display:none">0</span></button>
     <button class="nav-item" data-view="simulados"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 4h6a1 1 0 0 1 1 1v1h2v15H6V6h2V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 4h6v3H9z" stroke-linejoin="round"/><path d="M9 12l1.5 1.5L13 11M9 17h6" stroke-linecap="round" stroke-linejoin="round"/></svg>Simulados</button>
-    <button class="nav-item" data-view="anki"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7l9-4 9 4-9 4-9-4zM3 12l9 4 9-4M3 17l9 4 9-4" stroke-linejoin="round"/></svg>Anki</button>
+    <button class="nav-item" data-view="anki"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7l9-4 9 4-9 4-9-4zM3 12l9 4 9-4M3 17l9 4 9-4" stroke-linejoin="round"/></svg>Anki · Retenção</button>
     <button class="nav-item" data-view="erros"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2h12v20l-6-3-6 3z" stroke-linejoin="round"/><path d="M12 7v4M12 14h.01" stroke-linecap="round"/></svg>Caderno de Erros<span class="nav-badge" id="nav-erros" style="display:none;background:var(--red)">0</span></button>
     <button class="nav-item" data-view="conquistas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 4h10v4a5 5 0 0 1-10 0V4ZM5 4H3v2a3 3 0 0 0 3 3M19 4h2v2a3 3 0 0 1-3 3M9 17h6M8 21h8M12 13v4" stroke-linecap="round" stroke-linejoin="round"/></svg>Conquistas</button>
     <button class="nav-item" data-view="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-linecap="round"/></svg>Estatísticas</button>
@@ -849,34 +915,55 @@
 
   <!-- ===== ANKI ===== -->
   <div class="view" id="view-anki">
-    <div class="kpis" id="anki-kpis"></div>
-    <div class="grid g-hero" style="align-items:start;">
-      <div class="card">
-        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7l9-4 9 4-9 4-9-4zM3 12l9 4 9-4M3 17l9 4 9-4" stroke-linejoin="round"/></svg></span>Relatório do dia (Anki)</h3></div>
+    <div class="ux-hero">
+      <div class="ux-panel dark" id="anki-signal">
+        <span class="ux-pill">Anki · analisador de retenção</span>
+        <div class="ux-title">Retenção, não produção de cartões.</div>
+        <p class="ux-sub">Use esta tela para medir se o Anki está fixando conteúdo. O objetivo é detectar queda de retenção cedo, ajustar volume de novos cartões e decidir quando revisar o caderno de erros.</p>
+        <div class="retention-bar"><i style="width:0%"></i></div>
+        <div class="retention-meta">
+          <div class="mini"><b>—</b><span>último registro</span></div>
+          <div class="mini"><b>—</b><span>média 7 dias</span></div>
+          <div class="mini"><b>—</b><span>tendência</span></div>
+        </div>
+      </div>
+      <div class="card ux-form-card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17l6-6 4 4 7-8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Registrar retenção do dia</h3><span class="hint">30 segundos</span></div>
         <div class="form-grid">
           <div class="field"><label>Data</label><input id="a-date" type="date"></div>
+          <div class="field"><label>Retenção verdadeira (%)</label><input id="a-ret" type="number" min="0" max="100" placeholder="88"></div>
           <div class="field"><label>Revisões feitas</label><input id="a-rev" type="number" min="0" placeholder="220"></div>
-          <div class="field"><label>Tempo (min)</label><input id="a-min" type="number" min="0" placeholder="45"></div>
-          <div class="field"><label>Retenção (%)</label><input id="a-ret" type="number" min="0" max="100" placeholder="88"></div>
-          <div class="field"><label>Cartões novos</label><input id="a-new" type="number" min="0" placeholder="20"></div>
-          <div class="field"><label>Maduros (total)</label><input id="a-mat" type="number" min="0" placeholder="1450"></div>
+          <div class="field"><label>Tempo no Anki (min)</label><input id="a-min" type="number" min="0" placeholder="45"></div>
+          <div class="field" style="grid-column:1/-1"><label>Observação rápida</label><input id="a-note" placeholder="ex.: retenção caiu após muitos cartões novos de Tributário"></div>
         </div>
-        <div style="margin-top:15px;"><button class="btn" id="anki-save">Registrar relatório</button></div>
+        <div class="ux-actions"><button class="btn" id="anki-save">Salvar análise</button><span class="ux-pill good">Ideal: 85% a 90%</span><span class="ux-pill warn">Atenção: &lt; 80%</span></div>
       </div>
+    </div>
+
+    <div class="kpis" id="anki-kpis"></div>
+
+    <div class="grid g-2" style="margin-bottom:16px;align-items:start;">
       <div class="card">
-        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17l6-6 4 4 7-8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Retenção ao longo do tempo</h3><span class="hint">% de acerto verdadeiro</span></div>
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17l6-6 4 4 7-8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Curva de retenção</h3><span class="hint">últimos registros</span></div>
         <div id="anki-ret-chart"></div>
       </div>
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-linecap="round"/></svg></span>Carga de revisão</h3><span class="hint">volume diário</span></div>
+        <div id="anki-load-chart"></div>
+      </div>
     </div>
-    <div class="grid g-2" style="margin-top:16px;">
-      <div class="card"><div class="card-h"><h3>Revisões por dia</h3><span class="hint">volume diário</span></div><div id="anki-rev-chart"></div></div>
-      <div class="card"><div class="card-h"><h3>Crescimento de cartões maduros</h3><span class="hint">base consolidada</span></div><div id="anki-mat-chart"></div></div>
+
+    <div class="grid g-2" style="align-items:start;">
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v18M5 10l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Leitura do sistema</h3><span class="hint">próxima decisão</span></div>
+        <div class="insight-list" id="anki-insights"></div>
+      </div>
+      <div class="card compact-table">
+        <div class="card-h"><h3>Histórico de retenção</h3><span class="hint" id="anki-count"></span></div>
+        <div style="overflow-x:auto;"><table class="htable" id="anki-table"></table></div>
+      </div>
     </div>
-    <div class="card" style="margin-top:16px;">
-      <div class="card-h"><h3>Histórico do Anki</h3><span class="hint" id="anki-count"></span></div>
-      <div style="overflow-x:auto;"><table class="htable" id="anki-table"></table></div>
-    </div>
-    <div class="tip"><div class="d"></div><p><b>Onde achar no Anki:</b> abra as <b>Estatísticas</b> (tecla <b>S</b>). "Revisões" e "Tempo" ficam no topo do dia; a <b>retenção verdadeira</b> e o total de <b>cartões maduros</b> aparecem nas seções "Retenção verdadeira" e "Contagem de cartões".</p></div>
+    <div class="tip"><div class="d"></div><p><b>Uso recomendado:</b> registre só o dado que decide conduta: <b>retenção verdadeira</b>. Se ficar abaixo de <b>80%</b>, reduza cartões novos, revise os erros recentes e faça questões do tema antes de aumentar volume.</p></div>
   </div>
 
   <!-- ===== RELATÓRIO ===== -->
@@ -932,20 +1019,42 @@
 
   <!-- ===== CADERNO DE ERROS ===== -->
   <div class="view" id="view-erros">
-    <div class="kpis" id="erros-kpis"></div>
-    <div class="card" style="margin-bottom:16px;">
-      <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2h12v20l-6-3-6 3z" stroke-linejoin="round"/><path d="M12 7v4M12 14h.01" stroke-linecap="round"/></svg></span>Registrar um erro</h3><span class="hint">o que você errou e por quê</span></div>
-      <div class="form-grid">
-        <div class="field"><label>Disciplina</label><select id="er-disc"></select></div>
-        <div class="field"><label>Tópico / conteúdo (opcional)</label><input id="er-topic" placeholder="ex.: Prazos no CPC"></div>
-        <div class="field" style="grid-column:1/-1"><label>O erro / a pegadinha</label><textarea id="er-note" rows="3" placeholder="ex.: Confundi prazo de contestação (15 dias úteis) com o de embargos. Reler art. 335 CPC."></textarea></div>
+    <div class="ux-hero">
+      <div class="ux-panel dark">
+        <span class="ux-pill bad">Caderno de erros</span>
+        <div class="ux-title">Transforme erro em próxima ação.</div>
+        <p class="ux-sub">A tela deixa de ser um depósito de anotações e vira um fluxo de recuperação: capturar o erro, classificar a causa, registrar a correção e marcar quando estiver resolvido.</p>
+        <div class="metric-strip" id="erros-kpis" style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.12);"></div>
       </div>
-      <div style="margin-top:14px;"><button class="btn" id="er-add">Registrar erro</button></div>
-      <div class="tip" style="margin-top:14px;"><div class="d"></div><p><b>Como usar:</b> anote todo erro de questão ou pegadinha de prova. Antes de cada simulado, releia este caderno filtrando pela disciplina. É a forma mais rápida de parar de errar a mesma coisa.</p></div>
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Ritual antes do simulado</h3><span class="hint">3 passos</span></div>
+        <div class="insight-list">
+          <div class="insight bad"><span class="dot"></span><div><b>1. Filtre pendentes</b><p>Revise primeiro os erros ainda não resolvidos.</p></div></div>
+          <div class="insight warn"><span class="dot"></span><div><b>2. Ataque a causa</b><p>Separe erro de conceito, leitura, memória, jurisprudência ou pressa.</p></div></div>
+          <div class="insight info"><span class="dot"></span><div><b>3. Feche com ação</b><p>Crie uma revisão, questão-alvo ou cartão no Anki somente quando fizer sentido.</p></div></div>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <div class="card-h"><h3>Erros registrados</h3><div style="display:flex;gap:10px;align-items:center;"><input id="er-search" placeholder="Pesquisar erro..." style="font-family:inherit;font-size:12.5px;color:var(--text);background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;padding:7px 11px;width:200px;"><select id="er-filter"></select><span class="hint" id="er-count"></span></div></div>
-      <div style="overflow-x:auto;"><table class="htable" id="er-table"></table></div>
+
+    <div class="error-layout">
+      <div class="card ux-form-card error-capture">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2h12v20l-6-3-6 3z" stroke-linejoin="round"/><path d="M12 7v4M12 14h.01" stroke-linecap="round"/></svg></span>Capturar erro</h3><span class="hint">menos fricção</span></div>
+        <div class="form-grid">
+          <div class="field"><label>Disciplina</label><select id="er-disc"></select></div>
+          <div class="field"><label>Status</label><select id="er-status"><option value="pendente">Pendente</option><option value="revisar">Revisar</option><option value="resolvido">Resolvido</option></select></div>
+          <div class="field"><label>Tópico</label><input id="er-topic" placeholder="ex.: decadência tributária"></div>
+          <div class="field"><label>Causa provável</label><select id="er-cause"><option value="conceito">Conceito</option><option value="lei seca">Lei seca</option><option value="jurisprudência">Jurisprudência</option><option value="pegadinha">Pegadinha da banca</option><option value="memória">Memória</option><option value="leitura">Leitura apressada</option><option value="cálculo/prazo">Cálculo ou prazo</option></select></div>
+          <div class="field" style="grid-column:1/-1"><label>O que eu errei</label><textarea id="er-note" rows="3" placeholder="ex.: confundi prescrição com decadência no lançamento por homologação"></textarea></div>
+          <div class="field" style="grid-column:1/-1"><label>Correção objetiva</label><textarea id="er-fix" rows="3" placeholder="ex.: aplicar a regra correta, artigo, súmula ou precedente seguro"></textarea></div>
+          <div class="field" style="grid-column:1/-1"><label>Próxima ação</label><input id="er-action" placeholder="ex.: resolver 10 questões do tema + criar 1 cartão se voltar a errar"></div>
+        </div>
+        <div style="margin-top:14px;"><button class="btn" id="er-add">Salvar erro</button></div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h3>Fila de recuperação</h3><div class="ux-toolbar"><input id="er-search" placeholder="Pesquisar erro, tópico ou correção..."><select id="er-filter"></select><select id="er-status-filter"><option value="">Todos os status</option><option value="pendente">Pendentes</option><option value="revisar">Revisar</option><option value="resolvido">Resolvidos</option></select><span class="hint" id="er-count"></span></div></div>
+        <div class="error-list" id="er-list"></div>
+      </div>
     </div>
   </div>
 
@@ -2067,30 +2176,61 @@ function lineSVG(points,maxY,suffix){
     if(n<=10||i%step===0||i===n-1)g+='<text x="'+x.toFixed(1)+'" y="'+(H-4)+'" font-size="9" fill="#9aa0a8" text-anchor="middle" font-family="Hanken Grotesk">'+fmtDate(p.x)+'</text>';});
   return '<svg class="area-chart" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'+(n>1?'<path d="'+path+'" fill="none" stroke="'+ACCENT+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>':'')+g+'</svg>';
 }
+function retentionStatus(ret){
+  if(!ret)return {label:'Sem dados',cls:'',msg:'Registre a retenção verdadeira do dia para liberar a análise.'};
+  if(ret>=90)return {label:'Excelente',cls:'good',msg:'Retenção alta. Pode manter o volume se a fila estiver sob controle.'};
+  if(ret>=85)return {label:'Zona ideal',cls:'good',msg:'Faixa eficiente: bom equilíbrio entre esforço e fixação.'};
+  if(ret>=80)return {label:'Atenção',cls:'warn',msg:'Ainda aceitável, mas observe se há queda por vários dias.'};
+  return {label:'Risco',cls:'bad',msg:'Retenção baixa. Reduza novos cartões e revise os temas com erro.'};
+}
 function renderAnki(){
   state.anki=state.anki||[];
   const sd=document.getElementById('a-date');if(sd&&!sd.value)sd.value=todayStr();
   const arr=[...state.anki].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);const n=arr.length;
+  const retVals=arr.filter(e=>e.ret>0);
+  const last=retVals.length?retVals[retVals.length-1]:null;
+  const prev=retVals.length>1?retVals[retVals.length-2]:null;
+  const last7=retVals.slice(-7);
+  const retMed=retVals.length?Math.round(retVals.reduce((a,e)=>a+e.ret,0)/retVals.length):0;
+  const ret7=last7.length?Math.round(last7.reduce((a,e)=>a+e.ret,0)/last7.length):0;
+  const lowDays=last7.filter(e=>e.ret<80).length;
   const totalRev=arr.reduce((a,e)=>a+(e.reviews||0),0);
   const totalMin=arr.reduce((a,e)=>a+(e.min||0),0);
-  const retVals=arr.filter(e=>e.ret>0);
-  const retMed=retVals.length?Math.round(retVals.reduce((a,e)=>a+e.ret,0)/retVals.length):0;
+  const trend=last&&prev?(last.ret-prev.ret):0;
+  const st=retentionStatus(last?last.ret:0);
+
   document.getElementById('anki-kpis').innerHTML=
-    kpi(n,'Dias registrados','--emerald','M9 11l3 3 8-8','')+
-    kpi(retMed+'%','Retenção média','--purple','M3 17l6-6 4 4 7-8','')+
-    kpi(totalRev,'Revisões totais','--amber','M21 12a9 9 0 1 1-3-6.7','')+
-    kpi(fmtHrsMin(totalMin),'Tempo no Anki','--red','M12 7v5l3 2','9');
+    kpi(last?(last.ret+'%'):'—','Última retenção','--emerald','M3 17l6-6 4 4 7-8','')+
+    kpi(ret7?(ret7+'%'):'—','Média 7 registros','--purple','M4 20V10M10 20V4M16 20v-7M22 20H2','')+
+    kpi(lowDays,'Dias < 80%','--red','M12 9v4M12 17h.01','')+
+    kpi(totalRev,'Revisões analisadas','--amber','M21 12a9 9 0 1 1-3-6.7','');
+
+  const sig=document.getElementById('anki-signal');
+  if(sig){
+    const lastTxt=last?(last.ret+'<small>%</small>'):'—';
+    const trendTxt=!last||!prev?'—':((trend>0?'+':'')+trend+' p.p.');
+    sig.innerHTML='<span class="ux-pill '+st.cls+'">'+st.label+'</span><div class="retention-score">'+lastTxt+'</div><p class="ux-sub">'+st.msg+'</p><div class="retention-bar"><i style="width:'+(last?Math.max(0,Math.min(100,last.ret)):0)+'%"></i></div><div class="retention-meta"><div class="mini"><b>'+(last?fmtDate(last.date):'—')+'</b><span>último registro</span></div><div class="mini"><b>'+(ret7?ret7+'%':'—')+'</b><span>média recente</span></div><div class="mini"><b>'+trendTxt+'</b><span>vs. registro anterior</span></div></div>';
+  }
+
   document.getElementById('anki-ret-chart').innerHTML=retVals.length?lineSVG(retVals.map(e=>({x:e.date,y:e.ret})),100,'%'):empty();
-  const revPts=arr.map(e=>({x:e.date,y:e.reviews||0}));
-  document.getElementById('anki-rev-chart').innerHTML=arr.length?lineSVG(revPts,Math.max(...revPts.map(p=>p.y),10),''):empty();
-  const matPts=arr.filter(e=>e.maduros>0).map(e=>({x:e.date,y:e.maduros}));
-  document.getElementById('anki-mat-chart').innerHTML=matPts.length?lineSVG(matPts,Math.max(...matPts.map(p=>p.y),10),''):empty();
-  const t=document.getElementById('anki-table');const desc=[...state.anki].sort((a,b)=>b.id-a.id);
-  document.getElementById('anki-count').textContent=n+' registros';
-  if(!n){t.innerHTML='<tr><td><div class="empty">Nenhum relatório do Anki registrado ainda. Lance os números do dia no formulário acima.</div></td></tr>';return;}
-  t.innerHTML='<tr><th>Data</th><th>Revisões</th><th>Tempo</th><th>Retenção</th><th>Novos</th><th>Maduros</th><th></th></tr>'+
-    desc.map(e=>{const col=(e.ret>=90)?'#0c8a5b':(e.ret>=80)?'#c2790c':'#c0392f';
-      return '<tr><td>'+fmtDate(e.date)+'</td><td class="num">'+(e.reviews||0)+'</td><td class="num">'+fmtMin(e.min||0)+'</td><td class="num">'+(e.ret?('<span class="pill-cat" style="background:'+col+'1e;color:'+col+'">'+e.ret+'%</span>'):'—')+'</td><td class="num">'+(e.novos||'—')+'</td><td class="num">'+(e.maduros||'—')+'</td><td><button class="del" data-id="'+e.id+'">excluir</button></td></tr>';}).join('');
+  const loadPts=arr.map(e=>({x:e.date,y:e.reviews||0}));
+  document.getElementById('anki-load-chart').innerHTML=loadPts.length?lineSVG(loadPts,Math.max(...loadPts.map(p=>p.y),10),''):empty();
+
+  const insights=[];
+  if(!n){insights.push(['info','Comece pelo essencial','Registre a retenção verdadeira ao fim do dia. O restante é opcional.']);}
+  else if(last&&last.ret<80){insights.push(['bad','Conduta sugerida','Pausar ou reduzir cartões novos, revisar erros recentes e priorizar questões do tema que derrubou a retenção.']);}
+  else if(last&&last.ret>=85&&last.ret<=90){insights.push(['info','Zona produtiva','Manter o volume atual. A retenção está no intervalo eficiente para estudo de longo prazo.']);}
+  else if(last&&last.ret>90){insights.push(['warn','Possível baixa dificuldade','Retenção muito alta por vários dias pode indicar poucos cartões novos ou cards fáceis demais.']);}
+  if(lowDays>=2)insights.push(['bad','Sinal recorrente','Há '+lowDays+' registros recentes abaixo de 80%. Trate como problema de carga, não de disciplina.']);
+  if(totalMin>0&&totalRev>0){const rpm=Math.round(totalRev/(totalMin/60));insights.push(['info','Ritmo médio','Você fez cerca de '+rpm+' revisões por hora registrada no Anki. Use isso para detectar sessões rápidas demais.']);}
+  if(last&&last.note)insights.push(['info','Última observação',escapeHtml(last.note)]);
+  document.getElementById('anki-insights').innerHTML=insights.map(i=>'<div class="insight '+i[0]+'"><span class="dot"></span><div><b>'+i[1]+'</b><p>'+i[2]+'</p></div></div>').join('');
+
+  const t=document.getElementById('anki-table');const desc=[...state.anki].sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+  document.getElementById('anki-count').textContent=n+' registro(s)';
+  if(!n){t.innerHTML='<tr><td><div class="empty">Nenhum dado de retenção registrado ainda.</div></td></tr>';return;}
+  t.innerHTML='<tr><th>Data</th><th>Retenção</th><th>Status</th><th>Revisões</th><th>Tempo</th><th>Obs.</th><th></th></tr>'+
+    desc.map(e=>{const s=retentionStatus(e.ret||0);return '<tr><td>'+fmtDate(e.date)+'</td><td class="num">'+(e.ret?e.ret+'%':'—')+'</td><td><span class="status-chip '+(s.cls||'pendente')+'">'+s.label+'</span></td><td class="num">'+(e.reviews||'—')+'</td><td class="num">'+((e.min||0)?fmtMin(e.min||0):'—')+'</td><td class="note">'+(e.note?escapeHtml(e.note):'—')+'</td><td><button class="del" data-id="'+e.id+'">excluir</button></td></tr>';}).join('');
   t.querySelectorAll('.del').forEach(b=>b.onclick=()=>{const id=Number(b.dataset.id);state.anki=state.anki.filter(e=>e.id!==id);save();renderAnki();renderHome();});
 }
 document.getElementById('anki-save').onclick=()=>{
@@ -2099,18 +2239,18 @@ document.getElementById('anki-save').onclick=()=>{
   const reviews=parseInt(document.getElementById('a-rev').value)||0;
   const min=parseInt(document.getElementById('a-min').value)||0;
   const ret=parseInt(document.getElementById('a-ret').value)||0;
-  const novos=parseInt(document.getElementById('a-new').value)||0;
-  const maduros=parseInt(document.getElementById('a-mat').value)||0;
-  if(reviews<=0&&min<=0&&ret<=0&&maduros<=0){toast('informe revisões, tempo, retenção ou maduros');return;}
+  const note=(document.getElementById('a-note')?.value||'').trim();
+  if(ret<=0){toast('informe a retenção verdadeira');return;}
+  if(ret>100){toast('retenção deve estar entre 0 e 100');return;}
   state.anki=state.anki.filter(e=>e.date!==date);
-  state.anki.push({id:Date.now(),date,reviews,min,ret,novos,maduros});
+  state.anki.push({id:Date.now(),date,reviews,min,ret,novos:0,maduros:0,note});
   if(date===todayStr()){
     if(!state.studyDays.includes(todayStr()))state.studyDays.push(todayStr());
     const ankiB=listBlocksFor(state.dia).find(b=>/anki/i.test(b.t));
     if(ankiB)dc(state.dia)[ankiB.id]=true;
   }
-  ['a-rev','a-min','a-ret','a-new','a-mat'].forEach(id=>document.getElementById(id).value='');
-  save();renderAnki();renderStreak();renderCycle();renderHome();toast('relatório do Anki registrado ✓');
+  ['a-rev','a-min','a-ret','a-note'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  save();renderAnki();renderStreak();renderCycle();renderHome();toast('retenção registrada ✓');
 };
 document.querySelector('[data-view=anki]').addEventListener('click',renderAnki);
 
@@ -2321,42 +2461,62 @@ function renderRevIntervals(){
 document.getElementById('rev-iv-add').onclick=()=>{const list=getRevIntervals();const last=list.length?list[list.length-1].d:0;state.revIntervals=list.slice();state.revIntervals.push({d:last+7});state.revIntervals.sort((a,b)=>a.d-b.d);save();renderRevIntervals();toast('intervalo adicionado');};
 
 /* ===== caderno de erros ===== */
-function renderErrosBadge(){const n=(state.errors||[]).length;const b=document.getElementById('nav-erros');if(b){b.textContent=n;b.style.display=n>0?'flex':'none';}}
-function renderErros(){
+function renderErrosBadge(){const n=(state.errors||[]).filter(e=>(e.status||'pendente')!=='resolvido').length;const b=document.getElementById('nav-erros');if(b){b.textContent=n;b.style.display=n>0?'flex':'none';}}
+function fillErrorSelects(){
   const ds=document.getElementById('er-disc');
   if(ds&&!ds.dataset.filled){ds.innerHTML='<option value="">Sem disciplina</option>'+DISCIPLINAS.map(d=>'<option>'+escapeHtml(d)+'</option>').join('');ds.dataset.filled='1';}
   const fs=document.getElementById('er-filter');
   if(fs&&!fs.dataset.filled){fs.innerHTML='<option value="">Todas as disciplinas</option>'+DISCIPLINAS.map(d=>'<option>'+escapeHtml(d)+'</option>').join('');fs.dataset.filled='1';fs.onchange=renderErros;}
-  const byDisc={};state.errors.forEach(e=>{if(e.disc)byDisc[e.disc]=(byDisc[e.disc]||0)+1;});
+  const sf=document.getElementById('er-status-filter');if(sf&&!sf.dataset.bound){sf.onchange=renderErros;sf.dataset.bound='1';}
+}
+function errStatusLabel(s){return s==='resolvido'?'Resolvido':(s==='revisar'?'Revisar':'Pendente');}
+function renderErros(){
+  state.errors=state.errors||[];fillErrorSelects();
+  const normalized=state.errors.map(e=>({...e,status:e.status||'pendente',cause:e.cause||'não classificado',fix:e.fix||'',action:e.action||''}));
+  const open=normalized.filter(e=>e.status!=='resolvido').length;
+  const review=normalized.filter(e=>e.status==='revisar').length;
+  const solved=normalized.filter(e=>e.status==='resolvido').length;
+  const byDisc={};normalized.filter(e=>e.status!=='resolvido').forEach(e=>{if(e.disc)byDisc[e.disc]=(byDisc[e.disc]||0)+1;});
   const topDisc=Object.entries(byDisc).sort((a,b)=>b[1]-a[1])[0];
-  const last7=[];for(let i=6;i>=0;i--)last7.push(addDays(todayStr(),-i));
-  const rec=state.errors.filter(e=>last7.includes(e.date)).length;
   document.getElementById('erros-kpis').innerHTML=
-    kpi(state.errors.length,'Erros registrados','--red','M6 2h12v20l-6-3-6 3z','')+
-    kpi(rec,'Nos últimos 7 dias','--amber','M3 12h18','')+
-    kpi(topDisc?topDisc[1]:0,topDisc?('Foco: '+escapeHtml(topDisc[0].split(' ').slice(0,2).join(' '))):'Concentração','--purple','M4 20V10M10 20V4M16 20v-7M22 20H2','')+
-    kpi(Object.keys(byDisc).length,'Disciplinas com erro','--emerald','M4 6h16M4 12h16M4 18h10','');
-  const q=(document.getElementById('er-search').value||'').toLowerCase();
-  const f=fs?fs.value:'';
-  let list=[...state.errors].sort((a,b)=>b.id-a.id);
+    '<div class="m"><b>'+open+'</b><span>pendentes</span></div>'+ 
+    '<div class="m"><b>'+review+'</b><span>para revisar</span></div>'+ 
+    '<div class="m"><b>'+(topDisc?topDisc[1]:0)+'</b><span>'+(topDisc?escapeHtml(topDisc[0].split(' ').slice(0,2).join(' ')):'maior foco')+'</span></div>'+ 
+    '<div class="m"><b>'+solved+'</b><span>resolvidos</span></div>';
+
+  const q=(document.getElementById('er-search')?.value||'').toLowerCase();
+  const f=document.getElementById('er-filter')?.value||'';
+  const st=document.getElementById('er-status-filter')?.value||'';
+  let list=[...normalized].sort((a,b)=>{
+    const wa={pendente:0,revisar:1,resolvido:2};
+    return (wa[a.status]-wa[b.status])||(b.id-a.id);
+  });
   if(f)list=list.filter(e=>e.disc===f);
-  if(q)list=list.filter(e=>(e.note||'').toLowerCase().includes(q)||(e.topic||'').toLowerCase().includes(q)||(e.disc||'').toLowerCase().includes(q));
-  document.getElementById('er-count').textContent=list.length+' erro(s)';
-  const t=document.getElementById('er-table');
-  if(!list.length){t.innerHTML='<tr><td><div class="empty">'+(state.errors.length?'Nenhum erro encontrado com esse filtro.':'Você ainda não registrou erros. Anote os erros das questões para revisá-los antes da prova.')+'</div></td></tr>';return;}
-  t.innerHTML='<tr><th>Data</th><th>Disciplina</th><th>Tópico</th><th>Anotação</th><th></th></tr>'+
-    list.map(e=>{const col=e.disc?colorOf(e.disc):'#9aa0a8';
-      return '<tr><td>'+fmtDate(e.date)+'</td><td>'+(e.disc?'<span class="pill-cat" style="background:'+col+'1e;color:'+col+'">'+escapeHtml(e.disc)+'</span>':'<span style="color:var(--text-3)">—</span>')+'</td><td>'+(e.topic?escapeHtml(e.topic):'—')+'</td><td class="note">'+escapeHtml(e.note)+'</td><td><button class="del" data-id="'+e.id+'">excluir</button></td></tr>';}).join('');
-  t.querySelectorAll('.del').forEach(b=>b.onclick=()=>{const id=Number(b.dataset.id);state.errors=state.errors.filter(x=>x.id!==id);save();renderErros();renderErrosBadge();});
+  if(st)list=list.filter(e=>e.status===st);
+  if(q)list=list.filter(e=>(e.note||'').toLowerCase().includes(q)||(e.topic||'').toLowerCase().includes(q)||(e.disc||'').toLowerCase().includes(q)||(e.fix||'').toLowerCase().includes(q)||(e.action||'').toLowerCase().includes(q)||(e.cause||'').toLowerCase().includes(q));
+  const count=document.getElementById('er-count');if(count)count.textContent=list.length+' item(ns)';
+  const c=document.getElementById('er-list');
+  if(!list.length){c.innerHTML='<div class="empty-state">'+(state.errors.length?'Nenhum erro encontrado com esses filtros.':'Nenhum erro registrado. Capture o próximo erro logo após corrigir uma questão.')+'</div>';return;}
+  c.innerHTML=list.map(e=>{const col=e.disc?colorOf(e.disc):'#9aa0a8';const status=e.status||'pendente';
+    return '<article class="err-card '+status+'" data-id="'+e.id+'"><div class="err-head"><div><div class="err-title">'+(e.topic?escapeHtml(e.topic):'Erro sem tópico')+'</div><div class="err-meta">'+(e.disc?'<span class="pill-cat" style="background:'+col+'1e;color:'+col+'">'+escapeHtml(e.disc)+'</span>':'')+'<span class="err-cause">'+escapeHtml(e.cause||'não classificado')+'</span></div></div><span class="status-chip '+status+'">'+errStatusLabel(status)+'</span></div><p class="err-note">'+escapeHtml(e.note||'Sem descrição.')+'</p>'+(e.fix?'<div class="err-fix"><b>Correção:</b> '+escapeHtml(e.fix)+'</div>':'')+(e.action?'<div class="err-fix"><b>Próxima ação:</b> '+escapeHtml(e.action)+'</div>':'')+'<div class="err-actions"><button class="btn-ghost btn-sm er-mark-review">Revisar</button><button class="btn-ghost btn-sm er-mark-done">Resolver</button>'+(status==='resolvido'?'<button class="btn-ghost btn-sm er-reopen">Reabrir</button>':'')+'<button class="del er-del" style="margin-left:auto;">excluir</button></div></article>';}).join('');
+  c.querySelectorAll('.er-del').forEach(b=>b.onclick=()=>{const id=Number(b.closest('.err-card').dataset.id);state.errors=state.errors.filter(x=>x.id!==id);save();renderErros();renderErrosBadge();});
+  c.querySelectorAll('.er-mark-review').forEach(b=>b.onclick=()=>{const id=Number(b.closest('.err-card').dataset.id);const e=state.errors.find(x=>x.id===id);if(e){e.status='revisar';save();renderErros();renderErrosBadge();}});
+  c.querySelectorAll('.er-mark-done').forEach(b=>b.onclick=()=>{const id=Number(b.closest('.err-card').dataset.id);const e=state.errors.find(x=>x.id===id);if(e){e.status='resolvido';e.resolvedAt=todayStr();save();renderErros();renderErrosBadge();toast('erro resolvido ✓');}});
+  c.querySelectorAll('.er-reopen').forEach(b=>b.onclick=()=>{const id=Number(b.closest('.err-card').dataset.id);const e=state.errors.find(x=>x.id===id);if(e){e.status='pendente';save();renderErros();renderErrosBadge();}});
 }
 document.getElementById('er-add').onclick=()=>{
   const note=document.getElementById('er-note').value.trim();
   if(!note){toast('descreva o erro');return;}
   const disc=document.getElementById('er-disc').value;
   const topic=document.getElementById('er-topic').value.trim();
-  state.errors.push({id:Date.now(),date:todayStr(),disc,topic,note});
-  ['er-note','er-topic'].forEach(id=>document.getElementById(id).value='');
-  save();renderErros();renderErrosBadge();toast('erro registrado ✓');
+  const cause=document.getElementById('er-cause').value;
+  const fix=document.getElementById('er-fix').value.trim();
+  const action=document.getElementById('er-action').value.trim();
+  const status=document.getElementById('er-status').value||'pendente';
+  state.errors.push({id:Date.now(),date:todayStr(),disc,topic,note,cause,fix,action,status});
+  ['er-note','er-topic','er-fix','er-action'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('er-status').value='pendente';
+  save();renderErros();renderErrosBadge();toast('erro salvo ✓');
 };
 document.getElementById('er-search').oninput=renderErros;
 
