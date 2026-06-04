@@ -3208,9 +3208,552 @@ function rolloverDay(){
 })();
 </script>
 
+
+
+<style id="ux-stats-conquistas-v2">
+  .ux-split{display:grid;grid-template-columns:1.08fr .92fr;gap:16px;align-items:stretch;margin-bottom:16px;}
+  .ux-stack{display:flex;flex-direction:column;gap:12px;}
+  .stats-command{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:center;background:linear-gradient(135deg,var(--surface),var(--surface-2));}
+  .stats-score{width:176px;height:176px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;background:conic-gradient(var(--emerald) calc(var(--score,0)*1%), var(--border) 0);box-shadow:inset 0 0 0 1px var(--border);}
+  .stats-score:after{content:"";position:absolute;inset:14px;border-radius:50%;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);}
+  .stats-score-inner{position:relative;z-index:1;text-align:center;}
+  .stats-score-inner b{font-family:'Newsreader',serif;font-size:44px;line-height:1;letter-spacing:-.03em;display:block;}
+  .stats-score-inner span{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;}
+  .stats-control-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 14px;}
+  .stats-period{font-family:inherit;font-size:13px;color:var(--text);background:var(--surface);border:1px solid var(--border-2);border-radius:999px;padding:8px 12px;}
+  .stats-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .stats-summary .mini{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:11px 12px;}
+  .stats-summary .mini b{display:block;font-family:'Newsreader',serif;font-size:22px;line-height:1;}
+  .stats-summary .mini span{display:block;font-size:11.5px;color:var(--text-3);margin-top:4px;}
+  .insight-list{display:flex;flex-direction:column;gap:9px;}
+  .insight{display:flex;gap:11px;align-items:flex-start;background:var(--surface-2);border:1px solid var(--border);border-radius:13px;padding:12px 13px;}
+  .insight .mark{width:25px;height:25px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--emerald-soft);color:var(--emerald-d);font-weight:800;font-size:12px;}
+  .insight.warn .mark{background:var(--amber-soft);color:var(--amber);}
+  .insight.danger .mark{background:var(--red-soft);color:var(--red);}
+  .insight b{display:block;font-size:13.5px;margin-bottom:2px;}
+  .insight span{display:block;font-size:12.2px;color:var(--text-3);line-height:1.4;}
+  .rhythm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(74px,1fr));gap:8px;margin-top:12px;}
+  .rhythm-day{border:1px solid var(--border);background:var(--surface-2);border-radius:12px;padding:9px 8px;min-height:72px;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;}
+  .rhythm-day .bar{height:36px;display:flex;align-items:flex-end;}
+  .rhythm-day .bar i{display:block;width:100%;min-height:3px;border-radius:6px;background:var(--emerald);opacity:.92;}
+  .rhythm-day .d{font-size:11px;color:var(--text-3);font-weight:600;}
+  .rhythm-day .v{font-size:12px;color:var(--text-2);font-weight:700;}
+  .risk-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .risk-card{border:1px solid var(--border);background:var(--surface-2);border-radius:14px;padding:13px 14px;}
+  .risk-card .label{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;}
+  .risk-card .value{font-family:'Newsreader',serif;font-size:28px;font-weight:600;margin-top:4px;line-height:1;}
+  .risk-card .desc{font-size:12px;color:var(--text-3);margin-top:5px;line-height:1.35;}
+  .weak-list{display:flex;flex-direction:column;gap:9px;}
+  .weak-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid var(--border);background:var(--surface-2);border-radius:12px;padding:11px 12px;}
+  .weak-row b{font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .weak-row span{font-size:11.5px;color:var(--text-3);display:block;margin-top:1px;}
+  .weak-row em{font-style:normal;font-size:12px;font-weight:800;color:var(--amber);}
+  .challenge-hero{background:radial-gradient(circle at 12% 0%,var(--emerald-soft),transparent 42%),linear-gradient(135deg,var(--surface),var(--surface-2));margin-bottom:16px;}
+  .challenge-hero-grid{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;}
+  .challenge-title{font-family:'Newsreader',serif;font-size:28px;font-weight:600;letter-spacing:-.02em;margin:7px 0 5px;}
+  .challenge-sub{font-size:13px;color:var(--text-2);line-height:1.55;max-width:680px;}
+  .challenge-next{min-width:260px;border:1px solid var(--emerald-ring);background:var(--emerald-soft);border-radius:16px;padding:14px 15px;}
+  .challenge-next .t{font-size:11px;color:var(--emerald-d);font-weight:800;text-transform:uppercase;letter-spacing:.08em;}
+  .challenge-next .n{font-size:15px;font-weight:800;margin-top:5px;}
+  .challenge-next .d{font-size:12px;color:var(--text-2);margin-top:3px;line-height:1.35;}
+  .challenge-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .challenge-tab{border:1px solid var(--border-2);background:var(--surface);color:var(--text-2);border-radius:999px;padding:8px 12px;font-size:12.5px;font-weight:700;}
+  .challenge-tab.active{background:var(--ink);border-color:var(--ink);color:#fff;}
+  .challenge-card{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--border);background:var(--surface-2);border-radius:16px;padding:15px;position:relative;overflow:hidden;}
+  .challenge-card.done{background:var(--emerald-soft);border-color:var(--emerald-ring);}
+  .challenge-icon{width:43px;height:43px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:color-mix(in srgb,var(--c,var(--emerald)) 14%,transparent);color:var(--c,var(--emerald));font-weight:900;font-size:18px;}
+  .challenge-card.done .challenge-icon{background:var(--emerald);color:#fff;}
+  .challenge-main{flex:1;min-width:0;}
+  .challenge-main .top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:3px;}
+  .challenge-main .cat{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);font-weight:800;}
+  .challenge-main .lvl{font-size:10.5px;color:var(--c,var(--emerald));font-weight:800;background:var(--surface);border:1px solid var(--border);padding:2px 7px;border-radius:999px;}
+  .challenge-main h4{font-size:14.5px;margin:0;font-weight:800;letter-spacing:-.01em;}
+  .challenge-main p{font-size:12.3px;color:var(--text-3);line-height:1.42;margin-top:3px;}
+  .challenge-bar{height:8px;background:var(--surface);border:1px solid var(--border);border-radius:99px;overflow:hidden;margin-top:10px;}
+  .challenge-bar i{display:block;height:100%;background:var(--c,var(--emerald));border-radius:99px;}
+  .challenge-foot{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:8px;font-size:11.5px;color:var(--text-3);}
+  .challenge-foot b{color:var(--text-2);}
+  .quick-grid{display:grid;grid-template-columns:1fr;gap:10px;}
+  @media(max-width:920px){.ux-split,.stats-command,.challenge-hero-grid{grid-template-columns:1fr}.challenge-next{min-width:0}.stats-score{margin:auto}.risk-grid,.stats-summary{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.risk-grid,.stats-summary{grid-template-columns:1fr}.challenge-card{padding:13px}.challenge-title{font-size:23px}}
+</style>
+<script id="ux-stats-conquistas-v2-script">
+(function(){
+  function S(){ try{return state;}catch(e){return window.state||{};} }
+  function q(id){ return document.getElementById(id); }
+  function esc(s){ if(typeof escapeHtml==='function') return escapeHtml(String(s==null?'':s)); return String(s==null?'':s).replace(/[&<>\"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c];}); }
+  function tstr(){ return (typeof todayStr==='function')?todayStr():(new Date().toISOString().slice(0,10)); }
+  function add(ds,n){ return (typeof addDays==='function')?addDays(ds,n):(function(){var d=new Date(ds+'T00:00:00');d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);})(); }
+  function fmtD(ds){ return (typeof fmtDate==='function')?fmtDate(ds):ds.slice(8,10)+'/'+ds.slice(5,7); }
+  function fmtM(m){ if(typeof fmtMin==='function') return fmtMin(m); var h=Math.floor(m/60),r=Math.round(m%60); return h? h+'h'+String(r).padStart(2,'0') : r+'min'; }
+  function saveSafe(){ try{ if(typeof save==='function') save(); }catch(e){} }
+  function colorOfSafe(d){ try{return colorOf(d);}catch(e){return 'var(--emerald)';} }
+  function kpiSafe(v,l,c,path){ if(typeof kpi==='function') return kpi(v,l,c,path||'M4 20V10M10 20V4M16 20v-7M22 20H2',''); return '<div class="kpi"><div class="kv">'+esc(v)+'</div><div class="kl">'+esc(l)+'</div></div>'; }
+  function barSafe(l,v,max,col,disp){ if(typeof bar==='function') return bar(l,v,max,col,disp); var w=max?Math.round(v/max*100):0; return '<div class="barrow"><div class="bl">'+esc(l)+'</div><div class="bt"><i style="width:'+w+'%;background:'+col+'"></i></div><div class="bv">'+esc(disp)+'</div></div>'; }
+  function emptySafe(txt){ return '<div class="empty">'+esc(txt||'Sem dados ainda.')+'</div>'; }
+  function daysBack(n){ var out=[]; for(var i=n-1;i>=0;i--) out.push(add(tstr(),-i)); return out; }
+  function periodValue(){ var el=q('stats-period'); return el?parseInt(el.value,10)||7:7; }
+
+  function ensureStatsLayout(){
+    var v=q('view-stats'); if(!v || v.getAttribute('data-ux-stats')==='1') return;
+    v.setAttribute('data-ux-stats','1');
+    v.innerHTML=''
+      +'<div class="card stats-command">'
+        +'<div class="stats-score" id="stats-score" style="--score:0"><div class="stats-score-inner"><b>0</b><span>score</span></div></div>'
+        +'<div>'
+          +'<span class="ux-pill">Estatisticas de decisao</span>'
+          +'<div class="challenge-title">O que os dados dizem sobre o seu estudo?</div>'
+          +'<p class="challenge-sub">A aba agora cruza tempo, questoes, acerto, revisoes, Anki e caderno de erros para indicar prioridade pratica. O objetivo e reduzir ruído e mostrar a proxima decisao de estudo.</p>'
+          +'<div class="stats-control-row"><select id="stats-period" class="stats-period"><option value="7">Ultimos 7 dias</option><option value="14">Ultimos 14 dias</option><option value="30">Ultimos 30 dias</option><option value="90">Ultimos 90 dias</option></select><span class="hint" id="stats-range">periodo atual</span></div>'
+          +'<div class="stats-summary" id="stats-summary"></div>'
+        +'</div>'
+      +'</div>'
+      +'<div class="kpis" id="stat-kpis"></div>'
+      +'<div class="ux-split">'
+        +'<div class="card"><div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17l6-6 4 4 7-8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Ritmo de estudo</h3><span class="hint">minutos por dia</span></div><div id="stat-area"></div><div id="stats-rhythm"></div></div>'
+        +'<div class="card"><div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v20M5 7h14M5 17h14" stroke-linecap="round"/></svg></span>Plano de acao</h3><span class="hint">prioridade do periodo</span></div><div class="insight-list" id="stats-insights"></div></div>'
+      +'</div>'
+      +'<div class="grid g-2" style="margin-bottom:16px;">'
+        +'<div class="card"><div class="card-h"><h3>Tempo por disciplina</h3><span class="hint">no periodo</span></div><div id="chart-disc"></div></div>'
+        +'<div class="card"><div class="card-h"><h3>Acerto por disciplina</h3><span class="hint">questoes registradas</span></div><div id="chart-acc"></div></div>'
+      +'</div>'
+      +'<div class="grid g-2" style="margin-bottom:16px;">'
+        +'<div class="card"><div class="card-h"><h3>Tempo por categoria</h3><span class="hint">distribuicao real</span></div><div id="chart-cat"></div></div>'
+        +'<div class="card"><div class="card-h"><h3>Riscos de acumulacao</h3><span class="hint">itens que puxam desempenho</span></div><div class="risk-grid" id="stats-recovery"></div></div>'
+      +'</div>'
+      +'<div class="card"><div class="card-h"><h3>Materias que pedem atencao</h3><span class="hint">baixa precisao ou muitos erros</span></div><div class="weak-list" id="stats-weak"></div></div>';
+    var keep=localStorage.getItem('catedra:statsPeriod')||'7';
+    var sel=q('stats-period'); if(sel){sel.value=keep; sel.onchange=function(){localStorage.setItem('catedra:statsPeriod',sel.value); renderStats();};}
+  }
+
+  function computePeriod(days){
+    var st=S(); var dates=daysBack(days);
+    var sess=(st.sessions||[]).filter(function(s){return dates.indexOf(s.date)>=0;});
+    var min=sess.reduce(function(a,s){return a+(+s.min||0);},0);
+    var qn=sess.reduce(function(a,s){return a+(+s.q||0);},0);
+    var cr=sess.reduce(function(a,s){return a+(+s.c||0);},0);
+    var active=dates.filter(function(d){return sess.some(function(s){return s.date===d && (+s.min||0)>0;});}).length;
+    var acc=qn?Math.round(cr/qn*100):0;
+    var goalH=((st.goals&&+st.goals.hoursWk)||0)*(days/7);
+    var goalQ=((st.goals&&+st.goals.questionsWk)||0)*(days/7);
+    var hourPct=goalH?Math.min(100,Math.round((min/60)/goalH*100)):Math.min(100,Math.round((min/60)/(days*1.5)*100));
+    var qPct=goalQ?Math.min(100,Math.round(qn/goalQ*100)):Math.min(100,Math.round(qn/(days*25)*100));
+    var activePct=Math.round(active/days*100);
+    var accPct=qn?Math.min(100,Math.max(0,(acc-45)*2)):0;
+    var score=Math.round(hourPct*.32+qPct*.28+activePct*.20+accPct*.20);
+    return {dates:dates,sess:sess,min:min,qn:qn,cr:cr,active:active,acc:acc,goalH:goalH,goalQ:goalQ,hourPct:hourPct,qPct:qPct,activePct:activePct,score:score};
+  }
+
+  function renderStats(){
+    ensureStatsLayout();
+    var st=S(), days=periodValue(), d=computePeriod(days);
+    var start=d.dates[0], end=d.dates[d.dates.length-1];
+    var scoreEl=q('stats-score'); if(scoreEl){scoreEl.style.setProperty('--score',d.score); scoreEl.innerHTML='<div class="stats-score-inner"><b>'+d.score+'</b><span>score</span></div>';}
+    if(q('stats-range')) q('stats-range').textContent=fmtD(start)+' a '+fmtD(end);
+    var todayActive=(st.sessions||[]).some(function(s){return s.date===tstr() && (+s.min||0)>0;});
+    var qph=d.min?Math.round(d.qn/(d.min/60)):0;
+    if(q('stats-summary')) q('stats-summary').innerHTML=''
+      +'<div class="mini"><b>'+fmtM(d.min)+'</b><span>tempo no periodo</span></div>'
+      +'<div class="mini"><b>'+d.active+'/'+days+'</b><span>dias com estudo</span></div>'
+      +'<div class="mini"><b>'+(d.qn?d.acc+'%':'-')+'</b><span>acerto em questoes</span></div>';
+    if(q('stat-kpis')) q('stat-kpis').innerHTML=''
+      +kpiSafe((d.min/60).toFixed(1)+'h','Horas no periodo','--emerald','M12 7v5l3 2')
+      +kpiSafe(Math.round(d.min/days)+'m','Media diaria','--purple','M4 20V10M10 20V4M16 20v-7M22 20H2')
+      +kpiSafe(d.qn,'Questoes','--amber','M9 11l3 3 8-8')
+      +kpiSafe(qph||'-','Questoes por hora','--red','M4 12h16M12 4v16');
+    if(q('stat-area')) q('stat-area').innerHTML=(typeof areaChart==='function')?areaChart(d.dates):emptySafe();
+    var vals=d.dates.map(function(ds){return d.sess.filter(function(s){return s.date===ds;}).reduce(function(a,s){return a+(+s.min||0);},0);});
+    var mx=Math.max.apply(null,vals.concat([30]));
+    if(q('stats-rhythm')) q('stats-rhythm').innerHTML='<div class="rhythm-grid">'+d.dates.map(function(ds,i){var v=vals[i],h=Math.max(3,Math.round(v/mx*36));return '<div class="rhythm-day"><div class="bar"><i style="height:'+h+'px;opacity:'+(v?'.95':'.18')+'"></i></div><div class="d">'+fmtD(ds).slice(0,5)+'</div><div class="v">'+(v?fmtM(v):'0min')+'</div></div>';}).join('')+'</div>';
+    var byCat={}; d.sess.forEach(function(s){byCat[s.cat]=(byCat[s.cat]||0)+(+s.min||0);});
+    var ca=Object.keys(byCat).map(function(k){return [k,byCat[k]];}).sort(function(a,b){return b[1]-a[1];}); var maxC=Math.max.apply(null,ca.map(function(x){return x[1];}).concat([1]));
+    if(q('chart-cat')) q('chart-cat').innerHTML=ca.length?ca.map(function(c){var lab=(typeof CAT_LABEL!=='undefined'&&CAT_LABEL[c[0]])?CAT_LABEL[c[0]]:c[0];var col=(typeof CAT_COLOR!=='undefined'&&CAT_COLOR[c[0]])?CAT_COLOR[c[0]]:'var(--emerald)';return barSafe(lab,c[1],maxC,col,fmtM(c[1]));}).join(''):emptySafe('Sem categorias registradas neste periodo.');
+    var byDisc={}; d.sess.forEach(function(s){byDisc[s.disc]=(byDisc[s.disc]||0)+(+s.min||0);});
+    var da=Object.keys(byDisc).map(function(k){return [k,byDisc[k]];}).sort(function(a,b){return b[1]-a[1];}); var maxD=Math.max.apply(null,da.map(function(x){return x[1];}).concat([1]));
+    if(q('chart-disc')) q('chart-disc').innerHTML=da.length?da.map(function(x){return barSafe(x[0],x[1],maxD,colorOfSafe(x[0]),fmtM(x[1]));}).join(''):emptySafe('Sem tempo registrado neste periodo.');
+    var accD={}; d.sess.forEach(function(s){if((+s.q||0)>0){if(!accD[s.disc]) accD[s.disc]={q:0,c:0}; accD[s.disc].q+=(+s.q||0); accD[s.disc].c+=(+s.c||0);}});
+    var aa=Object.keys(accD).map(function(k){var v=accD[k];return [k,Math.round(v.c/v.q*100),v.q];}).sort(function(a,b){return a[1]-b[1];});
+    if(q('chart-acc')) q('chart-acc').innerHTML=aa.length?aa.map(function(x){var col=x[1]>=75?'#0c8a5b':x[1]>=60?'#c2790c':'#c0392f';return barSafe(x[0],x[1],100,col,x[1]+'%');}).join(''):emptySafe('Registre questoes para medir acerto por disciplina.');
+    var due=(st.revisions||[]).filter(function(r){return !r.done && r.due<=tstr();}).length;
+    var openErrors=(st.errors||[]).filter(function(e){return (e.status||'pendente')!=='resolvido';}).length;
+    var backlog=(st.backlog||[]).length;
+    var anki=(st.anki||[]).filter(function(a){return (+a.ret||0)>0;}).sort(function(a,b){return a.date.localeCompare(b.date);});
+    var anki7=anki.slice(-7); var ankiAvg=anki7.length?Math.round(anki7.reduce(function(a,e){return a+(+e.ret||0);},0)/anki7.length):0;
+    if(q('stats-recovery')) q('stats-recovery').innerHTML=''
+      +risk('Revisoes',due,due?'Atrasadas ou vencendo hoje':'fila em dia')
+      +risk('Erros abertos',openErrors,openErrors?'pedem reprocessamento':'sem pendencia')
+      +risk('Ciclo atrasado',backlog,backlog?'repactuar blocos':'sem acumulo')
+      +risk('Anki 7d',ankiAvg?ankiAvg+'%':'-',ankiAvg?(ankiAvg<80?'retenção baixa':'retenção estavel'):'sem dados');
+    var weak=[];
+    aa.forEach(function(x){weak.push({disc:x[0],score:x[1],txt:x[1]+'% de acerto em '+x[2]+' questoes'});});
+    var errBy={}; (st.errors||[]).forEach(function(e){if((e.status||'pendente')!=='resolvido')errBy[e.disc]=(errBy[e.disc]||0)+1;});
+    Object.keys(errBy).forEach(function(k){if(!weak.some(function(w){return w.disc===k;})) weak.push({disc:k,score:100-errBy[k]*8,txt:errBy[k]+' erro(s) aberto(s) no caderno'});});
+    weak.sort(function(a,b){return a.score-b.score;});
+    if(q('stats-weak')) q('stats-weak').innerHTML=weak.length?weak.slice(0,5).map(function(w){return '<div class="weak-row"><div><b>'+esc(w.disc)+'</b><span>'+esc(w.txt)+'</span></div><em>priorizar</em></div>';}).join(''):emptySafe('Ainda nao ha materia critica identificada.');
+    var insights=[];
+    if(!d.sess.length) insights.push(['danger','Comece pelo registro','Sem sessao no periodo. Registre uma sessao curta para calibrar o painel.']);
+    if(!todayActive) insights.push(['warn','Ative o dia de hoje','Ainda nao ha estudo registrado hoje. Um bloco curto preserva constancia.']);
+    if(d.qn===0) insights.push(['warn','Faltam questoes','O periodo tem tempo registrado, mas nenhuma questao. Inclua bloco de treino ativo.']);
+    if(d.qn>0 && d.acc<70) insights.push(['danger','Acerto abaixo da zona segura','Volte aos erros do tema antes de aumentar volume de questoes.']);
+    if(openErrors>0) insights.push(['warn','Caderno de erros aberto','Revise '+openErrors+' erro(s) antes do proximo simulado.']);
+    if(due>0) insights.push(['warn','Revisoes vencendo','Quite '+due+' revisao(oes) para evitar acumulo.']);
+    if(ca.length && ca[0][1]/Math.max(d.min,1)>.62) insights.push(['warn','Distribuicao concentrada','Mais de 60% do tempo ficou em '+(((typeof CAT_LABEL!=='undefined'&&CAT_LABEL[ca[0][0]])||ca[0][0]))+'. Balanceie o proximo bloco.']);
+    if(!insights.length) insights.push(['ok','Periodo equilibrado','Ritmo, questoes e pendencias estao sob controle. Mantenha a cadencia.']);
+    if(q('stats-insights')) q('stats-insights').innerHTML=insights.slice(0,5).map(function(i){return '<div class="insight '+(i[0]==='ok'?'':i[0])+'"><div class="mark">'+(i[0]==='ok'?'OK':i[0]==='danger'?'!':'?')+'</div><div><b>'+esc(i[1])+'</b><span>'+esc(i[2])+'</span></div></div>';}).join('');
+  }
+  function risk(label,value,desc){return '<div class="risk-card"><div class="label">'+esc(label)+'</div><div class="value">'+esc(value)+'</div><div class="desc">'+esc(desc)+'</div></div>';}
+
+  function editalPct(st){ try{ if(typeof editalStats==='function') return editalStats().pct||0; }catch(e){} var ed=st.edital||[]; return ed.length?Math.round(ed.filter(function(x){return x.done;}).length/ed.length*100):0; }
+  function makeChallenges(){
+    var st=S(), sess=st.sessions||[], sims=st.simulados||[], days=[].slice.call(new Set(st.studyDays||[])).sort();
+    var cur=tstr(), streak=0; if(days.indexOf(cur)<0) cur=add(cur,-1); while(days.indexOf(cur)>=0){streak++; cur=add(cur,-1);}
+    var totalH=sess.reduce(function(a,s){return a+(+s.min||0);},0)/60;
+    var totalQ=sess.reduce(function(a,s){return a+(+s.q||0);},0)+sims.reduce(function(a,s){return a+(+s.c||0)+(+s.blank||0)+(+s.wrong||0);},0);
+    var correct=sess.reduce(function(a,s){return a+(+s.c||0);},0)+sims.reduce(function(a,s){return a+(+s.c||0);},0);
+    var allAcc=totalQ?Math.round(correct/totalQ*100):0;
+    var simBest=sims.reduce(function(m,s){var t=(+s.c||0)+(+s.blank||0)+(+s.wrong||0);var p=t?Math.round((+s.c||0)/t*100):0;return Math.max(m,p);},0);
+    var simAvg=sims.length?Math.round(sims.reduce(function(a,s){var t=(+s.c||0)+(+s.blank||0)+(+s.wrong||0);return a+(t?(+s.c||0)/t*100:0);},0)/sims.length):0;
+    var revDone=(st.revisions||[]).filter(function(r){return r.done;}).length;
+    var anki=(st.anki||[]).filter(function(a){return (+a.ret||0)>0;}); var ankiAvg=anki.length?Math.round(anki.slice(-7).reduce(function(a,e){return a+(+e.ret||0);},0)/Math.min(7,anki.length)):0; var ankiGood=anki.filter(function(e){return (+e.ret||0)>=85;}).length;
+    var errDone=(st.errors||[]).filter(function(e){return (e.status||'pendente')==='resolvido';}).length;
+    var lawH=sess.filter(function(s){return s.cat==='leiseca';}).reduce(function(a,s){return a+(+s.min||0);},0)/60;
+    var jurisH=sess.filter(function(s){return s.cat==='juris';}).reduce(function(a,s){return a+(+s.min||0);},0)/60;
+    var hiDays={}; sess.forEach(function(s){if((+s.q||0)>=20 && (+s.c||0)/(+s.q||1)>=.7) hiDays[s.date]=1;});
+    var hq=Object.keys(hiDays).length;
+    var base=[
+      ['const','Constancia','F','dias',streak,[3,7,14,21,30,45,60,90,120],'Estude {n} dias seguidos','Mantem a plataforma como habito diario.','#0c8a5b'],
+      ['days','Dias de estudo','D','dias',days.length,[5,15,30,60,100,150,250,365],'Acumule {n} dias com estudo','Aumenta exposicao total ao edital.','#1366d6'],
+      ['hours','Horas de estudo','H','h',totalH,[10,25,50,100,200,350,500,750],'Acumule {n} horas liquidas','Consolida volume real de preparacao.','#6b4fbb'],
+      ['quest','Questoes','Q','questoes',totalQ,[100,300,500,1000,2000,3500,5000,8000,10000],'Resolva {n} questoes','Transforma teoria em criterio de prova.','#c2790c'],
+      ['acc','Precisao geral','%','%',allAcc,[55,60,65,70,75,80,85,90],'Alcance {n}% de acerto geral','Sinaliza maturidade em treino ativo.','#0d9488'],
+      ['edital','Edital','E','%',editalPct(st),[10,25,50,75,90,100],'Conclua {n}% do edital','Reduz pontos cegos antes da prova.','#2f7d52'],
+      ['sims','Simulados','S','simulados',sims.length,[1,3,5,10,15,25,40],'Faca {n} simulados','Treina resistencia e estrategia de prova.','#c0392f'],
+      ['simbest','Melhor simulado','M','%',simBest,[60,65,70,75,80,85,90],'Bata {n}% em um simulado','Valida desempenho sob pressao.','#e8553e'],
+      ['simavg','Media em simulados','A','%',simAvg,[55,60,65,70,75,80,85],'Mantenha media de {n}% nos simulados','Mostra consistencia, nao pico isolado.','#d6457f'],
+      ['rev','Revisoes','R','revisoes',revDone,[10,30,50,100,200,400,700],'Conclua {n} revisoes','Protege conteudo ja estudado.','#7c5cd6'],
+      ['ankiavg','Retencao Anki','A','%',ankiAvg,[75,80,85,88,90,92],'Mantenha {n}% de retencao media no Anki','Mostra se a revisao espacada esta funcionando.','#4f46e5'],
+      ['ankigood','Dias bons no Anki','K','dias',ankiGood,[3,7,14,30,60,100],'Registre {n} dias com retencao >=85%','Cria historico confiavel de memoria.','#0d9488'],
+      ['errors','Erros resolvidos','X','erros',errDone,[5,15,30,60,100,200],'Resolva {n} erros do caderno','Evita reincidencia em pegadinhas.','#b8860b'],
+      ['law','Lei seca','L','h',lawH,[5,10,20,40,70,100],'Acumule {n}h de lei seca','Aumenta seguranca em literalidade.','#b08433'],
+      ['juris','Jurisprudencia','J','h',jurisH,[3,8,15,30,50,80],'Acumule {n}h de jurisprudencia','Aproxima estudo do perfil de Procuradoria.','#8b5cf6'],
+      ['hqdays','Dias de qualidade','P','dias',hq,[3,7,14,30,60,90],'Tenha {n} dias com 20+ questoes e 70%+','Une volume minimo e precisao.','#0c8a5b']
+    ];
+    return base.map(function(a){return {id:a[0],cat:a[1],icon:a[2],unit:a[3],value:a[4],miles:a[5],desc:a[6],why:a[7],color:a[8]};});
+  }
+  function nextOf(ch){ var lvl=0; for(var i=0;i<ch.miles.length;i++){ if(ch.value>=ch.miles[i]) lvl++; } var next=ch.miles[lvl]; var prev=lvl?ch.miles[lvl-1]:0; var pct=next==null?100:Math.min(100,Math.max(0,Math.round((ch.value-prev)/(next-prev)*100))); return {lvl:lvl,next:next,prev:prev,pct:pct}; }
+  function fmtVal(ch,v){ if(ch.unit==='h') return Number(v).toFixed(v<10&&v%1?1:0)+'h'; if(ch.unit==='%') return Math.round(v)+'%'; return Math.floor(v)+' '+ch.unit; }
+  function renderChallengeCard(ch,done){ var n=nextOf(ch); var target=done?ch.miles[n.lvl-1]:n.next; if(target==null) target=ch.miles[ch.miles.length-1]; var pct=done?100:n.pct; var rem=Math.max(0,target-ch.value); var title=ch.desc.replace('{n}',fmtVal(ch,target).replace(' '+ch.unit,'')); var falta=done?'conquistado':('faltam '+fmtVal(ch,rem)); return '<div class="challenge-card '+(done?'done':'')+'" style="--c:'+ch.color+'"><div class="challenge-icon">'+esc(ch.icon)+'</div><div class="challenge-main"><div class="top"><span class="cat">'+esc(ch.cat)+'</span><span class="lvl">Nivel '+(done?n.lvl:n.lvl+1)+'</span></div><h4>'+esc(title)+'</h4><p>'+esc(ch.why)+'</p><div class="challenge-bar"><i style="width:'+pct+'%"></i></div><div class="challenge-foot"><span><b>'+fmtVal(ch,ch.value)+'</b> atual</span><span>'+esc(falta)+'</span></div></div></div>'; }
+  function ensureConqLayout(){
+    var v=q('view-conquistas'); if(!v || v.getAttribute('data-ux-conq')==='1') return; v.setAttribute('data-ux-conq','1');
+    v.innerHTML=''
+      +'<div class="card challenge-hero"><div class="challenge-hero-grid"><div><span class="ux-pill">Desafios e conquistas</span><div class="challenge-title">Uma trilha de progresso para manter o uso do produto.</div><p class="challenge-sub">Os desafios agora cobrem constancia, volume, questoes, simulados, revisoes, Anki, lei seca, jurisprudencia, edital e recuperacao de erros. A ideia e sempre deixar claro qual e o proximo marco util.</p></div><div class="challenge-next" id="challenge-next"></div></div></div>'
+      +'<div class="kpis" id="conq-kpis"></div>'
+      +'<div class="challenge-tabs" id="challenge-tabs"></div>'
+      +'<div class="ux-split"><div class="card"><div class="card-h"><h3>Desafios em progresso</h3><span class="hint">proximos marcos por frente</span></div><div class="ach-grid" id="conq-progress"></div></div><div class="card"><div class="card-h"><h3>Vitorias rapidas</h3><span class="hint">mais proximas de concluir</span></div><div class="quick-grid" id="conq-quick"></div></div></div>'
+      +'<div class="card"><div class="card-h"><h3>Conquistadas</h3><span class="hint" id="conq-done-count"></span></div><div class="ach-grid" id="conq-done"></div></div>'
+      +'<div class="tip"><div class="d"></div><p><b>Como usar:</b> escolha um desafio proximo e transforme em acao concreta do dia. Ex.: se falta questao, va para Foco &amp; Sessao; se falta erro resolvido, abra o Caderno de Erros; se falta retencao, ajuste o Anki.</p></div>';
+  }
+  function renderConquistas(){
+    ensureConqLayout(); var arr=makeChallenges(); var filt=localStorage.getItem('catedra:challengeFilter')||'';
+    var cats=['','Constancia','Questoes','Simulados','Revisoes','Anki','Erros','Edital','Lei seca','Jurisprudencia'];
+    if(q('challenge-tabs')) q('challenge-tabs').innerHTML=cats.map(function(c){var lab=c||'Todos';return '<button class="challenge-tab '+(filt===c?'active':'')+'" data-c="'+esc(c)+'">'+esc(lab)+'</button>';}).join('');
+    Array.prototype.forEach.call(document.querySelectorAll('#challenge-tabs .challenge-tab'),function(b){b.onclick=function(){localStorage.setItem('catedra:challengeFilter',b.getAttribute('data-c')||''); renderConquistas();};});
+    var list=arr.filter(function(ch){return !filt || ch.cat.indexOf(filt)>=0 || (filt==='Anki'&&ch.cat.indexOf('Anki')>=0) || (filt==='Erros'&&ch.cat.indexOf('Erros')>=0);});
+    var progress=[], done=[]; arr.forEach(function(ch){var n=nextOf(ch); if(n.next!=null) progress.push({ch:ch,n:n}); if(n.lvl>0) done.push({ch:ch,n:n});});
+    var progressFiltered=progress.filter(function(x){return list.indexOf(x.ch)>=0;}).sort(function(a,b){return b.n.pct-a.n.pct;});
+    var doneFiltered=done.filter(function(x){return list.indexOf(x.ch)>=0;}).sort(function(a,b){return b.n.lvl-a.n.lvl;});
+    if(q('conq-progress')) q('conq-progress').innerHTML=progressFiltered.length?progressFiltered.map(function(x){return renderChallengeCard(x.ch,false);}).join(''):emptySafe('Nenhum desafio em progresso neste filtro.');
+    if(q('conq-quick')) q('conq-quick').innerHTML=progress.slice().sort(function(a,b){return b.n.pct-a.n.pct;}).slice(0,5).map(function(x){return renderChallengeCard(x.ch,false);}).join('') || emptySafe('Sem vitorias rapidas no momento.');
+    if(q('conq-done')) q('conq-done').innerHTML=doneFiltered.length?doneFiltered.slice(0,12).map(function(x){return renderChallengeCard(x.ch,true);}).join(''):emptySafe('Nenhuma conquista neste filtro.');
+    if(q('conq-done-count')) q('conq-done-count').textContent=done.reduce(function(a,x){return a+x.n.lvl;},0)+' nivel(is) alcancado(s)';
+    var totalLevels=done.reduce(function(a,x){return a+x.n.lvl;},0); var next=progress.slice().sort(function(a,b){return b.n.pct-a.n.pct;})[0];
+    if(q('challenge-next')) q('challenge-next').innerHTML=next?('<div class="t">Proximo melhor alvo</div><div class="n">'+esc(next.ch.desc.replace('{n}',fmtVal(next.ch,next.n.next).replace(' '+next.ch.unit,'')))+'</div><div class="d">'+next.n.pct+'% concluido - '+esc(next.ch.why)+'</div>'):'<div class="t">Trilha completa</div><div class="n">Todos os desafios foram vencidos</div><div class="d">Adicione novos dados para abrir marcos maiores.</div>';
+    var st=S(), openErr=(st.errors||[]).filter(function(e){return (e.status||'pendente')!=='resolvido';}).length; var p=progress.length?Math.round(progress.reduce(function(a,x){return a+x.n.pct;},0)/progress.length):100;
+    if(q('conq-kpis')) q('conq-kpis').innerHTML=''
+      +kpiSafe(totalLevels,'Niveis conquistados','--emerald','M7 4h10v4a5 5 0 0 1-10 0z')
+      +kpiSafe(progress.length,'Desafios ativos','--purple','M4 12h16M12 4v16')
+      +kpiSafe(p+'%','Progresso medio','--amber','M3 17l6-6 4 4 7-8')
+      +kpiSafe(openErr,'Erros abertos','--red','M12 7v4M12 14h.01');
+  }
+
+  window.renderStats=renderStats;
+  window.renderConquistas=renderConquistas;
+  window.achList=makeChallenges;
+  try{ if(q('view-stats')) ensureStatsLayout(); }catch(e){}
+  try{ if(q('view-conquistas')) ensureConqLayout(); }catch(e){}
+  try{ if(q('view-stats')&&q('view-stats').classList.contains('active')) renderStats(); }catch(e){}
+  try{ if(q('view-conquistas')&&q('view-conquistas').classList.contains('active')) renderConquistas(); }catch(e){}
+})();
+</script>
+
 </body>
 </html>
 
 <script>
 (function(){var SUPA="https://glzgqlxfvsfivyydfsbz.supabase.co",ANON=null,ADMIN=["3b9721a8-b917-4b26-8cd4-79c02613c7cd"];var _f=window.fetch;window.fetch=function(u,o){try{if(o&&o.headers){var k=o.headers.apikey||(o.headers.get&&o.headers.get("apikey"));if(k)ANON=k}}catch(e){}return _f.apply(this,arguments)};function showPW(){if(document.getElementById("catedra-paywall"))return;var o=document.createElement("div");o.id="catedra-paywall";o.style.cssText="position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f172a,#1e293b);display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif";o.innerHTML='<div style="background:#fff;max-width:440px;width:90%;border-radius:18px;padding:40px 34px;box-shadow:0 20px 60px rgba(0,0,0,.4);text-align:center"><div style="font-size:13px;letter-spacing:2px;color:#6366f1;font-weight:700;text-transform:uppercase">Catedra</div><h2 style="margin:14px 0 6px;font-size:24px;color:#0f172a">Assine para acessar</h2><p style="color:#64748b;font-size:15px;line-height:1.5;margin:0 0 26px">Tenha acesso completo a plataforma de estudos por 12 meses.</p><div style="border:2px solid #6366f1;border-radius:14px;padding:22px;margin-bottom:24px;background:#f8faff"><div style="font-size:14px;color:#475569;font-weight:600">Plano Anual</div><div style="font-size:38px;font-weight:800;color:#0f172a;margin:6px 0">R$ 249<span style="font-size:20px">,90</span></div><div style="font-size:13px;color:#94a3b8">por ano - Pix, cartao ou boleto</div></div><button id="cat-assinar" style="width:100%;background:#6366f1;color:#fff;border:0;border-radius:10px;padding:15px;font-size:16px;font-weight:700;cursor:pointer">Assinar agora</button><div id="cat-pay-msg" style="margin-top:14px;font-size:13px;color:#64748b;min-height:18px"></div></div>';document.body.appendChild(o);document.getElementById("cat-assinar").addEventListener("click",function(){var b=this,m=document.getElementById("cat-pay-msg");b.disabled=true;b.textContent="Gerando pagamento...";m.textContent="";window.catedraAuth().then(function(a){return _f(SUPA+"/functions/v1/criar-pagamento",{method:"POST",headers:{"Content-Type":"application/json",apikey:ANON,Authorization:"Bearer "+a.token},body:"{}"})}).then(function(r){return r.json()}).then(function(d){var l=d.init_point||d.sandbox_init_point;if(l){m.style.color="#16a34a";m.textContent="Redirecionando...";window.location.href=l}else{m.style.color="#dc2626";m.textContent="Erro ao gerar pagamento.";b.disabled=false;b.textContent="Assinar agora"}}).catch(function(e){m.style.color="#dc2626";m.textContent="Erro: "+e.message;b.disabled=false;b.textContent="Assinar agora"})})}function chk(){if(typeof window.catedraAuth!=="function"||!ANON){return setTimeout(chk,600)}window.catedraAuth().then(function(a){if(!a||!a.uid||!a.token){return setTimeout(chk,800)}if(ADMIN.indexOf(a.uid)>-1){return}_f(SUPA+"/rest/v1/subscriptions?user_id=eq."+a.uid+"&select=status,expira_em",{headers:{apikey:ANON,Authorization:"Bearer "+a.token}}).then(function(r){return r.json()}).then(function(rows){var ok=false;if(Array.isArray(rows)&&rows[0]&&rows[0].status==="active"){ok=!rows[0].expira_em||new Date(rows[0].expira_em)>new Date()}if(!ok){showPW()}}).catch(function(){})}).catch(function(){setTimeout(chk,800)})}setTimeout(chk,1500);if(location.search.indexOf("pagamento=sucesso")>-1){setTimeout(chk,2500)}})();
+</script>
+
+<script>
+(function(){
+  function $(id){return document.getElementById(id);}
+  function esc(v){
+    return String(v==null?'':v).replace(/[&<>'"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c];});
+  }
+  function today(){try{return todayStr();}catch(e){return new Date().toISOString().slice(0,10);}}
+  function fmtDateShort(ds){try{return new Date(ds+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});}catch(e){return ds||'-';}}
+  function fmtMinutes(m){m=+m||0;if(!m)return '0m';if(m<60)return m+'m';return (m/60).toFixed(m%60?1:0)+'h';}
+  function colorDisc(d){try{return colorOf(d);}catch(e){return 'var(--emerald)';}}
+  function saveAll(){try{save();}catch(e){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(_){}}}
+  function notify(t){try{toast(t);}catch(e){} }
+  function kpiCard(v,l,c,p){try{return kpi(v,l,c,p||'M4 20V10M10 20V4M16 20v-7M22 20H2','');}catch(e){return '<div class="kpi"><div class="kv">'+esc(v)+'</div><div class="kl">'+esc(l)+'</div></div>';}}
+  function empty(msg){return '<div class="empty">'+esc(msg||'Sem dados por enquanto.')+'</div>';}
+
+  var css=document.createElement('style');
+  css.textContent='\n'
+    +'#view-anki[data-simple-anki="1"] .simple-decision{display:flex;flex-direction:column;gap:10px}\n'
+    +'.simple-note{border:1px solid var(--border);background:var(--surface-2);border-radius:var(--r-sm);padding:13px 15px}\n'
+    +'.simple-note b{display:block;font-size:13.5px;color:var(--text);margin-bottom:2px}\n'
+    +'.simple-note span{display:block;font-size:12.5px;color:var(--text-2);line-height:1.45}\n'
+    +'.simple-note.ok{border-color:var(--emerald-ring);background:var(--emerald-soft)}\n'
+    +'.simple-note.warn{border-color:color-mix(in srgb,var(--amber) 35%,var(--border));background:var(--amber-soft)}\n'
+    +'.simple-note.bad{border-color:color-mix(in srgb,var(--red) 35%,var(--border));background:var(--red-soft)}\n'
+    +'.simple-bars{display:flex;flex-direction:column;gap:9px}\n'
+    +'.simple-bars .row{display:grid;grid-template-columns:72px 1fr 46px;gap:10px;align-items:center;font-size:12.5px;color:var(--text-2)}\n'
+    +'.simple-bars .track{height:10px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden}\n'
+    +'.simple-bars .track i{display:block;height:100%;border-radius:99px;background:var(--emerald)}\n'
+    +'.simple-bars .track i.warn{background:var(--amber)}\n'
+    +'.simple-bars .track i.bad{background:var(--red)}\n'
+    +'.simple-filter{display:flex;gap:8px;align-items:center;flex-wrap:wrap}\n'
+    +'.simple-filter input,.simple-filter select{font-family:inherit;font-size:12.5px;color:var(--text);background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;padding:7px 10px}\n'
+    +'.err-status{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}\n'
+    +'.err-status.pendente{background:var(--red-soft);color:var(--red)}\n'
+    +'.err-status.revisar{background:var(--amber-soft);color:var(--amber)}\n'
+    +'.err-status.resolvido{background:var(--emerald-soft);color:var(--emerald-d)}\n'
+    +'.custom-challenge-list{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}\n'
+    +'.custom-challenge{border:1px solid var(--border);background:var(--surface);border-radius:var(--r-sm);padding:14px 15px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}\n'
+    +'.custom-challenge h4{font-size:14px;font-weight:600;margin:0 0 4px;color:var(--text)}\n'
+    +'.custom-challenge p{font-size:12.5px;color:var(--text-3);margin:0 0 9px}\n'
+    +'.custom-challenge .bar{height:8px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden}\n'
+    +'.custom-challenge .bar i{display:block;height:100%;border-radius:99px;background:var(--emerald)}\n'
+    +'.custom-challenge .cc-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end}\n'
+    +'.custom-challenge .cc-actions input{width:72px;font-family:inherit;font-size:12.5px;color:var(--text);background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;padding:7px 8px;text-align:center}\n'
+    +'@media(max-width:680px){.custom-challenge{grid-template-columns:1fr}.custom-challenge .cc-actions{justify-content:flex-start}.simple-bars .row{grid-template-columns:62px 1fr 40px}}\n';
+  document.head.appendChild(css);
+
+  function ensureAnkiLayout(){
+    var v=$('view-anki'); if(!v) return;
+    if(v.getAttribute('data-simple-anki')==='1') return;
+    v.setAttribute('data-simple-anki','1');
+    v.innerHTML=''
+      +'<div class="kpis" id="anki-kpis"></div>'
+      +'<div class="grid g-hero" style="align-items:start;margin-bottom:16px;">'
+        +'<div class="card">'
+          +'<div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17l6-6 4 4 7-8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Registrar retenção</h3><span class="hint">essencial</span></div>'
+          +'<div class="form-grid">'
+            +'<div class="field"><label>Data</label><input id="a-date" type="date"></div>'
+            +'<div class="field"><label>Retenção verdadeira (%)</label><input id="a-ret" type="number" min="0" max="100" placeholder="88"></div>'
+            +'<div class="field"><label>Revisões feitas</label><input id="a-rev" type="number" min="0" placeholder="220"></div>'
+            +'<div class="field"><label>Tempo no Anki (min)</label><input id="a-min" type="number" min="0" placeholder="45"></div>'
+            +'<div class="field" style="grid-column:1/-1"><label>Observação</label><input id="a-note" placeholder="opcional"></div>'
+          +'</div>'
+          +'<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:15px;"><button class="btn" id="anki-save">Salvar</button><span class="hint">alvo: 85% a 90%</span></div>'
+        +'</div>'
+        +'<div class="card">'
+          +'<div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 8v5l3 2" stroke-linecap="round"/></svg></span>Leitura rápida</h3><span class="hint">decisão</span></div>'
+          +'<div class="simple-decision" id="anki-decision"></div>'
+        +'</div>'
+      +'</div>'
+      +'<div class="grid g-2" style="align-items:start;">'
+        +'<div class="card"><div class="card-h"><h3>Retenção recente</h3><span class="hint">últimos registros</span></div><div id="anki-ret-chart"></div></div>'
+        +'<div class="card"><div class="card-h"><h3>Histórico</h3><span class="hint" id="anki-count"></span></div><div style="overflow-x:auto;"><table class="htable" id="anki-table"></table></div></div>'
+      +'</div>'
+      +'<div class="tip"><div class="d"></div><p><b>Anki nesta plataforma:</b> use apenas como analisador de retenção. Se cair abaixo de <b>80%</b>, reduza cartões novos e volte ao Caderno de Erros antes de aumentar volume.</p></div>';
+  }
+
+  function ankiSaveHandler(){
+    var ret=parseInt(($('a-ret')||{}).value,10)||0;
+    if(ret<=0){notify('informe a retenção');return;}
+    if(ret>100){notify('retenção deve ser até 100%');return;}
+    var date=($('a-date')||{}).value||today();
+    var reviews=parseInt(($('a-rev')||{}).value,10)||0;
+    var min=parseInt(($('a-min')||{}).value,10)||0;
+    var note=(($('a-note')||{}).value||'').trim();
+    state.anki=state.anki||[];
+    state.anki=state.anki.filter(function(e){return e.date!==date;});
+    state.anki.push({id:Date.now(),date:date,reviews:reviews,min:min,ret:ret,novos:0,maduros:0,note:note});
+    if(date===today()){
+      state.studyDays=state.studyDays||[];
+      if(state.studyDays.indexOf(today())<0) state.studyDays.push(today());
+      try{var b=listBlocksFor(state.dia).find(function(x){return /anki/i.test(x.t);}); if(b) dc(state.dia)[b.id]=true;}catch(e){}
+    }
+    ['a-ret','a-rev','a-min','a-note'].forEach(function(id){if($(id))$(id).value='';});
+    saveAll(); renderAnkiSimple();
+    try{renderStreak();renderCycle();renderHome();}catch(e){}
+    notify('retenção registrada');
+  }
+
+  function renderAnkiSimple(){
+    ensureAnkiLayout();
+    if($('a-date')) $('a-date').value=today();
+    if($('anki-save')) $('anki-save').onclick=ankiSaveHandler;
+    var arr=(state.anki||[]).slice().sort(function(a,b){return String(a.date).localeCompare(String(b.date));});
+    var valid=arr.filter(function(a){return (+a.ret||0)>0;});
+    var last=valid[valid.length-1]||null;
+    var prev=valid[valid.length-2]||null;
+    var last7=valid.slice(-7);
+    var avg7=last7.length?Math.round(last7.reduce(function(s,a){return s+(+a.ret||0);},0)/last7.length):0;
+    var reviews7=last7.reduce(function(s,a){return s+(+a.reviews||0);},0);
+    var low7=last7.filter(function(a){return (+a.ret||0)<80;}).length;
+    var trend=(last&&prev)?((+last.ret||0)-(+prev.ret||0)):0;
+    if($('anki-kpis')) $('anki-kpis').innerHTML=''
+      +kpiCard(last?last.ret+'%':'—','Última retenção','--emerald','M3 17l6-6 4 4 7-8')
+      +kpiCard(avg7?avg7+'%':'—','Média recente','--purple','M4 20V10M10 20V4M16 20v-7M22 20H2')
+      +kpiCard(reviews7||'—','Revisões recentes','--amber','M21 12a9 9 0 1 1-3-6.7M21 4v4h-4')
+      +kpiCard(trend?(trend>0?'+'+trend:trend)+' p.p.':'—','Tendência','--red','M3 17l6-6 4 4 7-8');
+    var decision='';
+    if(!valid.length){
+      decision='<div class="simple-note"><b>Sem dados ainda</b><span>Registre a retenção verdadeira do Anki ao final da revisão de hoje.</span></div>';
+    }else if((+last.ret||0)<80){
+      decision='<div class="simple-note bad"><b>Retenção baixa</b><span>Reduza cartões novos, revise os erros recentes e reforce os temas antes de aumentar o volume.</span></div>';
+    }else if((+last.ret||0)>92){
+      decision='<div class="simple-note warn"><b>Retenção muito alta</b><span>O baralho pode estar fácil ou com pouco desafio. Aumente gradualmente questões e cartões bem selecionados.</span></div>';
+    }else{
+      decision='<div class="simple-note ok"><b>Faixa saudável</b><span>Continue zerando revisões. Mantenha novos cartões em volume controlado.</span></div>';
+    }
+    decision+='<div class="simple-note"><b>Regra prática</b><span>Abaixo de 80% = recuperar. Entre 85% e 90% = manter. Acima de 92% = pode elevar dificuldade.</span></div>';
+    if(low7>0) decision+='<div class="simple-note warn"><b>'+low7+' dia(s) abaixo de 80%</b><span>Priorize revisão ativa e caderno de erros nos temas ligados à queda.</span></div>';
+    if($('anki-decision')) $('anki-decision').innerHTML=decision;
+    var chart=valid.slice(-14);
+    if($('anki-ret-chart')) $('anki-ret-chart').innerHTML=chart.length?('<div class="simple-bars">'+chart.map(function(a){var r=+a.ret||0;var cls=r<80?'bad':(r<85?'warn':'');return '<div class="row"><span>'+fmtDateShort(a.date)+'</span><div class="track"><i class="'+cls+'" style="width:'+Math.max(2,Math.min(100,r))+'%"></i></div><b>'+r+'%</b></div>';}).join('')+'</div>'):empty('Sem registros de retenção.');
+    if($('anki-count')) $('anki-count').textContent=arr.length+' registro(s)';
+    if($('anki-table')) $('anki-table').innerHTML='<tr><th>Data</th><th>Retenção</th><th>Revisões</th><th>Tempo</th><th>Observação</th><th></th></tr>'+
+      (arr.length?arr.slice().reverse().map(function(a){return '<tr><td>'+fmtDateShort(a.date)+'</td><td class="num" style="font-weight:600;color:'+(a.ret<80?'var(--red)':a.ret<85?'var(--amber)':'var(--emerald-d)')+'">'+(+a.ret||0)+'%</td><td class="num">'+(+a.reviews||0)+'</td><td class="num">'+fmtMinutes(a.min)+'</td><td class="note">'+esc(a.note||'—')+'</td><td><button class="del anki-del" data-date="'+esc(a.date)+'">excluir</button></td></tr>';}).join(''):'<tr><td colspan="6" class="empty">Nenhum registro.</td></tr>');
+    Array.prototype.forEach.call(document.querySelectorAll('.anki-del'),function(b){b.onclick=function(){var d=b.getAttribute('data-date');state.anki=(state.anki||[]).filter(function(x){return x.date!==d;});saveAll();renderAnkiSimple();};});
+  }
+
+  function fillErrorSelectsSimple(){
+    var opts=(typeof DISCIPLINAS!=='undefined'?DISCIPLINAS:[]).map(function(d){return '<option>'+esc(d)+'</option>';}).join('');
+    if($('er-disc')&&!$('er-disc').dataset.filled){$('er-disc').innerHTML=opts;$('er-disc').dataset.filled='1';}
+    if($('er-filter')&&!$('er-filter').dataset.filled){$('er-filter').innerHTML='<option value="">Todas as disciplinas</option>'+opts;$('er-filter').dataset.filled='1';}
+  }
+  function ensureErrosLayout(){
+    var v=$('view-erros'); if(!v) return;
+    if(v.getAttribute('data-simple-erros')==='1') return;
+    v.setAttribute('data-simple-erros','1');
+    v.innerHTML=''
+      +'<div class="kpis" id="erros-kpis"></div>'
+      +'<div class="grid g-hero" style="align-items:start;margin-bottom:16px;">'
+        +'<div class="card">'
+          +'<div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2h12v20l-6-3-6 3z" stroke-linejoin="round"/><path d="M12 7v4M12 14h.01" stroke-linecap="round"/></svg></span>Registrar erro</h3><span class="hint">o essencial</span></div>'
+          +'<div class="form-grid">'
+            +'<div class="field"><label>Disciplina</label><select id="er-disc"></select></div>'
+            +'<div class="field"><label>Tópico</label><input id="er-topic" placeholder="ex.: prescrição tributária"></div>'
+            +'<div class="field" style="grid-column:1/-1"><label>Erro cometido</label><textarea id="er-note" rows="3" placeholder="O que eu marquei ou confundi?"></textarea></div>'
+            +'<div class="field" style="grid-column:1/-1"><label>Correção em uma frase</label><textarea id="er-fix" rows="2" placeholder="Qual era o raciocínio correto?"></textarea></div>'
+          +'</div>'
+          +'<div style="margin-top:14px;"><button class="btn" id="er-add">Salvar erro</button></div>'
+        +'</div>'
+        +'<div class="card">'
+          +'<div class="card-h"><h3>Fila de revisão</h3><span class="hint">prioridade</span></div>'
+          +'<div id="er-priority"></div>'
+        +'</div>'
+      +'</div>'
+      +'<div class="card">'
+        +'<div class="card-h"><h3>Erros registrados</h3><div class="simple-filter"><input id="er-search" placeholder="Pesquisar"><select id="er-filter"></select><select id="er-status-filter"><option value="">Todos</option><option value="pendente">Pendentes</option><option value="revisar">Revisar</option><option value="resolvido">Resolvidos</option></select><span class="hint" id="er-count"></span></div></div>'
+        +'<div style="overflow-x:auto;"><table class="htable" id="er-table"></table></div>'
+      +'</div>'
+      +'<div class="tip"><div class="d"></div><p><b>Fluxo mínimo:</b> registre o erro, escreva a correção correta e resolva quando conseguir explicar o ponto sem consultar o material.</p></div>';
+  }
+  function statusLabel(s){return s==='resolvido'?'Resolvido':(s==='revisar'?'Revisar':'Pendente');}
+  function renderErrosSimple(){
+    ensureErrosLayout(); fillErrorSelectsSimple();
+    ['er-search','er-filter','er-status-filter'].forEach(function(id){if($(id)&&!$(id).dataset.bound){$(id).oninput=renderErrosSimple;$(id).onchange=renderErrosSimple;$(id).dataset.bound='1';}});
+    if($('er-add')) $('er-add').onclick=function(){
+      var note=($('er-note').value||'').trim(); if(!note){notify('descreva o erro');return;}
+      state.errors=state.errors||[];
+      state.errors.push({id:Date.now(),date:today(),disc:$('er-disc').value,topic:($('er-topic').value||'').trim(),note:note,fix:($('er-fix').value||'').trim(),cause:'',action:'',status:'pendente'});
+      ['er-topic','er-note','er-fix'].forEach(function(id){$(id).value='';});
+      saveAll(); renderErrosSimple(); try{renderErrosBadge();}catch(e){} notify('erro salvo');
+    };
+    var list=(state.errors||[]).map(function(e){return Object.assign({status:'pendente',fix:'',topic:'',note:'',disc:''},e);});
+    var open=list.filter(function(e){return e.status!=='resolvido';}).length;
+    var review=list.filter(function(e){return e.status==='revisar';}).length;
+    var solved=list.filter(function(e){return e.status==='resolvido';}).length;
+    var by={}; list.filter(function(e){return e.status!=='resolvido'&&e.disc;}).forEach(function(e){by[e.disc]=(by[e.disc]||0)+1;});
+    var top=Object.keys(by).sort(function(a,b){return by[b]-by[a];})[0];
+    if($('erros-kpis')) $('erros-kpis').innerHTML=''
+      +kpiCard(open,'Abertos','--red','M12 7v4M12 14h.01')
+      +kpiCard(review,'Para revisar','--amber','M21 12a9 9 0 1 1-3-6.7M21 4v4h-4')
+      +kpiCard(solved,'Resolvidos','--emerald','M4 12l5 5L20 6')
+      +kpiCard(top?by[top]:'—','Maior foco','--purple','M12 3v18M5 10l7-7 7 7');
+    var pending=list.filter(function(e){return e.status!=='resolvido';}).sort(function(a,b){return (a.status==='revisar'?-1:0)-(b.status==='revisar'?-1:0)||b.id-a.id;}).slice(0,4);
+    if($('er-priority')) $('er-priority').innerHTML=pending.length?pending.map(function(e){return '<div class="mini-blk"><div class="mini-dot"></div><div class="mini-tx"><div class="t">'+esc(e.topic||'Erro sem tópico')+'</div><div class="s">'+esc(e.disc||'Sem disciplina')+'</div></div><span class="mini-tag">'+statusLabel(e.status)+'</span></div>';}).join(''):empty('Nenhum erro aberto.');
+    var q=(($('er-search')||{}).value||'').toLowerCase();
+    var f=(($('er-filter')||{}).value||'');
+    var st=(($('er-status-filter')||{}).value||'');
+    var rows=list.slice().sort(function(a,b){var w={pendente:0,revisar:1,resolvido:2};return (w[a.status||'pendente']-w[b.status||'pendente'])||(b.id-a.id);});
+    if(f) rows=rows.filter(function(e){return e.disc===f;});
+    if(st) rows=rows.filter(function(e){return (e.status||'pendente')===st;});
+    if(q) rows=rows.filter(function(e){return [e.topic,e.note,e.fix,e.disc].join(' ').toLowerCase().indexOf(q)>-1;});
+    if($('er-count')) $('er-count').textContent=rows.length+' item(ns)';
+    if($('er-table')) $('er-table').innerHTML='<tr><th>Erro</th><th>Disciplina</th><th>Correção</th><th>Status</th><th>Ação</th></tr>'+
+      (rows.length?rows.map(function(e){var col=e.disc?colorDisc(e.disc):'var(--text-3)';var s=e.status||'pendente';return '<tr><td><div style="font-weight:600;color:var(--text)">'+esc(e.topic||'Erro sem tópico')+'</div><div style="font-size:12px;color:var(--text-3);max-width:360px;white-space:normal">'+esc(e.note||'—')+'</div></td><td><span class="pill-cat" style="background:color-mix(in srgb,'+col+' 14%,transparent);color:'+col+'">'+esc(e.disc||'—')+'</span></td><td class="note">'+esc(e.fix||'—')+'</td><td><span class="err-status '+s+'">'+statusLabel(s)+'</span></td><td style="white-space:nowrap"><button class="btn-ghost btn-sm er-review" data-id="'+e.id+'">Revisar</button> <button class="btn-ghost btn-sm er-done" data-id="'+e.id+'">Resolver</button> <button class="del er-del" data-id="'+e.id+'">excluir</button></td></tr>';}).join(''):'<tr><td colspan="5" class="empty">Nenhum erro encontrado.</td></tr>');
+    Array.prototype.forEach.call(document.querySelectorAll('.er-review'),function(b){b.onclick=function(){var e=(state.errors||[]).find(function(x){return String(x.id)===String(b.dataset.id);});if(e){e.status='revisar';saveAll();renderErrosSimple();try{renderErrosBadge();}catch(_){}}};});
+    Array.prototype.forEach.call(document.querySelectorAll('.er-done'),function(b){b.onclick=function(){var e=(state.errors||[]).find(function(x){return String(x.id)===String(b.dataset.id);});if(e){e.status='resolvido';e.resolvedAt=today();saveAll();renderErrosSimple();try{renderErrosBadge();}catch(_){}notify('erro resolvido');}};});
+    Array.prototype.forEach.call(document.querySelectorAll('.er-del'),function(b){b.onclick=function(){state.errors=(state.errors||[]).filter(function(x){return String(x.id)!==String(b.dataset.id);});saveAll();renderErrosSimple();try{renderErrosBadge();}catch(_){}};});
+  }
+
+  var prevConq=window.renderConquistas;
+  function ensureCustomChallengeBox(){
+    var v=$('view-conquistas'); if(!v) return;
+    if($('custom-challenges-card')) return;
+    var doneCard=$('conq-done')?$('conq-done').closest('.card'):null;
+    var box=document.createElement('div'); box.className='card'; box.id='custom-challenges-card'; box.style.marginTop='16px';
+    box.innerHTML='<div class="card-h"><h3>Desafios personalizados</h3><span class="hint">criados pelo usuário</span></div>'
+      +'<div class="form-grid">'
+        +'<div class="field"><label>Desafio</label><input id="cc-title" placeholder="ex.: 10 dias sem atrasar revisão"></div>'
+        +'<div class="field"><label>Unidade</label><input id="cc-unit" placeholder="ex.: dias, horas, questões"></div>'
+        +'<div class="field"><label>Meta</label><input id="cc-target" type="number" min="1" placeholder="10"></div>'
+        +'<div class="field"><label>Progresso atual</label><input id="cc-value" type="number" min="0" placeholder="0"></div>'
+      +'</div>'
+      +'<div style="margin-top:14px;"><button class="btn" id="cc-add">Criar desafio</button></div>'
+      +'<div class="custom-challenge-list" id="custom-challenge-list"></div>';
+    if(doneCard&&doneCard.parentNode) doneCard.parentNode.insertBefore(box,doneCard.nextSibling); else v.appendChild(box);
+    $('cc-add').onclick=function(){
+      var title=($('cc-title').value||'').trim(); var target=parseFloat($('cc-target').value)||0;
+      if(!title||target<=0){notify('informe desafio e meta');return;}
+      state.customChallenges=state.customChallenges||[];
+      state.customChallenges.push({id:Date.now(),title:title,unit:($('cc-unit').value||'').trim()||'un.',target:target,value:parseFloat($('cc-value').value)||0});
+      ['cc-title','cc-unit','cc-target','cc-value'].forEach(function(id){$(id).value='';});
+      saveAll(); renderCustomChallenges(); notify('desafio criado');
+    };
+  }
+  function renderCustomChallenges(){
+    ensureCustomChallengeBox();
+    state.customChallenges=state.customChallenges||[];
+    var c=$('custom-challenge-list'); if(!c) return;
+    if(!state.customChallenges.length){c.innerHTML=empty('Nenhum desafio personalizado criado.');return;}
+    c.innerHTML=state.customChallenges.map(function(ch){var pct=Math.min(100,Math.round(((+ch.value||0)/(+ch.target||1))*100));return '<div class="custom-challenge" data-id="'+ch.id+'"><div><h4>'+esc(ch.title)+'</h4><p>'+esc((+ch.value||0)+'/'+(+ch.target||0)+' '+(ch.unit||'un.'))+'</p><div class="bar"><i style="width:'+pct+'%"></i></div></div><div class="cc-actions"><input class="cc-input" type="number" min="0" value="'+(+ch.value||0)+'"><button class="btn-ghost btn-sm cc-plus">+1</button><button class="btn-ghost btn-sm cc-done">Concluir</button><button class="del cc-del">excluir</button></div></div>';}).join('');
+    Array.prototype.forEach.call(document.querySelectorAll('.custom-challenge'),function(row){var id=row.getAttribute('data-id');var ch=state.customChallenges.find(function(x){return String(x.id)===String(id);}); if(!ch)return;
+      row.querySelector('.cc-input').onchange=function(){ch.value=parseFloat(this.value)||0;saveAll();renderCustomChallenges();};
+      row.querySelector('.cc-plus').onclick=function(){ch.value=(+ch.value||0)+1;saveAll();renderCustomChallenges();};
+      row.querySelector('.cc-done').onclick=function(){ch.value=+ch.target||ch.value;saveAll();renderCustomChallenges();};
+      row.querySelector('.cc-del').onclick=function(){state.customChallenges=state.customChallenges.filter(function(x){return String(x.id)!==String(id);});saveAll();renderCustomChallenges();};
+    });
+  }
+  function renderConquistasWithCustom(){
+    if(typeof prevConq==='function') prevConq();
+    ensureCustomChallengeBox(); renderCustomChallenges();
+  }
+
+  window.renderAnki=renderAnkiSimple;
+  window.renderErros=renderErrosSimple;
+  window.renderConquistas=renderConquistasWithCustom;
+  var ankiNav=document.querySelector('[data-view=anki]'); if(ankiNav) ankiNav.addEventListener('click',function(){setTimeout(renderAnkiSimple,0);});
+  var errosNav=document.querySelector('[data-view=erros]'); if(errosNav) errosNav.addEventListener('click',function(){setTimeout(renderErrosSimple,0);});
+  var conqNav=document.querySelector('[data-view=conquistas]'); if(conqNav) conqNav.addEventListener('click',function(){setTimeout(renderConquistasWithCustom,0);});
+  if($('view-anki')&&$('view-anki').classList.contains('active')) renderAnkiSimple();
+  if($('view-erros')&&$('view-erros').classList.contains('active')) renderErrosSimple();
+  if($('view-conquistas')&&$('view-conquistas').classList.contains('active')) renderConquistasWithCustom();
+})();
 </script>
