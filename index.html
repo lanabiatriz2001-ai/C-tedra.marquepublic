@@ -345,6 +345,21 @@
   .theme-card .td{font-size:11.5px;color:var(--text-3);margin-top:2px;}
   .theme-card .selmark{margin-left:auto;color:var(--emerald);font-size:13px;}
 
+
+  /* abas do edital por matéria */
+  .ed-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px;}
+  .ed-tab{display:flex;align-items:center;gap:8px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-2);border-radius:999px;padding:9px 13px;font-size:12.5px;box-shadow:var(--sh-sm);}
+  .ed-tab:hover{color:var(--text);border-color:var(--text-3);background:var(--surface-2);transform:translateY(-1px);}
+  .ed-tab.active{background:var(--ink);border-color:var(--ink);color:#fff;}
+  .ed-tab-dot{width:9px;height:9px;border-radius:3px;flex-shrink:0;background:var(--emerald);}
+  .ed-tab-count{font-size:10.5px;font-weight:700;background:var(--surface-2);border:1px solid var(--border);color:var(--text-3);padding:2px 7px;border-radius:99px;}
+  .ed-tab.active .ed-tab-count{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.82);}
+  .ed-tab-panel{animation:rise .25s cubic-bezier(.2,.7,.3,1);}
+  @media(max-width:560px){
+    .ed-tabs{gap:6px;}
+    .ed-tab{width:100%;justify-content:flex-start;}
+    .ed-tab-count{margin-left:auto;}
+  }
   /* edital */
   .field textarea{width:100%;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface-2);border:1px solid var(--border-2);border-radius:10px;padding:11px 13px;transition:all .16s;resize:vertical;line-height:1.5;}
   .field textarea:focus{outline:none;border-color:var(--emerald);background:var(--surface);box-shadow:0 0 0 3px var(--emerald-soft);}
@@ -1899,25 +1914,37 @@ function renderEdital(){
     kpi(new Set(state.edital.map(t=>t.disc)).size,'Disciplinas','--red','M4 6h16M4 12h16M4 18h10','');
   const list=document.getElementById('edital-list');list.innerHTML='';
   if(st.total===0){list.innerHTML='<div class="card"><div class="empty">Nenhum tópico cadastrado. Use o formulário acima — pode colar vários de uma vez, um por linha.</div></div>';return;}
+
   const groups={};state.edital.forEach(t=>{(groups[t.disc]=groups[t.disc]||[]).push(t);});
   const order=DISCIPLINAS.filter(d=>groups[d]).concat(Object.keys(groups).filter(d=>!DISCIPLINAS.includes(d)));
+  if(!window.editalActiveDisc||!groups[window.editalActiveDisc])window.editalActiveDisc=order[0];
+
+  const tabs=document.createElement('div');tabs.className='ed-tabs';
   order.forEach(disc=>{
     const items=groups[disc];const done=items.filter(t=>t.done).length;const pct=Math.round(done/items.length*100);
-    const ca=items.filter(t=>t.inc==='alta').length,cm=items.filter(t=>t.inc==='media').length,cb=items.filter(t=>t.inc==='baixa').length;
-    let incSum='';if(ca||cm||cb)incSum=' · <span style="color:var(--red)">'+ca+' alta</span> · <span style="color:var(--amber)">'+cm+' média</span> · <span style="color:var(--text-3)">'+cb+' baixa</span>';
-    const card=document.createElement('div');card.className='card';card.style.marginBottom='16px';
-    card.innerHTML='<div class="card-h"><h3><span class="ddot" style="background:'+colorOf(disc)+'"></span>'+escapeHtml(disc)+'</h3><span class="hint">'+done+'/'+items.length+' · '+pct+'%'+incSum+'</span></div><div class="gbar" style="margin-bottom:14px;"><i style="width:'+pct+'%;background:'+colorOf(disc)+'"></i></div>';
-    const wrap=document.createElement('div');
-    items.forEach(t=>{
-      const row=document.createElement('div');row.className='topic'+(t.done?' on':'');
-      const chip=t.inc?'<span class="chip '+(t.inc==='alta'?'red':t.inc==='media'?'amber':'gray')+'" style="margin-left:auto">'+(t.inc==='alta'?'alta':t.inc==='media'?'média':'baixa')+'</span>':'';
-      row.innerHTML='<div class="tdot'+(t.done?' on':'')+'">'+CHK+'</div><div class="tt">'+escapeHtml(t.t)+'</div>'+chip+'<button class="trm" title="Remover">✕</button>';
-      row.querySelector('.tdot').onclick=()=>{t.done=!t.done;save();renderEdital();renderEditalCard();};
-      row.querySelector('.trm').onclick=()=>{state.edital=state.edital.filter(x=>x.id!==t.id);save();renderEdital();renderEditalCard();};
-      wrap.appendChild(row);
-    });
-    card.appendChild(wrap);list.appendChild(card);
+    const btn=document.createElement('button');btn.type='button';btn.className='ed-tab'+(window.editalActiveDisc===disc?' active':'');btn.title=done+' de '+items.length+' tópicos concluídos · '+pct+'%';
+    btn.innerHTML='<span class="ed-tab-dot" style="background:'+colorOf(disc)+'"></span><span class="ed-tab-t">'+escapeHtml(disc)+'</span><span class="ed-tab-count">'+done+'/'+items.length+'</span>';
+    btn.onclick=()=>{window.editalActiveDisc=disc;renderEdital();};
+    tabs.appendChild(btn);
   });
+  list.appendChild(tabs);
+
+  const disc=window.editalActiveDisc;
+  const items=groups[disc]||[];const done=items.filter(t=>t.done).length;const pct=Math.round(done/items.length*100);
+  const ca=items.filter(t=>t.inc==='alta').length,cm=items.filter(t=>t.inc==='media').length,cb=items.filter(t=>t.inc==='baixa').length;
+  let incSum='';if(ca||cm||cb)incSum=' · <span style="color:var(--red)">'+ca+' alta</span> · <span style="color:var(--amber)">'+cm+' média</span> · <span style="color:var(--text-3)">'+cb+' baixa</span>';
+  const card=document.createElement('div');card.className='card ed-tab-panel';card.style.marginBottom='16px';
+  card.innerHTML='<div class="card-h"><h3><span class="ddot" style="background:'+colorOf(disc)+'"></span>'+escapeHtml(disc)+'</h3><span class="hint">'+done+'/'+items.length+' · '+pct+'%'+incSum+'</span></div><div class="gbar" style="margin-bottom:14px;"><i style="width:'+pct+'%;background:'+colorOf(disc)+'"></i></div>';
+  const wrap=document.createElement('div');
+  items.forEach(t=>{
+    const row=document.createElement('div');row.className='topic'+(t.done?' on':'');
+    const chip=t.inc?'<span class="chip '+(t.inc==='alta'?'red':t.inc==='media'?'amber':'gray')+'" style="margin-left:auto">'+(t.inc==='alta'?'alta':t.inc==='media'?'média':'baixa')+'</span>':'';
+    row.innerHTML='<div class="tdot'+(t.done?' on':'')+'">'+CHK+'</div><div class="tt">'+escapeHtml(t.t)+'</div>'+chip+'<button class="trm" title="Remover">✕</button>';
+    row.querySelector('.tdot').onclick=()=>{t.done=!t.done;save();renderEdital();renderEditalCard();};
+    row.querySelector('.trm').onclick=()=>{state.edital=state.edital.filter(x=>x.id!==t.id);save();renderEdital();renderEditalCard();};
+    wrap.appendChild(row);
+  });
+  card.appendChild(wrap);list.appendChild(card);
 }
 document.getElementById('ed-add').onclick=()=>{
   const disc=document.getElementById('ed-disc').value;
@@ -1925,6 +1952,7 @@ document.getElementById('ed-add').onclick=()=>{
   const lines=document.getElementById('ed-topics').value.split('\n').map(l=>l.trim()).filter(Boolean);
   if(!lines.length){toast('digite ao menos um tópico');return;}
   lines.forEach((l,i)=>state.edital.push({id:Date.now()+'_'+i,disc,t:l,inc,done:false}));
+  window.editalActiveDisc=disc;
   document.getElementById('ed-topics').value='';
   save();renderEdital();renderEditalCard();toast(lines.length+' tópico(s) adicionado(s) ✓');
 };
