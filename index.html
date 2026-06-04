@@ -2941,6 +2941,113 @@ function rolloverDay(){
   setInterval(marcarVazios, 1500);
 })();
 </script>
+
+<style>
+  /* reorganização de tópicos e subtópicos no edital */
+  .ed-reorder-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:-6px 0 16px;padding:10px 12px;border:1px solid var(--border);background:var(--surface-2);border-radius:var(--r-sm);}
+  .ed-reorder-toolbar .ed-reorder-info{font-size:12px;color:var(--text-3);line-height:1.35;}
+  .ed-reorder-toolbar .ed-reorder-info b{color:var(--text-2);font-weight:700;}
+  .ed-reorder-btn{border:1px solid var(--border-2);background:var(--surface);color:var(--text-2);border-radius:10px;padding:8px 12px;font-size:12.5px;display:inline-flex;align-items:center;gap:7px;box-shadow:var(--sh-sm);}
+  .ed-reorder-btn:hover{color:var(--text);border-color:var(--text-3);background:var(--surface);transform:translateY(-1px);}
+  .ed-reorder-btn.active{background:var(--emerald);border-color:var(--emerald);color:#fff;box-shadow:0 2px 8px rgba(12,138,91,.25);}
+  .ed-move{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+  .ed-move button{width:28px;height:28px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-2);border-radius:8px;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;}
+  .ed-move button:hover:not(:disabled){border-color:var(--emerald);color:var(--emerald-d);background:var(--emerald-soft);}
+  .ed-move button:disabled{opacity:.35;cursor:not-allowed;}
+  #view-edital .topic{flex-wrap:wrap;}
+  #view-edital .sub-panel{flex-basis:100%;}
+  .sub-panel .ed-sub-move{margin-left:auto;}
+  .ed-reorder-on .topic{background:var(--surface-2);border:1px dashed var(--border-2);border-radius:10px;padding:8px 10px;margin-bottom:6px;}
+  .ed-reorder-on .topic:last-child{border-bottom:1px dashed var(--border-2);}
+  .ed-reorder-on .sub-panel > div{padding-right:4px;}
+  @media(max-width:560px){
+    .ed-reorder-toolbar{align-items:stretch;}
+    .ed-reorder-btn{width:100%;justify-content:center;}
+    .ed-move button{width:30px;height:30px;}
+  }
+</style>
+
+<script>
+/* Catedra: reorganizacao manual de topicos e subtopicos do edital */
+(function(){
+  window.editalReorderMode = window.editalReorderMode || false;
+  function S(){ try{ if(typeof state!=='undefined' && state) return state; }catch(e){} return window.state || {}; }
+  function persist(){ try{ if(typeof save==='function'){ save(); return; } }catch(e){} try{ localStorage.setItem('catedra:state', JSON.stringify(S())); }catch(e){} }
+  function activeDisc(){ return window.editalActiveDisc || ((S().edital||[])[0] && (S().edital||[])[0].disc) || ''; }
+  function itemsOfActiveDisc(){ var d=activeDisc(); return (S().edital||[]).filter(function(t){ return t.disc===d; }); }
+  function subsOf(topic){ if(!topic) return []; if(!Array.isArray(topic.subs)) topic.subs=[]; return topic.subs; }
+  function redraw(){ try{ renderEdital(); }catch(e){} try{ renderEditalCard(); }catch(e){} try{ renderEditalBadge(); }catch(e){} }
+  function makeMoveControls(canUp, canDown, onUp, onDown, cls){
+    var box=document.createElement('div'); box.className='ed-move '+(cls||'');
+    var up=document.createElement('button'); up.type='button'; up.title='Mover para cima'; up.innerHTML='↑'; up.disabled=!canUp;
+    var down=document.createElement('button'); down.type='button'; down.title='Mover para baixo'; down.innerHTML='↓'; down.disabled=!canDown;
+    up.onclick=function(e){ e.preventDefault(); e.stopPropagation(); if(!up.disabled) onUp(); };
+    down.onclick=function(e){ e.preventDefault(); e.stopPropagation(); if(!down.disabled) onDown(); };
+    box.appendChild(up); box.appendChild(down); return box;
+  }
+  function moveTopic(topic, dir){
+    var s=S(), ed=s.edital||[]; var same=ed.filter(function(x){return x.disc===topic.disc;});
+    var pos=same.indexOf(topic); var other=same[pos+dir]; if(pos<0 || !other) return;
+    var i=ed.indexOf(topic), j=ed.indexOf(other); if(i<0 || j<0) return;
+    ed[i]=other; ed[j]=topic; persist(); redraw();
+  }
+  function moveSub(topic, sub, dir){
+    var arr=subsOf(topic); var i=arr.indexOf(sub); var j=i+dir; if(i<0 || j<0 || j>=arr.length) return;
+    var tmp=arr[i]; arr[i]=arr[j]; arr[j]=tmp; persist(); redraw();
+  }
+  function buildToolbar(){
+    var list=document.getElementById('edital-list'); if(!list) return;
+    var tabs=list.querySelector('.ed-tabs'); if(!tabs) return;
+    var old=document.getElementById('ed-reorder-toolbar'); if(old) old.remove();
+    var bar=document.createElement('div'); bar.id='ed-reorder-toolbar'; bar.className='ed-reorder-toolbar';
+    var btn=document.createElement('button'); btn.type='button'; btn.className='ed-reorder-btn'+(window.editalReorderMode?' active':'');
+    btn.innerHTML=(window.editalReorderMode?'✓ Reorganizando':'↕ Reorganizar');
+    btn.onclick=function(){ window.editalReorderMode=!window.editalReorderMode; redraw(); };
+    var info=document.createElement('div'); info.className='ed-reorder-info';
+    info.innerHTML=window.editalReorderMode ? '<b>Modo ativo:</b> use ↑ ↓ para mudar a ordem dos tópicos. Para subtópicos, abra o tópico em “subtópicos” e mova os itens.' : 'Reorganize manualmente a ordem dos <b>tópicos</b> e <b>subtópicos</b> da matéria selecionada.';
+    bar.appendChild(info); bar.appendChild(btn); tabs.insertAdjacentElement('afterend', bar);
+  }
+  function decorateSubPanel(panel, topic){
+    if(!panel || !window.editalReorderMode) return;
+    var arr=subsOf(topic); if(!arr.length) return;
+    var rows=Array.from(panel.children).filter(function(el){ return el.querySelector && el.querySelector('span') && el.querySelector('button[title="Remover"]'); });
+    rows.forEach(function(row, idx){
+      if(row.querySelector('.ed-sub-move')) return;
+      var sub=arr[idx]; if(!sub) return;
+      var rm=row.querySelector('button[title="Remover"]');
+      var controls=makeMoveControls(idx>0, idx<arr.length-1, function(){ moveSub(topic, sub, -1); }, function(){ moveSub(topic, sub, 1); }, 'ed-sub-move');
+      if(rm) row.insertBefore(controls, rm); else row.appendChild(controls);
+    });
+  }
+  function decorateRows(){
+    var list=document.getElementById('edital-list'); if(!list) return;
+    list.classList.toggle('ed-reorder-on', !!window.editalReorderMode);
+    buildToolbar();
+    var items=itemsOfActiveDisc(); var rows=Array.from(list.querySelectorAll('.ed-tab-panel .topic'));
+    rows.forEach(function(row, idx){
+      var topic=items[idx]; if(!topic) return;
+      var panel=row.querySelector('.sub-panel');
+      if(panel && !panel.__edReorderObserver){
+        panel.__edReorderObserver=true;
+        try{ new MutationObserver(function(){ decorateSubPanel(panel, topic); }).observe(panel,{childList:true}); }catch(e){}
+      }
+      if(panel) decorateSubPanel(panel, topic);
+      if(!window.editalReorderMode) return;
+      if(row.querySelector('.ed-topic-move')) return;
+      var controls=makeMoveControls(idx>0, idx<items.length-1, function(){ moveTopic(topic, -1); }, function(){ moveTopic(topic, 1); }, 'ed-topic-move');
+      row.insertBefore(controls, row.firstChild);
+    });
+  }
+  if(typeof window.renderEdital==='function' && !window.__editalReorderPatched){
+    window.__editalReorderPatched=true;
+    var original=window.renderEdital;
+    window.renderEdital=function(){ var r=original.apply(this, arguments); try{ decorateRows(); }catch(e){} return r; };
+  }
+  function boot(){ try{ decorateRows(); }catch(e){} }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+
 </body>
 </html>
 
