@@ -693,6 +693,26 @@
   .btn-ghost.danger:hover{background:var(--red-soft);border-color:var(--red);}
   @media(max-width:900px){.system-options-grid,.system-provider-grid,.system-actions-grid{grid-template-columns:1fr;}.system-sync-title{flex-direction:column;}.system-data-card{padding:22px 18px;}}
 
+
+  /* ===== PATCH: botão Salvar em Ajustes ===== */
+  .settings-save-card{border-color:var(--emerald-ring);background:linear-gradient(135deg,var(--surface),var(--emerald-soft));}
+  .settings-save-head{align-items:flex-start;}
+  .settings-save-text{font-size:13.5px;color:var(--text-2);line-height:1.6;margin:-6px 0 16px;max-width:850px;}
+  .settings-save-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  .settings-save-status{font-size:12.5px;color:var(--text-3);}
+  body.sidebar-compact-default .sidebar{width:92px;}
+  body.sidebar-compact-default .brand{justify-content:center;padding-left:0;padding-right:0;}
+  body.sidebar-compact-default .brand-txt,
+  body.sidebar-compact-default .nav-label,
+  body.sidebar-compact-default .nav-item > span:not(.nav-badge),
+  body.sidebar-compact-default .streak-card .lbl{display:none!important;}
+  body.sidebar-compact-default .nav-item{justify-content:center;padding-left:0;padding-right:0;}
+  body.sidebar-compact-default .nav-item.active::before{left:-16px;}
+  body.sidebar-compact-default .streak-card{padding:12px 10px;text-align:center;}
+  body.sidebar-compact-default .streak-card .row{justify-content:center;}
+  @media(max-width:820px){body.sidebar-compact-default .sidebar{width:100%;}}
+  /* ===== fim PATCH: botão Salvar em Ajustes ===== */
+
 </style>
 </head>
 <body>
@@ -1138,6 +1158,17 @@
 
   <!-- ===== AJUSTES ===== -->
   <div class="view" id="view-ajustes">
+    <div class="card settings-save-card" style="margin-bottom:16px;">
+      <div class="card-h settings-save-head">
+        <h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12l4 4L19 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Salvar ajustes</h3>
+        <span class="hint">aplica em toda a plataforma</span>
+      </div>
+      <p class="settings-save-text">Depois de alterar prova, metas, perfil, aparência, disciplinas, intervalos de revisão ou opções do sistema, clique em <b>Salvar ajustes</b> para persistir os dados e reaplicar as mudanças em todos os painéis, gráficos, calendário, relatórios e cards do início.</p>
+      <div class="settings-save-actions">
+        <button class="btn" id="settings-save-all" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12l4 4L19 6" stroke-linecap="round" stroke-linejoin="round"/></svg>Salvar ajustes</button>
+        <span class="settings-save-status" id="settings-save-status">Nenhuma alteração manual salva nesta sessão.</span>
+      </div>
+    </div>
     <div class="grid g-2" style="margin-bottom:16px;">
       <div class="card">
         <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 3v18M5 4h11l-2 3 2 3H5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Sua prova</h3></div>
@@ -4273,12 +4304,6 @@ function rolloverDay(){
   .ux5-summary div{background:rgba(255,255,255,.07);padding:12px 14px;}
   .ux5-summary b{display:block;font-family:'Newsreader',serif;font-size:22px;font-weight:600;color:#fff;line-height:1;}
   .ux5-summary span{font-size:11.5px;color:rgba(255,255,255,.58);display:block;margin-top:5px;}
-  .ux5-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 0;}
-  .ux5-tab{border:1px solid var(--border-2);background:var(--surface);color:var(--text-2);border-radius:999px;padding:8px 12px;font-size:12.5px;font-weight:800;}
-  .ux5-tab.active{background:var(--ink);border-color:var(--ink);color:#fff;}
-  .ux5-material-row{border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--surface-2);margin-bottom:10px;}
-  .ux5-material-row h4{font-size:13.5px;margin-bottom:9px;display:flex;align-items:center;gap:8px;}
-  .ux5-material-row h4 i{width:10px;height:10px;border-radius:3px;background:var(--emerald);display:inline-block;}
   .ux5-advisor{background:linear-gradient(135deg,var(--surface),var(--emerald-soft));border:1px solid var(--emerald-ring);}
   .ux5-advisor-list{display:grid;gap:10px;margin-top:12px;}
   .ux5-advice-line{display:flex;gap:10px;border:1px solid var(--border);background:rgba(255,255,255,.62);border-radius:12px;padding:12px 13px;}
@@ -4324,7 +4349,7 @@ function rolloverDay(){
     priority:{edital:8,desempenho:9,revisao:10,incidencia:8,prova:8,negligencia:7,erros:9},
     goals:{min:60,ideal:180,strong:300},final:{enabled:true,days:30,reduceTheory:true},
     report:{period:'7',style:'objetivo',defaultAdvice:'plano'},anki:{idealMin:85,idealMax:90,alertBelow:80,maxReviews:350,newCardsLimit:25},
-    rituals:{open:'focus',close:'summary',dailyQuestion:true},materials:{},energyPlan:{baixa:'Revisão curta + Anki + 10 questões fáceis.',normal:'Ciclo padrão com foco em revisões vencidas e bloco principal.',alta:'Teoria nova + questões + caderno de erros.'}
+    rituals:{open:'focus',close:'summary',dailyQuestion:true},energyPlan:{baixa:'Revisão curta + Anki + 10 questões fáceis.',normal:'Ciclo padrão com foco em revisões vencidas e bloco principal.',alta:'Teoria nova + questões + caderno de erros.'}
   };}
   function getPrefs(){
     var p=safe(function(){return JSON.parse(localStorage.getItem(KEY)||'{}');},{}), d=defaultPrefs();
@@ -4378,10 +4403,9 @@ function rolloverDay(){
       '<div class="card ux5-card purple"><div class="card-h"><h3>Relatório e estatísticas</h3><span class="hint">tipo de conselho</span></div><div class="ux5-field-row"><div class="ux5-field"><label>Período padrão</label><select id="ux5-report-period"><option value="7">Semanal</option><option value="14">Quinzenal</option><option value="30">Mensal</option><option value="91">Trimestral</option></select></div><div class="ux5-field"><label>Formato dos conselhos</label><select id="ux5-report-style"><option value="objetivo">Objetivo</option><option value="detalhado">Detalhado</option><option value="comparativo">Comparativo</option><option value="disciplina">Por disciplina</option><option value="risco">Por risco</option></select></div><div class="ux5-field"><label>Fechamento padrão</label><select id="ux5-report-advice"><option value="plano">Plano da próxima semana</option><option value="risco">Mapa de risco</option><option value="manter_corrigir">Manter / corrigir</option></select></div><div class="ux5-field"><label>Ritual de encerramento</label><select id="ux5-close"><option value="summary">Resumo do dia</option><option value="next_action">Sugerir próxima ação</option><option value="daily_report">Relatório diário</option></select></div></div></div>'+
       '<div class="card ux5-card amber"><div class="card-h"><h3>Ajustes avançados do Anki</h3><span class="hint">retenção e carga</span></div><div class="ux5-field-row"><div class="ux5-field"><label>Retenção ideal mínima (%)</label><input id="ux5-anki-min" type="number" min="0" max="100"></div><div class="ux5-field"><label>Retenção ideal máxima (%)</label><input id="ux5-anki-max" type="number" min="0" max="100"></div><div class="ux5-field"><label>Alertar abaixo de (%)</label><input id="ux5-anki-alert" type="number" min="0" max="100"></div><div class="ux5-field"><label>Máximo de revisões/dia</label><input id="ux5-anki-reviews" type="number" min="0"></div><div class="ux5-field"><label>Limite de cartões novos/dia</label><input id="ux5-anki-new" type="number" min="0"></div></div><p class="ux5-small">Quando a retenção cair abaixo do limite, os conselhos passam a recomendar reduzir cartões novos, revisar erros recentes e resolver questões do tema.</p></div>'+
     '</div>'+
-    '<div class="card ux5-card ux5-advisor" style="margin-top:16px"><div class="card-h"><h3>Conselho personalizado atual</h3><span class="hint">baseado nos ajustes + dados</span></div><div id="ux5-live-advice" class="ux5-advisor-list"></div></div>'+
-    '<div class="card ux5-card" style="margin-top:16px"><div class="card-h"><h3>Biblioteca de materiais por disciplina</h3><span class="hint">links e referências</span></div><p class="ux5-small" style="margin-bottom:12px">Cadastre PDF principal, lei seca, curso, banco de questões, jurisprudência ou links úteis. Quando o sistema sugerir uma disciplina, esses materiais ficam prontos para consulta.</p><div class="ux5-tabs" id="ux5-material-tabs"></div><div id="ux5-material-editor" style="margin-top:14px"></div></div>';
+    '<div class="card ux5-card ux5-advisor" style="margin-top:16px"><div class="card-h"><h3>Conselho personalizado atual</h3><span class="hint">baseado nos ajustes + dados</span></div><div id="ux5-live-advice" class="ux5-advisor-list"></div></div>';
     view.appendChild(wrap);
-    renderPriorityRanges(); bindSettings(); renderMaterialTabs(); renderUx5Summary(); renderUx5LiveAdvice(); applyFocusPrefs();
+    renderPriorityRanges(); bindSettings(); renderUx5Summary(); renderUx5LiveAdvice(); applyFocusPrefs();
   }
   function renderPriorityRanges(){var host=$('ux5-priority-ranges'); if(!host)return; var names=[['edital','Peso no edital'],['desempenho','Baixo desempenho'],['revisao','Revisão vencida'],['incidencia','Alta incidência'],['prova','Proximidade da prova'],['negligencia','Tempo sem estudar'],['erros','Erros abertos']]; host.innerHTML=names.map(function(x){var id='ux5-prio-'+x[0]; return '<div class="ux5-range-row"><label for="'+id+'">'+x[1]+'</label><div><input id="'+id+'" type="range" min="0" max="10"><output for="'+id+'">0</output></div></div>';}).join('');}
   function bindSettings(){
@@ -4412,9 +4436,6 @@ function rolloverDay(){
   function renderUx5AdviceEverywhere(){renderUx5LiveAdvice(); addAdviceTo('view-stats','ux5-stats-personal','Conselhos personalizados das estatísticas'); addAdviceTo('view-relatorio','ux5-report-personal','Conselhos personalizados do relatório'); var homePersonal=$('ux5-home-personal'); if(homePersonal)homePersonal.remove();}
   function addAdviceTo(viewId,id,title){var view=$(viewId); if(!view)return; var card=$(id); if(!card){card=document.createElement('div');card.id=id;card.className='card ux5-advisor ux5-top-note'; var intro=qs('.ux4-view-intro',view)||view.firstElementChild; if(intro&&intro.nextSibling)view.insertBefore(card,intro.nextSibling); else view.insertBefore(card,view.firstElementChild);} var p=getPrefs(); var lines=personalizedLines().slice(0, viewId==='view-inicio'?3:6); card.innerHTML='<div class="card-h"><h3>'+esc(title)+'</h3><span class="hint">'+esc(labelMap(p.chargeStyle))+' · '+esc(labelMap(p.strategy))+'</span></div><div class="ux5-advisor-list">'+lines.map(function(x){return '<div class="ux5-advice-line '+x[0]+'"><span class="dot"></span><div><b>'+esc(x[1])+'</b><p>'+esc(x[2])+'</p></div></div>';}).join('')+'</div>';}
   function applyFocusPrefs(){var p=getPrefs(); var cf=$('fm-cf'), cb=$('fm-cb'); if(cf&&!cf.dataset.ux5Touched){cf.value=p.focusDefault; cf.dataset.ux5Touched='1';} if(cb&&!cb.dataset.ux5Touched){cb.value=p.breakDefault; cb.dataset.ux5Touched='1';} var mode=$('fm-mode-'+p.focusMode); if(mode&&!mode.classList.contains('active')){safe(function(){mode.click();},null);} if(p.focusDark){var fm=$('focus-mode'); if(fm)fm.classList.add('ux5-dark-focus');}}
-  function renderMaterialTabs(){var host=$('ux5-material-tabs'), edit=$('ux5-material-editor'); if(!host||!edit)return; var discs=safe(function(){return DISCIPLINAS;},['Direito Constitucional','Direito Administrativo','Direito Tributário','Processo Civil']); var top=discs.slice(0,8); host.innerHTML=top.map(function(d,i){return '<button class="ux5-tab '+(i===0?'active':'')+'" data-disc="'+esc(d)+'">'+esc(shortDisc(d))+'</button>';}).join(''); qsa('.ux5-tab',host).forEach(function(b){b.onclick=function(){qsa('.ux5-tab',host).forEach(function(x){x.classList.remove('active');}); b.classList.add('active'); renderMaterialEditor(b.dataset.disc);};}); renderMaterialEditor(top[0]);}
-  function shortDisc(d){return String(d).replace('Direito ','').replace('Processo ','Proc. ').slice(0,26);}
-  function renderMaterialEditor(disc){var edit=$('ux5-material-editor'); if(!edit||!disc)return; var p=getPrefs(); p.materials=p.materials||{}; var m=p.materials[disc]||{}; edit.innerHTML='<div class="ux5-material-row"><h4><i></i>'+esc(disc)+'</h4><div class="ux5-field-row"><div class="ux5-field"><label>PDF / material principal</label><input id="ux5-m-pdf" value="'+esc(m.pdf||'')+'"></div><div class="ux5-field"><label>Lei seca / legislação</label><input id="ux5-m-lei" value="'+esc(m.lei||'')+'"></div><div class="ux5-field"><label>Banco de questões</label><input id="ux5-m-questoes" value="'+esc(m.questoes||'')+'"></div><div class="ux5-field"><label>Jurisprudência / súmulas</label><input id="ux5-m-juris" value="'+esc(m.juris||'')+'"></div></div><div class="ux5-field"><label>Observação estratégica</label><textarea id="ux5-m-nota">'+esc(m.nota||'')+'</textarea></div><button class="btn btn-sm" id="ux5-save-material">Salvar material da disciplina</button></div>'; var btn=$('ux5-save-material'); if(btn)btn.onclick=function(){var pp=getPrefs(); pp.materials=pp.materials||{}; pp.materials[disc]={pdf:$('ux5-m-pdf').value,lei:$('ux5-m-lei').value,questoes:$('ux5-m-questoes').value,juris:$('ux5-m-juris').value,nota:$('ux5-m-nota').value}; setPrefs(pp); toastMsg('material salvo');};}
   function hookNav(){qsa('.nav-item[data-view]').forEach(function(b){if(b.dataset.ux5)return; b.dataset.ux5='1'; b.addEventListener('click',function(){setTimeout(function(){renderSettings(); renderUx5AdviceEverywhere(); applyFocusPrefs();},60);});});}
   function hookRenders(){['renderHome','renderStats','renderRelatorio'].forEach(function(name){var fn=safe(function(){return window[name];},null); if(typeof fn==='function'&&!fn._ux5){window[name]=function(){var r=fn.apply(this,arguments); setTimeout(function(){renderUx5AdviceEverywhere();},20); return r;}; window[name]._ux5=true;}});}
   function hookPersonalizacaoClick(){
@@ -6089,6 +6110,139 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 </script>
 <!-- ===== fim PATCH: sincronização automática global e salvamento imediato ===== -->
+
+
+<!-- ===== PATCH: botão Salvar em Ajustes com aplicação global ===== -->
+<script>
+(function(){
+  if(window.__catedraSettingsSaveButtonPatch) return;
+  window.__catedraSettingsSaveButtonPatch = true;
+
+  function by(id){ return document.getElementById(id); }
+  function call(name){
+    var fn = window[name];
+    if(typeof fn === 'function'){
+      try{ return fn(); }catch(e){ try{ console.warn('[Cátedra ajustes] falha em '+name, e); }catch(_e){} }
+    }
+  }
+  function readBool(id, fallback){
+    var el = by(id);
+    if(!el) return !!fallback;
+    return !!el.checked;
+  }
+  function writeBool(id, value){
+    var el = by(id);
+    if(el) el.checked = !!value;
+  }
+  function ensureState(){
+    if(typeof window.state === 'undefined' || !window.state) window.state = {};
+    window.state.profile = window.state.profile || {};
+    window.state.exam = window.state.exam || {};
+    window.state.goals = window.state.goals || {};
+    window.state.systemSettings = window.state.systemSettings || {};
+    return window.state;
+  }
+  function collectAjustesFromFields(){
+    var st = ensureState();
+    if(by('p-name')) st.profile.name = by('p-name').value.trim();
+    if(by('p-goal')) st.profile.goal = by('p-goal').value.trim();
+    if(by('e-name')) st.exam.name = by('e-name').value.trim();
+    if(by('e-date')) st.exam.date = by('e-date').value;
+    if(by('g-hours')) st.goals.hoursWk = parseInt(by('g-hours').value,10) || 0;
+    if(by('g-q')) st.goals.questionsWk = parseInt(by('g-q').value,10) || 0;
+
+    st.systemSettings = Object.assign({}, st.systemSettings, {
+      backupReminder: readBool('sys-backup-reminder', true),
+      compactSidebar: readBool('sys-compact-sidebar', false),
+      confirmDelete: readBool('sys-confirm-delete', true),
+      localPdf: readBool('sys-local-pdf', true)
+    });
+
+    try{ localStorage.setItem('catedra:system-settings', JSON.stringify(st.systemSettings)); }catch(e){}
+    return st;
+  }
+  function applySystemSettings(){
+    var st = ensureState();
+    var cfg = Object.assign({backupReminder:true,compactSidebar:false,confirmDelete:true,localPdf:true}, st.systemSettings || {});
+    st.systemSettings = cfg;
+    writeBool('sys-backup-reminder', cfg.backupReminder !== false);
+    writeBool('sys-compact-sidebar', !!cfg.compactSidebar);
+    writeBool('sys-confirm-delete', cfg.confirmDelete !== false);
+    writeBool('sys-local-pdf', cfg.localPdf !== false);
+    if(document.body) document.body.classList.toggle('sidebar-compact-default', !!cfg.compactSidebar);
+    document.documentElement.classList.toggle('sidebar-compact-default', !!cfg.compactSidebar);
+  }
+  function repaintPlatform(){
+    var st = ensureState();
+    if(st.theme && typeof window.applyTheme === 'function'){
+      try{ window.applyTheme(st.theme); }catch(e){}
+    }
+    [
+      'renderThemes','renderDiscs','refreshDiscSelects','renderRevIntervals','renderProfile','renderCountdown','renderGoals',
+      'renderResumo','renderHome','renderCycle','renderRevisions','renderEdital','renderEditalCard','renderDistribuicao',
+      'renderCalendar','renderStats','renderDesempenho','renderHistory','renderRelatorio','renderConquistas','renderAnki','renderErros','renderDomain'
+    ].forEach(call);
+    if(typeof window.catedraSyncAll === 'function'){
+      try{ window.catedraSyncAll('ajustes salvos'); }catch(e){}
+    }
+  }
+  function persistAndSync(){
+    var st = collectAjustesFromFields();
+    applySystemSettings();
+    try{
+      if(typeof window.KEY !== 'undefined') localStorage.setItem(window.KEY, JSON.stringify(st));
+      else localStorage.setItem('catedra:state', JSON.stringify(st));
+    }catch(e){}
+    try{
+      if(typeof window.saveNowAndSync === 'function') window.saveNowAndSync('ajustes');
+      else if(typeof window.save === 'function') window.save({reason:'ajustes', forceSync:true});
+    }catch(e){}
+    repaintPlatform();
+
+    var status = by('settings-save-status');
+    if(status){
+      var now = new Date();
+      status.textContent = 'Ajustes salvos e aplicados em toda a plataforma às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'.';
+    }
+    if(typeof window.toast === 'function') window.toast('ajustes salvos e aplicados ✓');
+  }
+  function bindSaveButton(){
+    applySystemSettings();
+    var btn = by('settings-save-all');
+    if(btn && !btn.dataset.boundSettingsSave){
+      btn.dataset.boundSettingsSave = '1';
+      btn.addEventListener('click', persistAndSync);
+    }
+  }
+  function patchRenderAjustes(){
+    if(typeof window.renderAjustes === 'function' && !window.renderAjustes.__settingsSavePatch){
+      var old = window.renderAjustes;
+      window.renderAjustes = function(){
+        var r = old.apply(this, arguments);
+        setTimeout(function(){ applySystemSettings(); bindSaveButton(); }, 0);
+        return r;
+      };
+      window.renderAjustes.__settingsSavePatch = true;
+    }
+  }
+
+  document.addEventListener('keydown', function(ev){
+    var activeAjustes = by('view-ajustes') && by('view-ajustes').classList.contains('active');
+    if(activeAjustes && (ev.ctrlKey || ev.metaKey) && String(ev.key || '').toLowerCase() === 's'){
+      ev.preventDefault();
+      persistAndSync();
+    }
+  });
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ patchRenderAjustes(); bindSaveButton(); });
+  }else{
+    patchRenderAjustes();
+    bindSaveButton();
+  }
+})();
+</script>
+<!-- ===== fim PATCH: botão Salvar em Ajustes com aplicação global ===== -->
 
 </body>
 </html>
