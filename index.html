@@ -5873,5 +5873,181 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </script>
 <!-- ===== fim PATCH DESEMPENHO ===== -->
 
+
+
+<!-- ===== PATCH: sincronização automática global e salvamento imediato ===== -->
+<script>
+(function(){
+  if(window.__catedraAutoSyncPatch) return;
+  window.__catedraAutoSyncPatch = true;
+
+  var originalSave = (typeof window.save === 'function') ? window.save : null;
+  var syncTimer = null;
+  var syncRunning = false;
+  var pendingAfterEdit = false;
+  var lastSyncAt = 0;
+
+  function warn(name, err){
+    try{ console.warn('[Cátedra sync] falha em '+name, err); }catch(e){}
+  }
+  function editableActive(){
+    var a = document.activeElement;
+    if(!a) return false;
+    var tag = String(a.tagName || '').toLowerCase();
+    return tag === 'input' || tag === 'textarea' || tag === 'select' || !!a.isContentEditable;
+  }
+  function call(name){
+    var fn = window[name];
+    if(typeof fn !== 'function') return;
+    try{ fn(); }catch(e){ warn(name, e); }
+  }
+  function persistImmediate(){
+    try{
+      if(typeof window.state !== 'undefined' && typeof window.KEY !== 'undefined'){
+        localStorage.setItem(window.KEY, JSON.stringify(window.state));
+      }
+    }catch(e){}
+    try{ if(typeof window.pushStateToCloud === 'function') window.pushStateToCloud(); }catch(e){}
+  }
+  function updateActiveView(){
+    var active = document.querySelector('.view.active');
+    var id = active ? String(active.id || '').replace('view-','') : '';
+    var map = {
+      inicio:'renderHome', ciclo:'renderCycle', revisoes:'renderRevisions', simulados:'renderSimulados',
+      edital:'renderEdital', pesos:'renderDistribuicao', calendario:'renderCalendar', stats:'renderStats',
+      desempenho:'renderDesempenho', historico:'renderHistory', relatorio:'renderRelatorio', ajustes:'renderAjustes',
+      anki:'renderAnki', erros:'renderErros', conquistas:'renderConquistas', dominio:'renderDomain'
+    };
+    if(map[id]) call(map[id]);
+  }
+  function syncAll(detail){
+    if(syncRunning) return;
+    syncRunning = true;
+    detail = detail || {};
+    try{
+      document.dispatchEvent(new CustomEvent('catedra:before-sync', {detail: detail}));
+    }catch(e){}
+
+    /* Camada comum: tudo que aparece em mais de uma página. */
+    call('syncDiscs');
+    if(!editableActive()) call('refreshDiscSelects');
+    call('renderProfile');
+    call('renderCountdown');
+    call('renderGoals');
+    call('renderResumo');
+    call('renderStreak');
+    call('renderRevBadge');
+    call('renderErrosBadge');
+    call('renderEditalBadge');
+    call('renderEditalCard');
+    call('renderTimer');
+    call('timerBtns');
+
+    /* Páginas alimentadas por sessões, questões, revisões, simulados, edital e erros. */
+    call('renderHome');
+    call('renderPanel');
+    call('renderStats');
+    call('renderDistribuicao');
+    call('renderQuadro');
+    call('renderSimulados');
+    call('renderRevisions');
+    call('renderHistory');
+    call('renderRelatorio');
+    call('renderConquistas');
+    call('renderCalendar');
+    call('renderAnki');
+    call('renderErros');
+    call('renderDomain');
+    call('renderDesempenho');
+
+    updateActiveView();
+    lastSyncAt = Date.now();
+    try{
+      document.dispatchEvent(new CustomEvent('catedra:statechange', {detail: detail}));
+    }catch(e){}
+    syncRunning = false;
+  }
+  function scheduleSync(reason, force){
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(function(){
+      if(editableActive() && !force){ pendingAfterEdit = true; return; }
+      pendingAfterEdit = false;
+      syncAll({reason: reason || 'save', automatic: true});
+    }, force ? 20 : 120);
+  }
+
+  window.catedraSyncAll = function(reason){
+    syncAll({reason: reason || 'manual', automatic: false});
+  };
+
+  window.save = async function(options){
+    var out;
+    try{
+      if(originalSave && originalSave !== window.save) out = originalSave.apply(this, arguments);
+      else persistImmediate();
+    }catch(e){
+      warn('save original', e);
+      persistImmediate();
+    }
+    var cfg = (options && typeof options === 'object') ? options : {};
+    if(cfg.sync !== false) scheduleSync(cfg.reason || 'save', !!cfg.forceSync);
+    return out;
+  };
+
+  window.saveNowAndSync = function(reason){
+    var r = window.save({reason: reason || 'manual', forceSync: true});
+    syncAll({reason: reason || 'manual', automatic: false, forced: true});
+    return r;
+  };
+
+  document.addEventListener('blur', function(){
+    if(pendingAfterEdit){ scheduleSync('blur', true); }
+  }, true);
+  document.addEventListener('change', function(){ scheduleSync('change', true); }, true);
+
+  function wrapRegisterButtons(){
+    var buttons = [
+      ['log-save','registro de sessão'],
+      ['sim-save','registro de simulado'],
+      ['anki-save','registro de Anki'],
+      ['ed-add','tópicos do edital'],
+      ['er-add','caderno de erros'],
+      ['cal-f-save','calendário']
+    ];
+    buttons.forEach(function(pair){
+      var btn = document.getElementById(pair[0]);
+      if(!btn || btn.dataset.autoSyncWrapped) return;
+      btn.dataset.autoSyncWrapped = '1';
+      var old = btn.onclick;
+      btn.onclick = function(ev){
+        var r = old ? old.call(this, ev) : undefined;
+        setTimeout(function(){
+          try{ window.catedraSyncAll(pair[1]); }catch(e){ warn(pair[1], e); }
+        }, 40);
+        return r;
+      };
+    });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ wrapRegisterButtons(); scheduleSync('inicialização', true); });
+  }else{
+    wrapRegisterButtons();
+    scheduleSync('inicialização', true);
+  }
+
+  /* Reforço leve: se algum patch antigo alterar o estado sem chamar render global, atualiza após interações principais. */
+  document.addEventListener('click', function(ev){
+    var t = ev.target;
+    if(!t) return;
+    var b = t.closest && t.closest('button, .tdot, .mini-dot, .cbox, .day, .nav-item');
+    if(!b) return;
+    if(Date.now() - lastSyncAt < 180) return;
+    scheduleSync('interação', false);
+  }, true);
+})();
+</script>
+<!-- ===== fim PATCH: sincronização automática global e salvamento imediato ===== -->
+
 </body>
 </html>
