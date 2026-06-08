@@ -4288,6 +4288,10 @@ function rolloverDay(){
   .ux5-advice-line p{font-size:12.5px;color:var(--text-2);line-height:1.5;margin:0;}
   .ux5-top-note{margin-bottom:16px;}
   .ux5-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:12px;}
+  .ux5-savebar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;}
+  .ux5-savebar p{margin:0;font-size:13px;color:var(--text-2);line-height:1.45;}
+  .ux5-savebar .btn{white-space:nowrap;}
+  @media(max-width:620px){.ux5-savebar{align-items:stretch;flex-direction:column;}.ux5-savebar .btn{justify-content:center;width:100%;}}
   .ux5-small{font-size:12px;color:var(--text-3);line-height:1.55;}
   .ux5-energy{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
   @media(max-width:620px){.ux5-energy{grid-template-columns:1fr;}}
@@ -4310,6 +4314,8 @@ function rolloverDay(){
   function toastMsg(m){safe(function(){toast(m);},null);}
   function saveCore(){safe(function(){save();},null);}
   function todayISO(){return safe(function(){return todayStr();},new Date().toISOString().slice(0,10));}
+  function clone(o){return JSON.parse(JSON.stringify(o||{}));}
+  var draftPrefs=null;
   function defaultPrefs(){return {
     studyLevel:'intermediario',dailyTime:180,shift:'noite',days:'seg,ter,qua,qui,sex,sab',energy:'normal',
     chargeStyle:'equilibrado',strategy:'ciclo',fazendaFocus:false,language:'professor',bank:'cebraspe',
@@ -4324,20 +4330,44 @@ function rolloverDay(){
     var p=safe(function(){return JSON.parse(localStorage.getItem(KEY)||'{}');},{}), d=defaultPrefs();
     function merge(a,b){Object.keys(b).forEach(function(k){if(a[k]==null)a[k]=b[k]; else if(typeof b[k]==='object'&&!Array.isArray(b[k])&&typeof a[k]==='object')merge(a[k],b[k]);});return a;}
     var out=merge(p,d);
-    if(typeof state==='object'){state.personalizacao=out;}
+    window.state=window.state||{};
+    window.state.personalizacao=out;
+    if(typeof state==='object'){state.personalizacao=out; window.state=state;}
     return out;
   }
-  function setPrefs(p){localStorage.setItem(KEY,JSON.stringify(p)); if(typeof state==='object'){state.personalizacao=p; saveCore();} renderUx5Summary(); renderUx5AdviceEverywhere(); applyFocusPrefs();}
-  function bindVal(id,path,parser){var el=$(id); if(!el)return; var p=getPrefs(); var val=getPath(p,path); if(el.type==='checkbox')el.checked=!!val; else el.value=val==null?'':val; el.addEventListener('change',function(){var pp=getPrefs(); setPath(pp,path,parser?parser(el):el.type==='checkbox'?el.checked:el.value); setPrefs(pp); toastMsg('preferência salva');}); if(el.type==='range'){var out=qs('output[for="'+id+'"]'); if(out){out.textContent=el.value; el.addEventListener('input',function(){out.textContent=el.value;});}}
+  function setPrefs(p){safe(function(){localStorage.setItem(KEY,JSON.stringify(p));},null); window.state=window.state||{}; window.state.personalizacao=p; if(typeof state==='object'){state.personalizacao=p; window.state=state; saveCore();} renderUx5Summary(); renderUx5AdviceEverywhere(); applyFocusPrefs();}
+  function bindVal(id,path,parser){var el=$(id); if(!el)return; var p=draftPrefs||getPrefs(); var val=getPath(p,path); if(el.type==='checkbox')el.checked=!!val; else el.value=val==null?'':val; function updateDraft(){draftPrefs=draftPrefs||clone(getPrefs()); setPath(draftPrefs,path,parser?parser(el):el.type==='checkbox'?el.checked:el.value);} el.addEventListener('change',updateDraft); if(el.type!=='checkbox'&&el.type!=='range')el.addEventListener('input',updateDraft); if(el.type==='range'){var out=qs('output[for="'+id+'"]'); if(out){out.textContent=el.value; el.addEventListener('input',function(){out.textContent=el.value; updateDraft();});}}
   }
   function getPath(o,p){return p.split('.').reduce(function(a,k){return a&&a[k];},o);} 
   function setPath(o,p,v){var a=p.split('.'),x=o; for(var i=0;i<a.length-1;i++){x[a[i]]=x[a[i]]||{}; x=x[a[i]];} x[a[a.length-1]]=v;}
   function nval(el){return parseInt(el.value,10)||0;}
   function labelMap(v){return ({iniciante:'Iniciante',intermediario:'Intermediário',avancado:'Avançado',leve:'Leve',equilibrado:'Equilibrado',rigido:'Rígido',procuradoria:'Estudo estratégico',reta_final:'Reta final',erros:'Recuperação de pontos fracos',simulados:'Simulados e correção',ciclo:'Ciclo por blocos',cebraspe:'CEBRASPE',fgv:'FGV',fcc:'FCC',vunesp:'Vunesp',cesgranrio:'Cesgranrio',outra:'Outra',professor:'Modo professor',tecnico:'Direto e técnico',motivacional:'Motivacional',cobranca:'Cobrança de prova'}[v]||v||'—');}
+  function openUx5View(){qsa('.nav-item').forEach(function(x){x.classList.remove('active');});qsa('.view').forEach(function(x){x.classList.remove('active');});var btn=qs('.nav-item[data-view="personalizacao"]');var view=$('view-personalizacao');if(btn)btn.classList.add('active');if(view)view.classList.add('active');var nav=$('nav'),foot=$('side-foot');if(nav)nav.classList.remove('open');if(foot)foot.classList.remove('open');renderSettings();renderUx5AdviceEverywhere();applyFocusPrefs();}
+  function ensureUx5Nav(){
+    var nav=$('nav'); if(!nav)return;
+    var btn=qs('.nav-item[data-view="personalizacao"]');
+    if(!btn){
+      btn=document.createElement('button'); btn.className='nav-item'; btn.dataset.view='personalizacao';
+      btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l1.8 5.5L19 10.3l-5.2 1.8L12 17.6l-1.8-5.5L5 10.3l5.2-1.8L12 3Z" stroke-linejoin="round"/><path d="M19 15l.9 2.7L22.5 19l-2.6.9L19 22.5l-.9-2.6-2.6-.9 2.6-1.3L19 15Z" stroke-linejoin="round"/></svg>Personalização';
+      var ajustes=qs('.nav-item[data-view="ajustes"]',nav);
+      if(ajustes)nav.insertBefore(btn,ajustes); else nav.appendChild(btn);
+    }
+    if(!btn.dataset.ux5OpenBound){btn.dataset.ux5OpenBound='1';btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();openUx5View();},true);}
+  }
+  function ensureUx5View(){
+    if($('view-personalizacao'))return;
+    var content=qs('.content'); if(!content)return;
+    var view=document.createElement('div'); view.className='view'; view.id='view-personalizacao';
+    var ajustes=$('view-ajustes');
+    content.insertBefore(view,ajustes||null);
+  }
   function renderSettings(){
-    var view=$('view-ajustes'); if(!view||$('ux5-settings'))return;
+    ensureUx5Nav(); ensureUx5View();
+    var view=$('view-personalizacao'); if(!view||$('ux5-settings'))return;
+    draftPrefs=clone(getPrefs());
     var wrap=document.createElement('div'); wrap.id='ux5-settings'; wrap.className='ux5-shell';
     wrap.innerHTML='<div class="card ux5-hero"><span class="ux5-pill">Personalização inteligente</span><h2>Ajuste como a plataforma deve orientar seu estudo.</h2><p>Estas preferências controlam a intensidade dos alertas, o critério do Foco do dia, o comportamento do modo foco, os conselhos de relatório/estatísticas e a forma como a rotina deve ser cobrada.</p><div class="ux5-summary" id="ux5-summary"></div></div>'+
+    '<div class="card ux5-savebar"><p>Edite livremente as preferências abaixo. Nada muda no restante da plataforma até você salvar e aplicar.</p><button class="btn" id="ux5-save-all" type="button">Salvar e aplicar</button></div>'+
     '<div class="ux5-grid">'+
       '<div class="card ux5-card"><div class="card-h"><h3>Perfil de estudo</h3><span class="hint">base dos conselhos</span></div><div class="ux5-field-row"><div class="ux5-field"><label>Nível atual</label><select id="ux5-level"><option value="iniciante">Iniciante</option><option value="intermediario">Intermediário</option><option value="avancado">Avançado</option></select></div><div class="ux5-field"><label>Tempo médio por dia (min)</label><input id="ux5-daily" type="number" min="0"></div><div class="ux5-field"><label>Melhor turno</label><select id="ux5-shift"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option><option value="madrugada">Madrugada</option><option value="variavel">Variável</option></select></div><div class="ux5-field"><label>Energia padrão</label><select id="ux5-energy"><option value="baixa">Baixa</option><option value="normal">Normal</option><option value="alta">Alta</option></select></div></div><div class="ux5-field"><label>Dias disponíveis</label><input id="ux5-days" placeholder="seg,ter,qua,qui,sex,sab"></div><div class="ux5-field"><label>Plano por energia mental</label><div class="ux5-energy"><label><input type="radio" name="ux5-energy-pick" value="baixa">Baixa energia<br><span class="ux5-small">revisão leve e manutenção</span></label><label><input type="radio" name="ux5-energy-pick" value="normal">Energia normal<br><span class="ux5-small">ciclo padrão</span></label><label><input type="radio" name="ux5-energy-pick" value="alta">Alta energia<br><span class="ux5-small">tarefas densas</span></label></div></div></div>'+
       '<div class="card ux5-card purple"><div class="card-h"><h3>Cobrança e estratégia</h3><span class="hint">tom e foco</span></div><div class="ux5-field-row"><div class="ux5-field"><label>Estilo de cobrança</label><select id="ux5-charge"><option value="leve">Leve</option><option value="equilibrado">Equilibrado</option><option value="rigido">Rígido</option></select></div><div class="ux5-field"><label>Estratégia principal</label><select id="ux5-strategy"><option value="procuradoria">Estudo estratégico</option><option value="ciclo">Ciclo por blocos</option><option value="reta_final">Reta final</option><option value="simulados">Simulados e correção</option><option value="erros">Recuperação de pontos fracos</option></select></div><div class="ux5-field"><label>Banca principal</label><select id="ux5-bank"><option value="cebraspe">CEBRASPE</option><option value="fgv">FGV</option><option value="fcc">FCC</option><option value="vunesp">Vunesp</option><option value="cesgranrio">Cesgranrio</option><option value="outra">Outra</option></select></div><div class="ux5-field"><label>Linguagem dos conselhos</label><select id="ux5-language"><option value="professor">Modo professor</option><option value="tecnico">Direto e técnico</option><option value="motivacional">Motivacional</option><option value="cobranca">Cobrança de prova</option></select></div></div><label class="ux5-check"><input id="ux5-fazenda" type="checkbox"> Ativar foco estratégico: priorizar tarefas com maior peso, urgência, dificuldade e proximidade da prova.</label></div>'+
@@ -4358,7 +4388,9 @@ function rolloverDay(){
     [['ux5-level','studyLevel'],['ux5-daily','dailyTime',nval],['ux5-shift','shift'],['ux5-energy','energy'],['ux5-days','days'],['ux5-charge','chargeStyle'],['ux5-strategy','strategy'],['ux5-bank','bank'],['ux5-language','language'],['ux5-fazenda','fazendaFocus'],['ux5-focus-default','focusDefault',nval],['ux5-break-default','breakDefault',nval],['ux5-focus-mode','focusMode'],['ux5-open','rituals.open'],['ux5-focus-dark','focusDark'],['ux5-auto-register','autoOpenRegister'],['ux5-auto-done','autoMarkDone'],['ux5-ask-questions','askQuestions'],['ux5-auto-review','autoCreateReview'],['ux5-goal-min','goals.min',nval],['ux5-goal-ideal','goals.ideal',nval],['ux5-goal-strong','goals.strong',nval],['ux5-final-days','final.days',nval],['ux5-final-enabled','final.enabled'],['ux5-final-theory','final.reduceTheory'],['ux5-report-period','report.period'],['ux5-report-style','report.style'],['ux5-report-advice','report.defaultAdvice'],['ux5-close','rituals.close'],['ux5-anki-min','anki.idealMin',nval],['ux5-anki-max','anki.idealMax',nval],['ux5-anki-alert','anki.alertBelow',nval],['ux5-anki-reviews','anki.maxReviews',nval],['ux5-anki-new','anki.newCardsLimit',nval]].forEach(function(x){bindVal(x[0],x[1],x[2]);});
     [['ux5-alert-reviews','alerts.reviews'],['ux5-alert-anki','alerts.anki'],['ux5-alert-accuracy','alerts.accuracy'],['ux5-alert-errors','alerts.errors'],['ux5-alert-weekly','alerts.weekly'],['ux5-alert-exam','alerts.exam'],['ux5-alert-simulados','alerts.simulados'],['ux5-alert-neglected','alerts.neglected']].forEach(function(x){bindVal(x[0],x[1]);});
     ['edital','desempenho','revisao','incidencia','prova','negligencia','erros'].forEach(function(k){bindVal('ux5-prio-'+k,'priority.'+k,nval);});
-    qsa('input[name="ux5-energy-pick"]').forEach(function(r){var p=getPrefs(); r.checked=r.value===p.energy; r.onchange=function(){var pp=getPrefs(); pp.energy=r.value; setPrefs(pp); var sel=$('ux5-energy'); if(sel)sel.value=r.value;};});
+    qsa('input[name="ux5-energy-pick"]').forEach(function(r){var p=draftPrefs||getPrefs(); r.checked=r.value===p.energy; r.onchange=function(){draftPrefs=draftPrefs||clone(getPrefs()); draftPrefs.energy=r.value; var sel=$('ux5-energy'); if(sel)sel.value=r.value;};});
+    var saveAll=$('ux5-save-all');
+    if(saveAll)saveAll.onclick=function(){setPrefs(clone(draftPrefs||getPrefs())); draftPrefs=clone(getPrefs()); toastMsg('personalização salva e aplicada em toda a plataforma');};
   }
   function renderUx5Summary(){var p=getPrefs(), host=$('ux5-summary'); if(!host)return; var finalTxt=p.final.enabled?p.final.days+' dias':'manual'; host.innerHTML='<div><b>'+labelMap(p.studyLevel)+'</b><span>nível do aluno</span></div><div><b>'+p.dailyTime+' min</b><span>tempo médio/dia</span></div><div><b>'+labelMap(p.chargeStyle)+'</b><span>cobrança</span></div><div><b>'+labelMap(p.strategy)+'</b><span>estratégia</span></div><div><b>'+labelMap(p.bank)+'</b><span>banca</span></div><div><b>'+finalTxt+'</b><span>gatilho de reta final</span></div>'; renderUx5LiveAdvice();}
   function stats(){var t=todayISO(); var sessions=safe(function(){return state.sessions||[];},[]); var minToday=sessions.filter(function(s){return s.date===t;}).reduce(function(a,s){return a+(+s.min||0);},0); var q7=0,c7=0,min7=0; var start=new Date(t); start.setDate(start.getDate()-6); var startS=start.toISOString().slice(0,10); sessions.forEach(function(s){if(s.date>=startS&&s.date<=t){min7+=+s.min||0;q7+=+s.q||0;c7+=+s.c||0;}}); var rev=safe(function(){return (state.revisions||[]).filter(function(r){return !r.done&&r.due<=t;}).length;},0); var err=safe(function(){return (state.errors||[]).filter(function(e){return (e.status||'pendente')!=='resolvido';}).length;},0); var ret=safe(function(){var a=(state.anki||[]).filter(function(x){return +(x.ret||x.retention||0)>0;}).sort(function(a,b){return String(a.date||'').localeCompare(String(b.date||''));}); return a.length?+(a[a.length-1].ret||a[a.length-1].retention):0;},0); var acc=q7?Math.round(c7/q7*100):0; return {minToday:minToday,min7:min7,q7:q7,acc:acc,rev:rev,err:err,ret:ret};}
@@ -4385,7 +4417,16 @@ function rolloverDay(){
   function renderMaterialEditor(disc){var edit=$('ux5-material-editor'); if(!edit||!disc)return; var p=getPrefs(); p.materials=p.materials||{}; var m=p.materials[disc]||{}; edit.innerHTML='<div class="ux5-material-row"><h4><i></i>'+esc(disc)+'</h4><div class="ux5-field-row"><div class="ux5-field"><label>PDF / material principal</label><input id="ux5-m-pdf" value="'+esc(m.pdf||'')+'"></div><div class="ux5-field"><label>Lei seca / legislação</label><input id="ux5-m-lei" value="'+esc(m.lei||'')+'"></div><div class="ux5-field"><label>Banco de questões</label><input id="ux5-m-questoes" value="'+esc(m.questoes||'')+'"></div><div class="ux5-field"><label>Jurisprudência / súmulas</label><input id="ux5-m-juris" value="'+esc(m.juris||'')+'"></div></div><div class="ux5-field"><label>Observação estratégica</label><textarea id="ux5-m-nota">'+esc(m.nota||'')+'</textarea></div><button class="btn btn-sm" id="ux5-save-material">Salvar material da disciplina</button></div>'; var btn=$('ux5-save-material'); if(btn)btn.onclick=function(){var pp=getPrefs(); pp.materials=pp.materials||{}; pp.materials[disc]={pdf:$('ux5-m-pdf').value,lei:$('ux5-m-lei').value,questoes:$('ux5-m-questoes').value,juris:$('ux5-m-juris').value,nota:$('ux5-m-nota').value}; setPrefs(pp); toastMsg('material salvo');};}
   function hookNav(){qsa('.nav-item[data-view]').forEach(function(b){if(b.dataset.ux5)return; b.dataset.ux5='1'; b.addEventListener('click',function(){setTimeout(function(){renderSettings(); renderUx5AdviceEverywhere(); applyFocusPrefs();},60);});});}
   function hookRenders(){['renderHome','renderStats','renderRelatorio'].forEach(function(name){var fn=safe(function(){return window[name];},null); if(typeof fn==='function'&&!fn._ux5){window[name]=function(){var r=fn.apply(this,arguments); setTimeout(function(){renderUx5AdviceEverywhere();},20); return r;}; window[name]._ux5=true;}});}
-  function boot(){renderSettings(); hookNav(); hookRenders(); renderUx5AdviceEverywhere(); applyFocusPrefs();}
+  function hookPersonalizacaoClick(){
+    if(document.documentElement.dataset.ux5PersonalizacaoClick)return;
+    document.documentElement.dataset.ux5PersonalizacaoClick='1';
+    document.addEventListener('click',function(e){
+      var btn=e.target&&e.target.closest&&e.target.closest('.nav-item[data-view="personalizacao"]');
+      if(!btn)return;
+      e.preventDefault(); e.stopPropagation(); openUx5View();
+    },true);
+  }
+  function boot(){renderSettings(); hookPersonalizacaoClick(); hookNav(); hookRenders(); renderUx5AdviceEverywhere(); applyFocusPrefs();}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
 </script>
