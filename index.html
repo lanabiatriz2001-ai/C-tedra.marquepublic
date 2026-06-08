@@ -6613,5 +6613,225 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </script>
 <!-- ===== fim PATCH FINAL · Ajustes, sistema, notificações e central do dia ===== -->
 
+
+
+<!-- ===== PATCH FINAL PUBLICACAO ESTUDANTES · layout, ciclo limpo e integracao global ===== -->
+<style id="catedra-publicacao-final-css">
+  /* Sidebar compacta corrigida: esconde textos soltos, preserva icones e badges. */
+  body.sidebar-compact-default .sidebar{width:86px!important;padding-left:12px!important;padding-right:12px!important;overflow-x:hidden;}
+  body.sidebar-compact-default .brand{justify-content:center!important;padding-left:0!important;padding-right:0!important;}
+  body.sidebar-compact-default .brand-txt,
+  body.sidebar-compact-default .nav-label,
+  body.sidebar-compact-default .streak-card .lbl,
+  body.sidebar-compact-default .streak-card .fire{display:none!important;}
+  body.sidebar-compact-default .nav{align-items:center!important;gap:8px!important;}
+  body.sidebar-compact-default .nav-item{width:52px!important;height:46px!important;justify-content:center!important;padding:0!important;margin:0 auto!important;gap:0!important;font-size:0!important;position:relative!important;}
+  body.sidebar-compact-default .nav-item svg{width:20px!important;height:20px!important;margin:0!important;}
+  body.sidebar-compact-default .nav-item.active::before{left:-12px!important;top:8px!important;bottom:8px!important;}
+  body.sidebar-compact-default .nav-badge{position:absolute!important;right:2px!important;top:2px!important;margin-left:0!important;min-width:17px!important;height:17px!important;padding:0 4px!important;font-size:9.5px!important;line-height:17px!important;}
+  body.sidebar-compact-default .side-foot{padding-top:12px!important;width:100%!important;}
+  body.sidebar-compact-default .streak-card{width:52px!important;padding:10px 6px!important;}
+  body.sidebar-compact-default .streak-card .n{font-size:22px!important;}
+  body.sidebar-compact-default .streak-dots{display:none!important;}
+  @media(max-width:820px){body.sidebar-compact-default .sidebar{width:100%!important;}body.sidebar-compact-default .brand-txt{display:block!important;}body.sidebar-compact-default .nav-item{width:100%!important;height:auto!important;justify-content:flex-start!important;padding:10px 12px!important;font-size:14px!important;gap:12px!important;}body.sidebar-compact-default .nav-label{display:block!important;}body.sidebar-compact-default .nav-badge{position:static!important;margin-left:auto!important;font-size:11px!important;height:20px!important;}}
+
+  /* Central do dia na pagina inicial. */
+  #central-dia-inline{margin-bottom:16px;}
+  .cdia-card{position:relative;overflow:hidden;border:1px solid color-mix(in srgb,var(--emerald) 26%,var(--border));background:radial-gradient(circle at 100% 0%,color-mix(in srgb,var(--emerald) 16%,transparent),transparent 34%),linear-gradient(135deg,var(--surface),var(--surface-2));}
+  .cdia-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px;}
+  .cdia-eyebrow{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--emerald-d);margin-bottom:4px;}
+  .cdia-title{font-family:'Newsreader',serif;font-size:clamp(24px,3vw,34px);line-height:1;font-weight:600;letter-spacing:-.02em;}
+  .cdia-sub{font-size:13px;color:var(--text-2);line-height:1.5;margin-top:6px;max-width:720px;}
+  .cdia-score{min-width:116px;text-align:center;border:1px solid var(--border);background:var(--surface);border-radius:18px;padding:14px 16px;box-shadow:var(--sh-sm);}
+  .cdia-score b{display:block;font-family:'Newsreader',serif;font-size:34px;line-height:1;font-weight:600;color:var(--emerald-d);}
+  .cdia-score span{display:block;font-size:11px;color:var(--text-3);margin-top:5px;text-transform:uppercase;letter-spacing:.06em;}
+  .cdia-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:14px;align-items:start;}
+  .cdia-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px;}
+  .cdia-metric{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 13px;}
+  .cdia-metric b{font-family:'Newsreader',serif;font-size:23px;line-height:1;font-weight:600;display:block;}
+  .cdia-metric span{font-size:11.5px;color:var(--text-3);display:block;margin-top:5px;}
+  .cdia-list{display:grid;gap:8px;}
+  .cdia-item{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--border);background:var(--surface);border-radius:13px;padding:11px 12px;}
+  .cdia-item .num{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--emerald-soft);color:var(--emerald-d);font-size:12px;font-weight:800;}
+  .cdia-item strong{font-size:13.5px;display:block;}
+  .cdia-item small{font-size:11.5px;color:var(--text-3);display:block;margin-top:1px;}
+  .cdia-item button{border:1px solid var(--border-2);background:var(--surface-2);color:var(--text-2);border-radius:9px;padding:7px 10px;font-size:12px;}
+  .cdia-item button:hover{border-color:var(--emerald);color:var(--emerald-d);background:var(--emerald-soft);}
+  .cdia-panel{border:1px solid var(--border);background:var(--surface);border-radius:16px;padding:15px 16px;box-shadow:var(--sh-sm);}
+  .cdia-panel h4{font-size:13.5px;margin-bottom:10px;}
+  .cdia-advice{display:grid;gap:8px;}
+  .cdia-advice div{border-left:3px solid var(--emerald);background:var(--surface-2);border-radius:10px;padding:10px 11px;font-size:12.5px;color:var(--text-2);line-height:1.45;}
+  .cdia-advice div.warn{border-left-color:var(--amber);}.cdia-advice div.bad{border-left-color:var(--red);}.cdia-advice div.info{border-left-color:var(--purple);}
+  @media(max-width:980px){.cdia-grid{grid-template-columns:1fr;}.cdia-metrics{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:560px){.cdia-head{flex-direction:column;}.cdia-score{width:100%;}.cdia-metrics{grid-template-columns:1fr;}.cdia-item{grid-template-columns:28px 1fr;}.cdia-item button{grid-column:1/-1;width:100%;}}
+
+  /* Ciclo sem revisoes atrasadas: revisoes ficam na aba propria e na Central do dia. */
+  #view-ciclo #backlog-wrap{display:none!important;}
+  #view-ciclo .blk[data-catedra-review-block="1"]{display:none!important;}
+  #view-ciclo .tip p::after{content:" Revisoes vencidas ficam concentradas na aba Revisoes e na Central do dia.";}
+
+  /* Evita repeticao visual de labels e itens duplicados gerados por patches anteriores. */
+  #nav .nav-label:empty{display:none!important;}
+  .view > .ux4-view-intro + .ux4-view-intro{display:none!important;}
+  .card[data-catedra-duplicate="1"], .nav-item[data-catedra-duplicate="1"]{display:none!important;}
+
+  /* Melhor leitura em pagina publicada. */
+  .content{max-width:1280px;}
+  .card,.kpi,.cdia-card{border-color:color-mix(in srgb,var(--border) 86%,var(--text) 14%);}
+  .empty{border:1px dashed var(--border-2);border-radius:14px;background:var(--surface-2);}
+</style>
+<script id="catedra-publicacao-final-js">
+(function(){
+  'use strict';
+  if(window.__catedraPublicacaoFinal) return;
+  window.__catedraPublicacaoFinal = true;
+  var STORE_KEY = 'catedra:state';
+  var syncBusy = false;
+  function by(id){ return document.getElementById(id); }
+  function q(sel,root){ return (root||document).querySelector(sel); }
+  function qa(sel,root){ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); }
+  function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function st(){ try{ return state; }catch(e){ return window.state || {}; } }
+  function today(){ try{ return todayStr(); }catch(e){ return new Date().toISOString().slice(0,10); } }
+  function addDaysSafe(d,n){ try{ return addDays(d,n); }catch(e){ var x = new Date((d||today())+'T00:00:00'); x.setDate(x.getDate()+n); return x.toISOString().slice(0,10); } }
+  function fmtMin(m){ m=+m||0; return m>=60 ? (Math.floor(m/60)+'h'+String(m%60).padStart(2,'0')) : (m+'m'); }
+  function call(name){ try{ if(typeof window[name] === 'function') window[name](); }catch(e){ try{ console.warn('[Catedra final] '+name, e); }catch(_){ } } }
+  function persist(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(st())); }catch(e){} }
+  function openView(v){ var b = q('.nav-item[data-view="'+v+'"]'); if(b){ b.click(); return; } if(v === 'foco' && by('open-session')) by('open-session').click(); }
+  function ensureArrays(){ var s=st(); ['sessions','revisions','simulados','edital','errors','events','anki','studyDays','backlog'].forEach(function(k){ if(!Array.isArray(s[k])) s[k]=[]; }); s.goals=s.goals||{}; s.profile=s.profile||{}; s.exam=s.exam||{}; s.systemSettings=s.systemSettings||{}; return s; }
+  function dateLE(a,b){ return String(a||'') <= String(b||''); }
+  function sessionsToday(){ var s=ensureArrays(); var t=today(); return s.sessions.filter(function(x){ return x.date===t; }); }
+  function todayMinutes(){ return sessionsToday().reduce(function(a,x){ return a+(+x.min||0); },0); }
+  function questions7(){ var s=ensureArrays(); var days=[]; for(var i=0;i<7;i++) days.push(addDaysSafe(today(),-i)); var qn=0, ok=0; s.sessions.forEach(function(x){ if(days.indexOf(x.date)>-1){ qn += +x.q||0; ok += +x.c||0; } }); return {q:qn,c:ok,acc:qn?Math.round(ok/qn*100):0}; }
+  function pendingReviews(){ var s=ensureArrays(), t=today(); return s.revisions.filter(function(r){ return !r.done && dateLE(r.due,t); }); }
+  function openErrors(){ return ensureArrays().errors.filter(function(e){ return (e.status||'pendente') !== 'resolvido'; }); }
+  function anki7(){ var s=ensureArrays(); var days=[]; for(var i=0;i<7;i++) days.push(addDaysSafe(today(),-i)); var a=s.anki.filter(function(x){ return days.indexOf(x.date)>-1 && (+x.ret||+x.retention||0)>0; }); if(!a.length) return 0; return Math.round(a.reduce(function(n,x){ return n+(+x.ret||+x.retention||0); },0)/a.length); }
+  function editalPct(){ var ed=ensureArrays().edital; return ed.length ? Math.round(ed.filter(function(x){ return !!x.done; }).length/ed.length*100) : 0; }
+  function cyclePct(){ try{ var ids=blockIds(st().dia), c=dc(st().dia); var clean=ids.filter(function(id){ return !/rev/i.test(String(id)); }); var base=clean.length?clean:ids; return base.length?Math.round(base.filter(function(id){return c[id];}).length/base.length*100):0; }catch(e){ return 0; } }
+  function dailyGoal(){ var s=ensureArrays(); if(+s.goals.dailyMin) return +s.goals.dailyMin; if(+s.goals.hoursWk && +s.goals.daysWk) return Math.round((+s.goals.hoursWk*60)/(+s.goals.daysWk)); if(+s.goals.hoursWk) return Math.round((+s.goals.hoursWk*60)/5); return 0; }
+  function readiness(){ var score=62, rev=pendingReviews().length, err=openErrors().length, min=todayMinutes(), goal=dailyGoal(), ret=anki7(), cp=cyclePct(), ed=editalPct(); score += Math.round(cp*0.14); score += goal ? Math.min(12, Math.round((min/goal)*12)) : (min?8:0); score += Math.round(ed*0.06); if(ret){ score += ret>=85?8:(ret<80?-10:2); } score -= Math.min(16,rev*3); score -= Math.min(12,err*2); return Math.max(0,Math.min(100,score)); }
+  function isReviewBlock(b){ var s=[b&&b.id,b&&b.tag,b&&b.t,b&&b.d].join(' ').toLowerCase(); return /cy_rev|revis[aã]o espa[cç]ada|revisoes pendentes|revis[oõ]es pendentes|tarefas do dia.*revis/.test(s); }
+  function cleanActivities(list){ return (Array.isArray(list)?list:[]).filter(function(b){ return !isReviewBlock(b); }); }
+  function patchCycleFunctions(){
+    if(window.__catedraCycleCleaned) return;
+    window.__catedraCycleCleaned = true;
+    try{
+      if(typeof window.cycleActivities === 'function'){
+        var oldActivities = window.cycleActivities;
+        window.cycleActivities = function(){ var list = cleanActivities(oldActivities.apply(this, arguments)); if(!list.length) list = cleanActivities([{id:'cy_teo1',tag:'Teoria',t:'Materia nova',d:'Leitura ativa.'},{id:'cy_lei',tag:'Lei seca',t:'Lei seca do tema',d:'Conferir dispositivos.'},{id:'cy_q',tag:'Questoes',t:'Questoes do tema',d:'Treino ativo e correcao.'}]); return list; };
+      }
+      if(typeof window.getFixos === 'function'){
+        var oldFixos = window.getFixos;
+        window.getFixos = function(){ return cleanActivities(oldFixos.apply(this, arguments)); };
+      }
+      if(typeof window.blockIds === 'function'){
+        var oldBlockIds = window.blockIds;
+        window.blockIds = function(k){ return (oldBlockIds.apply(this, arguments)||[]).filter(function(id){ return !/cy_rev|rev/i.test(String(id)); }); };
+      }
+      if(typeof window.makeBlk === 'function'){
+        var oldMakeBlk = window.makeBlk;
+        window.makeBlk = function(b){ var el = oldMakeBlk.apply(this, arguments); if(isReviewBlock(b)) el.setAttribute('data-catedra-review-block','1'); return el; };
+      }
+    }catch(e){}
+  }
+  function dedupeNav(){
+    var nav=by('nav'); if(!nav) return;
+    var seen={};
+    qa('.nav-item[data-view]',nav).forEach(function(item){ var v=item.dataset.view; if(seen[v]){ item.dataset.catedraDuplicate='1'; item.remove(); } else { seen[v]=item; item.title=(item.textContent||'').trim(); } });
+    qa('.nav-label',nav).forEach(function(label,idx){ var next=label.nextElementSibling; if(next && next.classList && next.classList.contains('nav-label')) label.remove(); if(idx>0 && label.textContent.trim()===qa('.nav-label',nav)[idx-1]?.textContent.trim()) label.remove(); });
+    var order=['inicio','ciclo','revisoes','edital','dominio','pesos','calendario','biblioteca','simulados','desempenho','stats','relatorio','conquistas','anki','erros','historico','ajustes'];
+    var groups=[['Estudo',['inicio','ciclo','revisoes','edital','dominio','pesos','calendario','biblioteca']],['Desempenho',['simulados','desempenho','stats','relatorio','conquistas','anki','erros']],['Sistema',['historico','ajustes']]];
+    var frag=document.createDocumentFragment();
+    groups.forEach(function(g){ var lab=document.createElement('div'); lab.className='nav-label'; lab.textContent=g[0]; frag.appendChild(lab); g[1].forEach(function(v){ var el=seen[v]||q('.nav-item[data-view="'+v+'"]',nav); if(el){ el.style.display=''; frag.appendChild(el); } }); });
+    order.forEach(function(v){ var el=seen[v]||q('.nav-item[data-view="'+v+'"]',nav); if(el && !frag.contains(el)) frag.appendChild(el); });
+    nav.innerHTML=''; nav.appendChild(frag);
+  }
+  function ensureCentral(){
+    var home=by('view-inicio'); if(!home) return;
+    var box=by('central-dia-inline');
+    if(!box){ box=document.createElement('div'); box.id='central-dia-inline'; var kpis=by('kpis'); if(kpis && kpis.parentNode===home) home.insertBefore(box,kpis.nextSibling); else home.insertBefore(box,home.firstElementChild); }
+    renderCentral();
+  }
+  function nextQueue(){
+    var q=[], rev=pendingReviews().length, err=openErrors().length, min=todayMinutes(), goal=dailyGoal(), cp=cyclePct();
+    if(rev) q.push({view:'revisoes',title:'Quitar revisoes',desc:rev+' pendente(s) fora do ciclo'});
+    if(goal && min<goal) q.push({view:'ciclo',title:'Executar ciclo limpo',desc:'faltam '+fmtMin(goal-min)+' para a meta diaria'});
+    else if(cp<100) q.push({view:'ciclo',title:'Fechar ciclo do dia',desc:'progresso atual: '+cp+'%'});
+    if(err) q.push({view:'erros',title:'Resolver erros abertos',desc:err+' item(ns) para revisar'});
+    q.push({view:'historico',title:'Registrar sessao',desc:'tempo, questoes e acertos'});
+    return q.slice(0,4);
+  }
+  function renderCentral(){
+    var box=by('central-dia-inline'); if(!box) return;
+    var q7=questions7(), min=todayMinutes(), goal=dailyGoal(), rev=pendingReviews().length, err=openErrors().length, score=readiness(), queue=nextQueue(), ret=anki7();
+    var advice=[];
+    if(rev) advice.push(['bad','Revisoes vencidas foram retiradas do ciclo. Use a aba Revisoes para quitar a fila antes de conteudo novo.']);
+    if(goal && min<goal) advice.push(['warn','Meta diaria incompleta: priorize um bloco curto e registre a sessao ao final.']);
+    if(err) advice.push(['info','Ha erros em aberto; eles entram no diagnostico de desempenho e dominio.']);
+    if(ret && ret<80) advice.push(['bad','Retencao Anki abaixo de 80%; reduza novos cartoes e revise erros recentes.']);
+    if(!advice.length) advice.push(['','Sem pendencia critica. Mantenha ciclo, questoes e registro do dia atualizados.']);
+    box.innerHTML='<div class="card cdia-card"><div class="cdia-head"><div><div class="cdia-eyebrow">central do dia</div><div class="cdia-title">Prioridade unica, dados conectados.</div><p class="cdia-sub">O ciclo mostra apenas estudo novo e execucao. Revisoes, erros, Anki, edital, simulados e historico alimentam os paineis automaticamente.</p></div><div class="cdia-score"><b>'+score+'%</b><span>prontidao</span></div></div><div class="cdia-grid"><div><div class="cdia-metrics"><div class="cdia-metric"><b>'+fmtMin(min)+'</b><span>hoje</span></div><div class="cdia-metric"><b>'+(goal?fmtMin(Math.max(0,goal-min)):'--')+'</b><span>faltam</span></div><div class="cdia-metric"><b>'+cyclePct()+'%</b><span>ciclo</span></div><div class="cdia-metric"><b>'+q7.acc+'%</b><span>acerto 7d</span></div></div><div class="cdia-list">'+queue.map(function(it,i){return '<div class="cdia-item"><span class="num">'+(i+1)+'</span><div><strong>'+esc(it.title)+'</strong><small>'+esc(it.desc)+'</small></div><button type="button" data-cdia-view="'+esc(it.view)+'">Abrir</button></div>';}).join('')+'</div></div><div class="cdia-panel"><h4>Leitura automatica</h4><div class="cdia-advice">'+advice.map(function(a){return '<div class="'+a[0]+'">'+esc(a[1])+'</div>';}).join('')+'</div></div></div></div>';
+    qa('[data-cdia-view]',box).forEach(function(b){ b.onclick=function(){ openView(b.dataset.cdiaView); }; });
+  }
+  function buildIntegrationIndex(){
+    var s=ensureArrays();
+    var q7=questions7();
+    s.integracao = {
+      updatedAt:new Date().toISOString(),
+      today:today(),
+      todayMinutes:todayMinutes(),
+      dailyGoal:dailyGoal(),
+      pendingReviews:pendingReviews().length,
+      openErrors:openErrors().length,
+      ankiRetention7:anki7(),
+      editalPct:editalPct(),
+      cyclePct:cyclePct(),
+      questions7:q7.q,
+      accuracy7:q7.acc
+    };
+    var days={}; s.sessions.forEach(function(x){ if(x.date) days[x.date]=true; });
+    s.studyDays = Object.keys(Object.assign(days, (s.studyDays||[]).reduce(function(o,d){o[d]=true;return o;},{}))).sort();
+    return s.integracao;
+  }
+  function refreshAll(reason){
+    if(syncBusy) return;
+    syncBusy=true;
+    try{
+      ensureArrays(); patchCycleFunctions(); buildIntegrationIndex(); persist();
+      ['renderProfile','renderCountdown','renderGoals','renderResumo','renderStreak','renderRevBadge','renderErrosBadge','renderEditalBadge','renderEditalCard','renderHome','renderCycle','renderRevisions','renderStats','renderDistribuicao','renderSimulados','renderHistory','renderRelatorio','renderConquistas','renderCalendar','renderAnki','renderErros','renderDomain','renderDesempenho'].forEach(call);
+      dedupeNav(); applyCompactFromSettings(); ensureCentral(); updateBadges();
+      try{ document.dispatchEvent(new CustomEvent('catedra:integrated-sync',{detail:{reason:reason||'sync',metrics:st().integracao}})); }catch(e){}
+    }finally{ syncBusy=false; }
+  }
+  function updateBadges(){
+    var s=ensureArrays(), rev=pendingReviews().length, err=openErrors().length;
+    var nb=by('nav-rev'); if(nb){ nb.textContent=String(rev); nb.style.display=rev?'flex':'none'; }
+    var ed=by('nav-edital'); if(ed){ var pct=editalPct(); ed.textContent=pct+'%'; ed.style.display=s.edital.length?'flex':'none'; }
+    var er=by('nav-erros') || q('.nav-item[data-view="erros"] .nav-badge'); if(er){ er.textContent=String(err); er.style.display=err?'flex':'none'; }
+    var cyc=by('nav-ciclo'); if(cyc){ cyc.textContent=String(cyclePct())+'%'; cyc.style.display='flex'; cyc.style.background='var(--emerald)'; }
+  }
+  function applyCompactFromSettings(){
+    var s=ensureArrays(); var compact=!!(s.systemSettings && s.systemSettings.compactSidebar);
+    document.body.classList.toggle('sidebar-compact-default', compact);
+    document.documentElement.classList.toggle('sidebar-compact-default', compact);
+    var cb=by('sys-compact-sidebar'); if(cb) cb.checked=compact;
+  }
+  function bindIntegrationEvents(){
+    document.addEventListener('change',function(ev){ var t=ev.target; if(t && t.id==='sys-compact-sidebar'){ ensureArrays().systemSettings.compactSidebar=!!t.checked; persist(); applyCompactFromSettings(); } setTimeout(function(){ refreshAll('change'); },80); },true);
+    document.addEventListener('click',function(ev){ var b=ev.target && ev.target.closest && ev.target.closest('button,.tdot,.mini-dot,.cbox,.day,.nav-item'); if(!b) return; setTimeout(function(){ refreshAll('click'); },120); },true);
+    ['log-save','sim-save','anki-save','ed-add','er-add','cal-f-save','settings-save-all'].forEach(function(id){ var el=by(id); if(el && !el.dataset.catedraFinalBound){ el.dataset.catedraFinalBound='1'; el.addEventListener('click',function(){ setTimeout(function(){ refreshAll(id); },180); },true); } });
+  }
+  function wrapSave(){
+    if(window.__catedraPublicacaoSaveWrapped) return;
+    window.__catedraPublicacaoSaveWrapped=true;
+    var old=window.save;
+    window.save=function(){ var r; try{ r=old && old.apply(this,arguments); }catch(e){ persist(); } setTimeout(function(){ refreshAll('save'); },60); return r; };
+  }
+  function boot(){ patchCycleFunctions(); wrapSave(); bindIntegrationEvents(); dedupeNav(); applyCompactFromSettings(); ensureCentral(); refreshAll('boot'); setTimeout(function(){ dedupeNav(); ensureCentral(); updateBadges(); },500); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+})();
+</script>
+<!-- ===== fim PATCH FINAL PUBLICACAO ESTUDANTES ===== -->
+
 </body>
 </html>
