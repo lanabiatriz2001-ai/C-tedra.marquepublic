@@ -6445,6 +6445,103 @@ setTimeout(boot,1200);setTimeout(function(){wire();ensureNav();},2500);
 })();
 </script>
 <!-- ===== fim PATCH CALENDARIO ===== -->
+
+<!-- ===== PATCH EDITAL meta ===== -->
+<style id="catedra-edital-meta-css">
+#edital-meta-wrap .edm-disc-name{font-weight:700;font-size:14px;color:var(--text);margin-bottom:10px}
+.edm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.edm-f{display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:600;color:var(--text-2)}
+.edm-f input,.edm-f select{padding:7px 9px;border:1px solid var(--border);border-radius:8px;background:var(--canvas);color:var(--text);font-size:13px;font-family:inherit;width:100%;box-sizing:border-box}
+.edm-f input:disabled{opacity:.7}
+.edm-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;flex-wrap:wrap}
+.edm-auto{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-2);cursor:pointer}
+.edm-sug{font-size:12px;color:var(--text-3)}
+.edm-stats{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--text-2)}
+.edm-risco{text-transform:capitalize}
+.edm-risco-alto{color:#dc2626}.edm-risco-medio{color:#d97706}.edm-risco-baixo{color:#16a34a}
+.edm-topics-h{margin-top:14px;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.03em}
+.edm-topics{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow:auto}
+.edm-topic{display:flex;align-items:center;gap:10px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;background:var(--canvas)}
+.edm-topic-name{flex:1;font-size:12.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.edm-topic-prog{font-size:11px;font-weight:700;color:var(--text-3);min-width:34px;text-align:right}
+.edm-topic-status{padding:5px 7px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text);font-size:12px;font-family:inherit}
+.edm-empty{padding:10px;color:var(--text-3);font-size:12.5px;text-align:center}
+@media(max-width:680px){.edm-grid{grid-template-columns:1fr 1fr}.edm-topic{flex-wrap:wrap}.edm-topic-name{flex:1 1 100%}}
+@media(max-width:420px){.edm-grid{grid-template-columns:1fr}}
+</style>
+<script id="catedra-edital-meta-js">
+(function(){
+"use strict";
+var MKEY="catedra_edital";
+var DOMS=["nao informado","baixo","medio","alto"];
+var PRIOS=["baixa","media","alta","critica"];
+var STATUSES=["nao iniciado","em andamento","estudado","revisado","dominado"];
+function st(){try{return (typeof state!=="undefined"&&state)?state:JSON.parse(localStorage.getItem("catedra:state")||"{}");}catch(e){return {};}}
+function persist(){try{if(typeof save==="function"){save();}else{localStorage.setItem("catedra:state",JSON.stringify(st()));}}catch(e){}}
+function norm(s){try{if(typeof catedraNormStr==="function")return catedraNormStr(s);}catch(e){}return String(s==null?"":s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim().replace(/\s+/g," ");}
+function esc(s){try{if(typeof escapeHtml==="function")return escapeHtml(s);}catch(e){}return String(s==null?"":s).replace(/[&<>\"]/g,function(c){return ({"&":"&amp;","<":"&lt;",">":"&gt;"})[c]||"&quot;";});}
+function sync(){try{if(window.__catedraRefreshAll){window.__catedraRefreshAll("edital");}}catch(e){}}
+function loadMeta(){var m=null;try{m=JSON.parse(localStorage.getItem(MKEY)||"null");}catch(e){}if(!m||typeof m!=="object")m={disc:{},topic:{}};if(!m.disc)m.disc={};if(!m.topic)m.topic={};return m;}
+function saveMeta(m){try{localStorage.setItem(MKEY,JSON.stringify(m));}catch(e){}}
+function discMeta(name){var m=loadMeta();var k=norm(name);if(!m.disc[k])m.disc[k]={nome:name,peso:1,dominio:"nao informado",prioridade:"media",prioridadeAuto:true,incidencia:"",quantidadeQuestoes:0};return m.disc[k];}
+function topicKey(disc,topic){return norm(disc)+"::"+norm(topic);}
+function topicStatus(disc,topic,done){var m=loadMeta();var k=topicKey(disc,topic);if(m.topic[k]&&m.topic[k].status)return m.topic[k].status;return done?"estudado":"nao iniciado";}
+function setTopicStatus(disc,topic,status){var m=loadMeta();var k=topicKey(disc,topic);if(!m.topic[k])m.topic[k]={};m.topic[k].status=status;saveMeta(m);
+var s=st();(s.edital||[]).forEach(function(t){if(norm(t.disc)===norm(disc)&&norm(t.t)===norm(topic)){t.done=(status==="estudado"||status==="revisado"||status==="dominado");}});persist();}
+function buildStructure(){var s=st();var edital=s.edital||[];var sessions=s.sessions||[];var revisions=s.revisions||[];var errors=s.errors||[];
+var discMap={};
+function ensureD(name){var k=norm(name);if(!discMap[k]){var dm=discMeta(name);discMap[k]={id:k,nome:name,topicos:[],_topMap:{},quantidadeQuestoes:dm.quantidadeQuestoes||0,peso:dm.peso||1,dominio:dm.dominio||"nao informado",prioridade:dm.prioridade||"media",prioridadeAuto:dm.prioridadeAuto!==false,incidencia:dm.incidencia||"",progresso:0,tempoEstudado:0,questoesResolvidas:0,acertos:0,erros:0,revisoesPendentes:0,risco:"medio",pesoTotalEstimado:0};}return discMap[k];}
+(s.discs||[]).forEach(function(d){ensureD(d);});
+edital.forEach(function(t){if(!t||!t.disc)return;var d=ensureD(t.disc);var tk=norm(t.t);if(!d._topMap[tk]){var tp={id:t.id||tk,nome:t.t,disciplinaId:d.id,progresso:0,tempoEstudado:0,questoesResolvidas:0,acertos:0,erros:0,revisoesPendentes:0,ultimaSessao:"",status:topicStatus(t.disc,t.t,t.done),incidencia:t.inc||""};d._topMap[tk]=tp;d.topicos.push(tp);}});
+sessions.forEach(function(se){if(!se||!se.disc)return;var d=discMap[norm(se.disc)];if(!d)return;var min=(+se.min||0),q=(+se.q||0),c=(+se.c||0);d.tempoEstudado+=min;d.questoesResolvidas+=q;d.acertos+=c;d.erros+=Math.max(0,q-c);var tk=norm(se.topic);var tp=d._topMap[tk];if(tp){tp.tempoEstudado+=min;tp.questoesResolvidas+=q;tp.acertos+=c;tp.erros+=Math.max(0,q-c);if(se.date&&se.date>tp.ultimaSessao)tp.ultimaSessao=se.date;if(tp.status==="nao iniciado"&&(min>0||q>0))tp.status="em andamento";}});
+var todayS=(new Date()).toISOString().slice(0,10);revisions.forEach(function(rv){if(!rv||rv.done)return;var d=discMap[norm(rv.disc)];if(!d)return;d.revisoesPendentes++;var tp=d._topMap[norm(rv.topic)];if(tp)tp.revisoesPendentes++;});
+errors.forEach(function(er){if(!er)return;var dn=er.disc||er.disciplina;if(!dn)return;var d=discMap[norm(dn)];if(!d)return;if(er.status&&er.status!=="resolvido"){/* pending error keeps risk up */}});
+function statusPct(stt){return ({"nao iniciado":0,"em andamento":40,"estudado":70,"revisado":90,"dominado":100})[stt]||0;}
+Object.keys(discMap).forEach(function(k){var d=discMap[k];var tot=d.topicos.length;var sum=0;d.topicos.forEach(function(tp){tp.progresso=statusPct(tp.status);sum+=tp.progresso;});d.progresso=tot?Math.round(sum/tot):0;d.pesoTotalEstimado=Math.round((d.peso||1)*(d.quantidadeQuestoes||0));
+var accPct=d.questoesResolvidas?Math.round(d.acertos/d.questoesResolvidas*100):0;d._acertoPct=accPct;
+var riskScore=0;riskScore+=(100-d.progresso)*0.4;riskScore+=(d.peso||1)*6;if(d.incidencia==="alta")riskScore+=15;if(d.dominio==="baixo")riskScore+=15;if(d.dominio==="nao informado")riskScore+=8;riskScore+=Math.min(20,d.revisoesPendentes*4);if(d.questoesResolvidas>0&&accPct<60)riskScore+=15;d._riskScore=Math.round(riskScore);d.risco=riskScore>=70?"alto":(riskScore>=40?"medio":"baixo");
+var ps=riskScore;var sugP=ps>=85?"critica":(ps>=60?"alta":(ps>=35?"media":"baixa"));d.prioridadeSugerida=sugP;if(d.prioridadeAuto)d.prioridade=sugP;
+delete d._topMap;});
+return {disciplinas:Object.keys(discMap).map(function(k){return discMap[k];})};}
+window.__catedraEdital={estrutura:buildStructure,norm:norm,DOMS:DOMS,PRIOS:PRIOS,STATUSES:STATUSES,setTopicStatus:setTopicStatus,discMeta:discMeta,loadMeta:loadMeta,saveMeta:saveMeta};
+function activeDisc(){var s=st();var names=Object.keys((s.edital||[]).reduce(function(a,t){if(t&&t.disc)a[t.disc]=1;return a;},{}));if(window.editalActiveDisc&&names.indexOf(window.editalActiveDisc)>=0)return window.editalActiveDisc;return (s.discs||[])[0]||names[0]||"";}
+function opt(list,val){return list.map(function(o){return "<option value=\""+o+"\""+(norm(o)===norm(val)?" selected":"")+">"+o.charAt(0).toUpperCase()+o.slice(1)+"</option>";}).join("");}
+function renderTopicStatus(d){var h="<div class=\"edm-topics-h\">Tópicos e status ("+d.topicos.length+")</div><div id=\"edital-topicos-lista\" class=\"edm-topics\">";if(!d.topicos.length){h+="<div class=\"edm-empty\">Nenhum tópico cadastrado nesta disciplina.</div>";}d.topicos.forEach(function(tp){h+="<div class=\"edm-topic\"><span class=\"edm-topic-name\" title=\""+esc(tp.nome)+"\">"+esc(tp.nome)+"</span><span class=\"edm-topic-prog\">"+tp.progresso+"%</span><select class=\"edm-topic-status\" data-topic=\""+esc(tp.nome)+"\">"+STATUSES.map(function(o){return "<option value=\""+o+"\""+(o===tp.status?" selected":"")+">"+o.charAt(0).toUpperCase()+o.slice(1)+"</option>";}).join("")+"</select></div>";});h+="</div>";return h;}
+function renderPanel(){var host=document.getElementById("edital-meta-panel");if(!host)return;var dn=activeDisc();if(!dn){host.innerHTML="<div class=\"edm-empty\">Cadastre uma disciplina para configurar peso, domínio e prioridade.</div>";return;}var data=buildStructure();var d=null;data.disciplinas.forEach(function(x){if(norm(x.nome)===norm(dn))d=x;});if(!d){host.innerHTML="";return;}
+var prog=document.getElementById("edital-progresso-geral");if(prog){var all=data.disciplinas;var gp=all.length?Math.round(all.reduce(function(a,x){return a+x.progresso;},0)/all.length):0;prog.textContent=gp+"%";}
+var h="<div class=\"edm-disc-name\">"+esc(d.nome)+"</div><div class=\"edm-grid\">";
+h+="<label class=\"edm-f\"><span>Questões estimadas</span><input id=\"edm-questoes\" type=\"number\" min=\"0\" value=\""+(d.quantidadeQuestoes||0)+"\"></label>";
+h+="<label class=\"edm-f\"><span>Peso</span><input id=\"edm-peso\" type=\"number\" min=\"0\" step=\"0.5\" value=\""+(d.peso||1)+"\"></label>";
+h+="<label class=\"edm-f\"><span>Peso total estim.</span><input id=\"edm-pesototal\" type=\"text\" value=\""+(d.pesoTotalEstimado||0)+"\" disabled></label>";
+h+="<label class=\"edm-f\"><span>Incidência</span><select id=\"edm-incidencia\"><option value=\"\">—</option><option value=\"baixa\""+(d.incidencia==="baixa"?" selected":"")+">Baixa</option><option value=\"media\""+(d.incidencia==="media"?" selected":"")+">Média</option><option value=\"alta\""+(d.incidencia==="alta"?" selected":"")+">Alta</option></select></label>";
+h+="<label class=\"edm-f\"><span>Nível de domínio</span><select id=\"edm-dominio\">"+opt(DOMS,d.dominio)+"</select></label>";
+h+="<label class=\"edm-f\"><span>Prioridade</span><select id=\"edm-prioridade\">"+opt(PRIOS,d.prioridade)+"</select></label>";
+h+="</div>";
+h+="<div class=\"edm-row\"><label class=\"edm-auto\"><input type=\"checkbox\" id=\"edm-auto\" "+(d.prioridadeAuto?"checked":"")+"> Sugestão automática de prioridade</label><span class=\"edm-sug\">Sugerida: <b>"+esc(d.prioridadeSugerida||"-")+"</b></span></div>";
+h+="<div class=\"edm-stats\"><span>Progresso: <b>"+d.progresso+"%</b></span><span>Risco: <b class=\"edm-risco edm-risco-"+d.risco+"\">"+d.risco+"</b></span><span>Questões: <b>"+d.questoesResolvidas+"</b></span><span>Acerto: <b>"+(d._acertoPct||0)+"%</b></span><span>Tempo: <b>"+Math.round((d.tempoEstudado||0)/60)+"h</b></span><span>Revisões pend.: <b>"+d.revisoesPendentes+"</b></span></div>";
+h+=renderTopicStatus(d);
+host.innerHTML=h;wirePanel(dn);}
+function wirePanel(dn){var k=norm(dn);function upd(field,val){var mm=loadMeta();if(!mm.disc[k])mm.disc[k]=discMeta(dn);mm.disc[k][field]=val;saveMeta(mm);}
+var q=document.getElementById("edm-questoes");if(q)q.onchange=function(){upd("quantidadeQuestoes",Math.max(0,parseInt(q.value)||0));renderPanel();sync();};
+var pe=document.getElementById("edm-peso");if(pe)pe.onchange=function(){upd("peso",Math.max(0,parseFloat(pe.value)||0));renderPanel();sync();};
+var inc=document.getElementById("edm-incidencia");if(inc)inc.onchange=function(){upd("incidencia",inc.value);renderPanel();sync();};
+var dom=document.getElementById("edm-dominio");if(dom)dom.onchange=function(){upd("dominio",dom.value);renderPanel();sync();};
+var pr=document.getElementById("edm-prioridade");if(pr)pr.onchange=function(){upd("prioridade",pr.value);upd("prioridadeAuto",false);renderPanel();sync();};
+var au=document.getElementById("edm-auto");if(au)au.onchange=function(){upd("prioridadeAuto",au.checked);renderPanel();sync();};
+var host=document.getElementById("edital-meta-panel");if(host){host.querySelectorAll(".edm-topic-status").forEach(function(sel){sel.onchange=function(){setTopicStatus(dn,sel.getAttribute("data-topic"),sel.value);renderPanel();sync();};});}
+}
+function ensurePanel(){var v=document.getElementById("view-edital");if(!v)return;if(document.getElementById("edital-meta-panel"))return;var list=document.getElementById("edital-list");var wrap=document.createElement("div");wrap.id="edital-meta-wrap";wrap.className="card";wrap.style.marginBottom="16px";wrap.innerHTML="<div class=\"card-h\" style=\"margin-bottom:10px\"><h3 style=\"font-size:15px\">Dados da disciplina</h3><span class=\"hint\">Progresso geral do edital: <b id=\"edital-progresso-geral\">0%</b></span></div><div id=\"edital-meta-panel\"></div>";if(list&&list.parentNode){list.parentNode.insertBefore(wrap,list);}else{v.appendChild(wrap);}}
+function renderAll(){try{ensurePanel();renderPanel();}catch(e){}}
+window.__catedraRenderEdital=renderAll;
+function hookRefresh(){try{var prev=window.__catedraRefreshAll;if(prev&&!prev.__edHooked){var w=function(){var r=prev.apply(this,arguments);try{if(document.getElementById("view-edital")){renderAll();}}catch(e){}return r;};w.__edHooked=true;window.__catedraRefreshAll=w;}}catch(e){}}
+function migrate(){try{var m=loadMeta();var legacy=["catedra:edital:meta","catedra_disciplinas","catedra_pesos"];legacy.forEach(function(lk){try{var raw=localStorage.getItem(lk);if(!raw)return;var obj=JSON.parse(raw);if(obj&&typeof obj==="object"){Object.keys(obj).forEach(function(dk){var nk=norm(dk);if(!m.disc[nk]&&obj[dk]&&typeof obj[dk]==="object"){m.disc[nk]=obj[dk];}});}}catch(e){}});saveMeta(m);}catch(e){}}
+function boot(){try{migrate();hookRefresh();ensurePanel();renderPanel();}catch(e){}}
+if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",boot);}else{boot();}
+setTimeout(boot,1300);setTimeout(renderAll,2600);
+var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addEventListener("click",function(){setTimeout(renderAll,60);});}
+})();
+</script>
+<!-- ===== fim PATCH EDITAL ===== -->
 </body>
 </html>
 
