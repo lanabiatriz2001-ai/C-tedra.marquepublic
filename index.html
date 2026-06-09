@@ -6183,8 +6183,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     var seen={};
     qa('.nav-item[data-view]',nav).forEach(function(item){ var v=item.dataset.view; if(seen[v]){ item.dataset.catedraDuplicate='1'; item.remove(); } else { seen[v]=item; item.title=(item.textContent||'').trim(); } });
     qa('.nav-label',nav).forEach(function(label,idx){ var next=label.nextElementSibling; if(next && next.classList && next.classList.contains('nav-label')) label.remove(); if(idx>0 && label.textContent.trim()===qa('.nav-label',nav)[idx-1]?.textContent.trim()) label.remove(); });
-    var order=['inicio','ciclo','revisoes','edital','dominio','calendario','biblioteca','simulados','desempenho','stats','relatorio','conquistas','anki','erros','historico','ajustes'];
-    var groups=[['Estudo',['inicio','ciclo','revisoes','edital','dominio','calendario','biblioteca']],['Desempenho',['simulados','desempenho','stats','relatorio','conquistas','anki','erros']],['Sistema',['historico','ajustes']]];
+    var order=['inicio','ciclo','revisoes','edital','dominio','calendario','biblioteca','simulados','desempenho','stats','relatorio','conquistas','anki','erros','historico','personalizacao','ajustes'];
+    var groups=[['Estudo',['inicio','ciclo','revisoes','edital','dominio','calendario','biblioteca']],['Desempenho',['simulados','desempenho','stats','relatorio','conquistas','anki','erros']],['Sistema',['historico','personalizacao','ajustes']]];
     var frag=document.createDocumentFragment();
     groups.forEach(function(g){ var lab=document.createElement('div'); lab.className='nav-label'; lab.textContent=g[0]; frag.appendChild(lab); g[1].forEach(function(v){ var el=seen[v]||q('.nav-item[data-view="'+v+'"]',nav); if(el){ el.style.display=''; frag.appendChild(el); } }); });
     order.forEach(function(v){ var el=seen[v]||q('.nav-item[data-view="'+v+'"]',nav); if(el && !frag.contains(el)) frag.appendChild(el); });
