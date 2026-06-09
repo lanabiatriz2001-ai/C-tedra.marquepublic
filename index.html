@@ -1,66 +1,49 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cátedra · Plataforma de Estudos</title>
-  
-  <!-- Preload crítico para melhor performance -->
-  <link rel="preload" href="css/fonts.css" as="style">
-  <link rel="preload" href="css/theme.css" as="style">
-  
-  <!-- Fonts otimizado com display=swap para evitar font-loading jank -->
-  <link rel="stylesheet" href="css/fonts.css">
-  
-  <!-- CSS separados (será minificado em produção) -->
-  <link rel="stylesheet" href="css/theme.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/accessibility.css">
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%230c8a5b' d='M12 3l-8 4v2h16V7L12 3Z'/></svg>">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cátedra · Plataforma de Estudos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
+
+<link rel="stylesheet" href="assets/app.min.css">
 </head>
 <body>
-
-<!-- Layout HTML otimizado - mantém apenas estrutura, sem estilos inline -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs><symbol id="ic-1" viewBox="0 0 24 24"><path d="M12 3 4 7v2h16V7L12 3Z" fill="#fff"/><rect x="6" y="10" width="2.4" height="7.5" fill="#fff"/><rect x="11" y="10" width="2.4" height="7.5" fill="#fff"/><rect x="16" y="10" width="2.4" height="7.5" fill="#fff"/><rect x="4" y="18.5" width="16" height="2.4" rx="1" fill="#fff"/></symbol><symbol id="ic-2" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></symbol><symbol id="ic-3" viewBox="0 0 24 24"><path d="M3 12 12 3l9 9M5 10v10h14V10" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-4" viewBox="0 0 24 24"><path d="M4 4h16v4H4zM4 10h16v4H4zM4 16h16v4H4z" stroke-linejoin="round"/></symbol><symbol id="ic-5" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v4h-4" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-6" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z" stroke-linejoin="round"/><path d="M14 2v6h6M9 13h6M9 17h6" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-7" viewBox="0 0 24 24"><path d="M5 3v18M5 21h14M9 17v-5M13 17V8M17 17v-9" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-9" viewBox="0 0 24 24"><path d="M9 4h6a1 1 0 0 1 1 1v1h2v15H6V6h2V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 4h6v3H9z" stroke-linejoin="round"/><path d="M9 12l1.5 1.5L13 11M9 17h6" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-10" viewBox="0 0 24 24"><path d="M7 4h10v4a5 5 0 0 1-10 0V4ZM5 4H3v2a3 3 0 0 0 3 3M19 4h2v2a3 3 0 0 1-3 3M9 17h6M8 21h8M12 13v4" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-11" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-linecap="round"/></symbol><symbol id="ic-12" viewBox="0 0 24 24"><path d="M3 3v18h18M7 14l3-4 4 3 5-7" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-13" viewBox="0 0 24 24"><path d="M4 5h16v14H4zM4 9h16M9 5v14" stroke-linejoin="round"/></symbol><symbol id="ic-14" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z" stroke-linejoin="round"/><path d="M14 2v6h6M9 17v-4M12 17v-6M15 17v-2" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-15" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7.6 1.6 1.6 0 0 0-1.6 1.3H12a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-2.7-.6l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.3-2.3H1a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.3-2.7l-.1-.1A2 2 0 1 1 5 2.6l.1.1a1.6 1.6 0 0 0 2.7-.6V2a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 2.7.6l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1H23a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1Z" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-16" viewBox="0 0 24 24"><path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-17" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="17.5" cy="10.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="8.5" cy="7.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="6.5" cy="12.5" r="1.5" fill="currentColor" stroke="none"/><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.2 0-1 .8-1.5 1.8-1.5H16a6 6 0 0 0 6-6c0-5-4.5-8-10-8Z" stroke-linejoin="round"/></symbol><symbol id="ic-18" viewBox="0 0 24 24"><path d="M12 4a4 4 0 0 1 4 4v2.4c0 .9.3 1.8.9 2.5L18.5 15H5.5l1.6-2.1c.6-.7.9-1.6.9-2.5V8a4 4 0 0 1 4-4Z" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" stroke-linecap="round"/></symbol><symbol id="ic-19" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 3l4 4-4 4M20 7H9" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-20" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.6M9 2.5h6M19 5l1.6 1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-21" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-22" viewBox="0 0 24 24"><path d="M7 4v16l13-8z" stroke-linejoin="round"/></symbol><symbol id="ic-23" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></symbol><symbol id="ic-24" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></symbol><symbol id="ic-25" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v4h-7zM13 11h7v9h-7zM4 13h7v7H4z" stroke-linejoin="round"/></symbol><symbol id="ic-26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></symbol><symbol id="ic-27" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4zM3 12l9 4 9-4M3 17l9 4 9-4" stroke-linejoin="round"/></symbol><symbol id="ic-28" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></symbol><symbol id="ic-29" viewBox="0 0 24 24"><path d="M4 4h16v4H4zM4 10h16v10H4z" stroke-linejoin="round"/></symbol><symbol id="ic-30" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-31" viewBox="0 0 24 24"><path d="M9 4h6a1 1 0 0 1 1 1v1h2v15H6V6h2V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 12l1.5 1.5L13 11" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-32" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 7-8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-33" viewBox="0 0 24 24"><path d="M4 4h16v4H4z" stroke-linejoin="round"/><path d="M4 11h10v3H4zM4 16h7v3H4z" stroke-linejoin="round"/></symbol><symbol id="ic-34" viewBox="0 0 24 24"><path d="M12 3v18M5 10l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-35" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M8 14h8v7H8z" stroke-linejoin="round"/></symbol><symbol id="ic-36" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-37" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-38" viewBox="0 0 24 24"><path d="M6 2h12v20l-6-3-6 3z" stroke-linejoin="round"/><path d="M12 7v4M12 14h.01" stroke-linecap="round"/></symbol><symbol id="ic-39" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-40" viewBox="0 0 24 24"><path d="M5 12l4 4L19 6" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-41" viewBox="0 0 24 24"><path d="M5 3v18M5 4h11l-2 3 2 3H5" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ic-42" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6" stroke-linecap="round"/></symbol><symbol id="ic-43" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="17.5" cy="10.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="8.5" cy="7.5" r="1.2" fill="currentColor" stroke="none"/><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2s-1-1.5-1-2.5.8-1.5 1.8-1.5H16a6 6 0 0 0 6-6c0-5-4.5-8-10-8Z" stroke-linejoin="round"/></symbol><symbol id="ic-44" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></symbol><symbol id="ic-45" viewBox="0 0 24 24"><path d="M12 3v18M5 8h14M5 16h14" stroke-linecap="round"/><rect x="4" y="5" width="16" height="14" rx="2" stroke-linejoin="round"/></symbol></defs></svg>
 
 <aside class="sidebar">
   <div class="brand">
     <div class="brand-mark">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 7v2h16V7L12 3Z" fill="#fff"/><rect x="6" y="10" width="2.4" height="7.5" fill="#fff"/><rect x="11" y="10" width="2.4" height="7.5" fill="#fff"/><rect x="16" y="10" width="2.4" height="7.5" fill="#fff"/></svg>
+      <svg viewBox="0 0 24 24" fill="none"><use href="#ic-1"></use></svg>
     </div>
-    <div class="brand-txt">
-      <h1>Cátedra</h1>
-      <p>Estudos Jurídicos</p>
-    </div>
+    <div class="brand-txt"><h1>Cátedra</h1><p>Estudos Jurídicos</p></div>
   </div>
-
-  <button class="menu-btn" id="menu-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg></button>
+  <button class="menu-btn" id="menu-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-2"></use></svg></button>
 
   <nav class="nav" id="nav">
     <div class="nav-label">Painel</div>
-    <button class="nav-item active" data-view="inicio" aria-label="Início"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12 12 3l9 9M5 10v10h14V10" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Início</span></button>
-    <button class="nav-item" data-view="ciclo" aria-label="Ciclo de estudos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v4H4zM4 10h16v4H4zM4 16h16v4H4z" stroke-linejoin="round"/></svg><span>Ciclo de Estudos</span></button>
-    <button class="nav-item" data-view="revisoes" aria-label="Revisões"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v4h-4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Revisões</span></button>
-    
+    <button class="nav-item active" data-view="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-3"></use></svg>Início</button>
+    <button class="nav-item" data-view="ciclo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-4"></use></svg>Ciclo de Estudos<span class="nav-badge" id="nav-ciclo" style="display:none;background:var(--amber)">0</span></button>
+    <button class="nav-item" data-view="revisoes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-5"></use></svg>Revisões<span class="nav-badge" id="nav-rev" style="display:none">0</span></button>
+    <button class="nav-item" data-view="edital"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-6"></use></svg>Edital<span class="nav-badge" id="nav-edital" style="display:none">0%</span></button>
+    <button class="nav-item" data-view="pesos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-7"></use></svg>Pesos &amp; Pontos</button>
+    <button class="nav-item" data-view="calendario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-8"></use></svg>Calendário</button>
     <div class="nav-label">Desempenho</div>
-    <button class="nav-item" data-view="simulados" aria-label="Simulados"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 4h6a1 1 0 0 1 1 1v1h2v15H6V6h2V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/></svg><span>Simulados</span></button>
-    <button class="nav-item" data-view="stats" aria-label="Estatísticas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-linecap="round"/></svg><span>Estatísticas</span></button>
-    
+    <button class="nav-item" data-view="simulados"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-9"></use></svg>Simulados</button>
+    <button class="nav-item" data-view="conquistas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-10"></use></svg>Conquistas</button>
+    <button class="nav-item" data-view="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-11"></use></svg>Estatísticas</button>
+    <button class="nav-item" data-view="desempenho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-12"></use></svg>Desempenho</button>
+    <button class="nav-item" data-view="historico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-13"></use></svg>Histórico</button>
+    <button class="nav-item" data-view="relatorio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-14"></use></svg>Relatório</button>
     <div class="nav-label">Sistema</div>
-    <button class="nav-item" data-view="ajustes" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 0l-.1-.1a1.6 1.6 0 0 0-1.5-.8h-1.6a1.6 1.6 0 0 0-1.5.8l-.1.1a2 2 0 1 1-2.8 0l.1-.1a1.6 1.6 0 0 0 .3-1.8v-1.6a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8 0l.1.1a1.6 1.6 0 0 0 1.5.8h1.6a1.6 1.6 0 0 0 1.5-.8l.1-.1a2 2 0 1 1 2.8 0l-.1.1a1.6 1.6 0 0 0-.3 1.8v1.6Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Ajustes</span></button>
+    <button class="nav-item" data-view="ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-15"></use></svg>Ajustes</button>
   </nav>
 
   <div class="side-foot" id="side-foot">
     <div class="streak-card">
-      <div class="row">
-        <span class="fire">🔥</span>
-        <div>
-          <div class="n" id="streak">0</div>
-          <div class="lbl">dias de constância</div>
-        </div>
-      </div>
+      <div class="row"><span class="fire">🔥</span><div><div class="n" id="streak">0</div><div class="lbl">dias de constância</div></div></div>
       <div class="streak-dots" id="streak-dots"></div>
     </div>
   </div>
@@ -68,37 +51,756 @@
 
 <div class="main">
   <div class="topbar">
-    <div class="greeting">
-      <h2 id="greet">Bom dia</h2>
-      <p id="datep"></p>
-    </div>
+    <div class="greeting"><h2 id="greet">Bom dia</h2><p id="datep"></p></div>
     <div class="topbar-actions">
-      <button class="icon-btn" id="theme-btn" title="Cores da página" aria-label="Personalizar cores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="13.5" cy="10.5" r="1.5"/><circle cx="17.5" cy="7.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/></svg></button>
-      <button class="icon-btn" id="logout-btn" title="Sair" aria-label="Fazer logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 3l5 5-5 5M20 8H9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <span class="exam-pill" id="exam-pill" style="display:none"></span>
+      <button class="icon-btn" id="focus-btn" title="Modo foco — tela cheia" aria-label="Modo foco em tela cheia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-16"></use></svg></button>
+      <button class="icon-btn" id="theme-btn" title="Cores da página" aria-label="Personalizar cores da página"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-17"></use></svg></button>
+      <button class="icon-btn" id="notif-btn" title="Notificações" aria-label="Notificações" style="position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-18"></use></svg><span class="topbar-notif-badge" id="topbar-notif-badge" style="display:none">0</span></button>
+      <button class="icon-btn" id="logout-btn" title="Sair" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-19"></use></svg></button>
+    </div>
+  </div>
+
+  
+  <div class="cron-bar" id="cron-bar">
+    <button class="cron-main" id="cron-clock" type="button" title="Clique para escolher Livre ou Pomodoro">
+      <span class="cron-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-20"></use></svg></span>
+      <div class="cron-time" id="tdisp">00:00:00</div>
+      <div class="cron-state" id="tstate">parado</div>
+      <svg class="cron-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-21"></use></svg>
+    </button>
+    <div class="cron-menu" id="cron-menu">
+      <button type="button" data-mode="livre">Cronômetro livre</button>
+      <button type="button" data-mode="pomo" data-f="25" data-b="5">Pomodoro · 25 / 5</button>
+      <button type="button" data-mode="pomo" data-f="50" data-b="10">Pomodoro · 50 / 10</button>
+      <button type="button" data-mode="pomo" data-f="90" data-b="15">Pomodoro · 90 / 15</button>
+    </div>
+    <div class="cron-actions">
+      <button class="btn" id="tstart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-22"></use></svg>Iniciar</button>
+      <button class="btn-ghost btn-sm" id="treset">Zerar</button>
+      <button class="btn btn-dark" id="open-session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-23"></use></svg>Registrar sessão</button>
+    </div>
+  </div>
+
+  
+  <div class="session-modal" id="session-modal">
+    <div class="session-modal-card">
+      <div class="session-modal-head"><h3>Registrar sessão</h3><button class="icon-btn" id="session-close" title="Fechar" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-24"></use></svg></button></div>
+      <div class="form-grid">
+        <div class="field"><label>Disciplina</label><select id="f-disc"></select></div>
+        <div class="field"><label>Tópico</label><input id="f-topic" list="f-topic-list" autocomplete="off" placeholder="ex.: Controle de constitucionalidade"><datalist id="f-topic-list"></datalist></div>
+        <div class="field"><label>Data</label><input id="f-date" type="date"></div>
+        <div class="field"><label>Categoria</label><select id="f-cat">
+          <option value="teoria">Teoria (1ª vez)</option><option value="revisao">Revisão</option>
+          <option value="questoes">Questões</option><option value="leiseca">Lei seca</option><option value="juris">Jurisprudência</option>
+        </select></div>
+        <div class="field"><label>Tempo (min)</label><input id="f-min" type="number" min="0" placeholder="50"></div>
+        <div class="field"><label>Questões</label><input id="f-q" type="number" min="0" placeholder="20"></div>
+        <div class="field"><label>Acertos</label><input id="f-c" type="number" min="0" placeholder="16"></div>
+        <div class="field"><label>Brancos</label><input id="f-b" type="number" min="0" placeholder="0"></div>
+      </div>
+      <div class="session-modal-foot">
+        <button class="btn-ghost btn-sm" id="log-fill">Usar tempo do cronômetro</button>
+        <button class="btn" id="log-save">Registrar sessão</button>
+      </div>
     </div>
   </div>
 
   <div class="content">
-    <!-- Views serão renderizadas aqui via JavaScript -->
-    <div class="view active" id="view-inicio">
+
+  
+  <div class="view active" id="view-inicio">
+    <div class="kpis" id="kpis"></div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-25"></use></svg></span>Resumo geral</h3><span class="hint">desde o início</span></div>
+      <div class="stat-grid" id="resumo"></div>
+      <div class="today-clock" style="flex-wrap:wrap;justify-content:space-between;gap:18px;">
+        <div style="display:flex;align-items:center;gap:14px;"><svg viewBox="0 0 24 24"><use href="#ic-26"></use></svg><div><div class="tcn" id="today-time">0h00</div><div class="tcl">tempo de estudo hoje</div></div></div>
+        <div style="display:flex;align-items:center;gap:14px;"><svg viewBox="0 0 24 24"><use href="#ic-27"></use></svg><div><div class="tcn" id="anki-ret-home">—</div><div class="tcl">retenção média no Anki</div></div></div>
+      </div>
+    </div>
+
+    <div class="grid g-2" style="margin-bottom:16px;">
+      <div class="card" id="countdown-card"></div>
       <div class="card">
-        <div class="card-h">
-          <h3>Bem-vindo à Cátedra!</h3>
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-28"></use></svg></span><span id="rel-goals-title">Metas da semana</span></h3><span class="hint" id="goal-week">semana atual</span></div>
+        <div id="goals"></div>
+      </div>
+    </div>
+
+    <div class="card" id="edital-card" style="margin-bottom:16px;"></div>
+
+    <div class="grid g-hero" style="margin-bottom:16px;">
+      <div class="card ring-card">
+        <div class="card-h" style="width:100%;"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-26"></use></svg></span>Progresso do Ciclo de Estudos</h3></div>
+        <div class="ring-wrap">
+          <svg width="168" height="168" viewBox="0 0 168 168">
+            <defs><linearGradient id="ringgrad" x1="0" y1="0" x2="1" y2="1"><stop id="ring-s0" offset="0" stop-color="#0c8a5b"/><stop id="ring-s1" offset="1" stop-color="#1eb37a"/></linearGradient></defs>
+            <circle class="ring-bg" cx="84" cy="84" r="72" fill="none" stroke-width="13"/>
+            <circle class="ring-fg" id="ring" cx="84" cy="84" r="72" fill="none" stroke-width="13" stroke-dasharray="452.4" stroke-dashoffset="452.4"/>
+          </svg>
+          <div class="ring-mid"><div class="big" id="ring-pct">0%</div><div class="sm" id="ring-day">Segunda</div></div>
         </div>
-        <p>Plataforma de estudos otimizada para melhor performance. O conteúdo será renderizado dinamicamente via JavaScript.</p>
-        <p style="margin-top: 12px; font-size: 12px; color: var(--text-3);">
-          ✨ Versão otimizada com CSS externo, melhor cache de browser e compressão GZIP ativada.
-        </p>
+        <div class="ring-cap"><b id="ring-done">0</b> de <span id="ring-total">5</span> blocos concluídos</div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-29"></use></svg></span>Blocos de hoje</h3><span class="hint" id="home-day-tag"></span></div>
+        <div id="home-blocks"></div>
+      </div>
+    </div>
+
+    <div class="grid g-2" style="margin-bottom:16px;">
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-5"></use></svg></span>Revisões para hoje</h3><span class="hint" id="home-rev-hint"></span></div>
+        <div id="home-revs"></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-11"></use></svg></span>Atividade · 7 dias</h3><span class="hint">minutos/dia</span></div>
+        <div id="home-area"></div>
+      </div>
+    </div>
+
+  </div>
+
+  
+  <div class="view" id="view-ciclo">
+    <div class="card">
+      <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-4"></use></svg></span>Ciclo de Estudos</h3><span class="hint" id="cycle-pct">0% do ciclo</span></div>
+      <div class="week" id="week"></div>
+      <div id="backlog-wrap"></div>
+      <div id="fixed"></div>
+      <div class="sec-label" id="lbl-rot"><span id="rot-label">Jurisprudência</span><div class="rule"></div></div>
+      <div id="rotating"></div>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;align-items:center;">
+        <button class="btn" id="cycle-reset" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-5"></use></svg>Concluir e reiniciar o dia</button>
+        <button class="btn-ghost btn-sm" id="cycle-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:14px;height:14px;stroke-width:2.2"><use href="#ic-30"></use></svg>Editar atividades</button>
+        <span class="hint" id="cycle-count" style="color:var(--text-3);"></span>
+      </div>
+    </div>
+    <div class="tip"><div class="d"></div><p><b>Fluxo de cada bloco:</b> ler → resolver as questões do PDF → transformar o que errou em cartão no Anki. Depois, registre a sessão pela barra do cronômetro para o painel agendar suas revisões.</p></div>
+  </div>
+
+  
+
+  
+  <div class="view" id="view-revisoes">
+    <div class="card">
+      <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-5"></use></svg></span>O que revisar e quando</h3><span class="hint">atrasadas e de hoje no topo</span></div>
+      <div id="rev-list"></div>
+    </div>
+  </div>
+
+  
+  <div class="view" id="view-simulados">
+    <div class="kpis" id="sim-kpis"></div>
+    <div class="grid g-hero" style="align-items:start;margin-bottom:16px;">
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-31"></use></svg></span>Registrar simulado</h3><span class="hint">o registro gera o diagnóstico</span></div>
+        <div class="form-grid">
+          <div class="field"><label>Nome / Banca</label><input id="s-name" placeholder="ex.: Simulado CEBRASPE 01"></div>
+          <div class="field"><label>Data</label><input id="s-date" type="date"></div>
+          <div class="field"><label>Tipo</label><select id="s-type"><option>Prova inteira</option><option>Bloco por disciplina</option><option>Revisão de erros</option><option>Discursiva</option><option>Segunda fase</option></select></div>
+          <div class="field"><label>Total de questões</label><input id="s-total" type="number" min="0" placeholder="120"></div>
+          <div class="field"><label>Acertos</label><input id="s-c" type="number" min="0" placeholder="78"></div>
+          <div class="field"><label>Erros</label><input id="s-w" type="number" min="0" placeholder="37"></div>
+          <div class="field"><label>Brancos</label><input id="s-b" type="number" min="0" placeholder="5"></div>
+          <div class="field"><label>Tempo gasto</label><input id="s-time" placeholder="ex.: 4h15"></div>
+          <div class="field"><label>Motivo principal dos erros</label><select id="s-reason"><option>Lei seca</option><option>Jurisprudência</option><option>Confusão conceitual</option><option>Atenção</option><option>Gestão de tempo</option><option>Conteúdo não estudado</option></select></div>
+        </div>
+        <div class="sec-label" style="margin:18px 2px 10px;"><span>Desempenho por disciplina · opcional</span><div class="rule"></div></div>
+        <div id="sim-subjects"></div>
+        <div class="field" style="margin-top:14px;"><label>Observação pós-prova</label><textarea id="s-notes" rows="2" placeholder="ex.: bem em constitucional, perdi pontos em tributário por lei seca."></textarea></div>
+        <div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap;"><button class="btn" id="sim-save">Registrar simulado</button><button class="btn-ghost btn-sm" id="sim-example">Preencher exemplo</button></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-26"></use></svg></span>Raio-X do simulado</h3><span class="hint">diagnóstico ao vivo</span></div>
+        <div class="sim-diag-main">
+          <div class="sim-ring" id="sim-ring" style="--p:0"><div><b id="sim-live-score">0%</b><span>acerto</span></div></div>
+          <div class="sim-diag-text"><h4 id="sim-diag-title">Sem dados suficientes</h4><p id="sim-diag-text">Preencha total de questões e acertos para ver o diagnóstico.</p><div class="sim-pills"><span class="chip gray" id="sim-pill-level">Nível: —</span><span class="chip gray" id="sim-pill-reason">Erro: —</span><span class="chip gray" id="sim-pill-action">Ação: registrar</span></div></div>
+        </div>
+        <div class="sim-mini">
+          <div class="stat"><div class="sv" id="sim-live-total">0</div><div class="sl">questões</div></div>
+          <div class="stat"><div class="sv" id="sim-live-loss">0</div><div class="sl">erros + brancos</div></div>
+          <div class="stat"><div class="sv" id="sim-live-time">—</div><div class="sl">tempo</div></div>
+        </div>
+        <div class="sec-label" style="margin:14px 2px 10px;"><span>Disciplinas no simulado</span><div class="rule"></div></div>
+        <div id="sim-bars"><div class="empty">Preencha o desempenho por disciplina para o mapa de forças e fraquezas.</div></div>
+        <div class="sec-label" style="margin:14px 2px 10px;"><span>Plano pós-simulado</span><div class="rule"></div></div>
+        <div id="sim-plan"></div>
+      </div>
+    </div>
+    <div class="grid g-2">
+      <div class="card">
+        <div class="card-h"><h3>Simulados registrados</h3><span class="hint" id="sim-count"></span></div>
+        <div style="overflow-x:auto;"><table class="htable" id="sim-table"></table></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-32"></use></svg></span>Evolução do desempenho</h3><span class="hint">% de acerto</span></div>
+        <div id="sim-chart"></div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="view" id="view-desempenho"><div id="dz-root"></div></div>
+
+  
+  <div class="view" id="view-stats">
+    <div class="kpis" id="stat-kpis"></div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-32"></use></svg></span>Atividade dos últimos 7 dias</h3><span class="hint">minutos por dia</span></div>
+      <div id="stat-area"></div>
+    </div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-33"></use></svg></span>Tempo por categoria</h3><span class="hint">teoria · questões · revisão · lei seca · juris</span></div>
+      <div id="chart-cat"></div>
+    </div>
+    <div class="grid g-2">
+      <div class="card"><div class="card-h"><h3>Tempo por disciplina</h3><span class="hint">acumulado</span></div><div id="chart-disc"></div></div>
+      <div class="card"><div class="card-h"><h3>Acerto por disciplina</h3><span class="hint">% de questões</span></div><div id="chart-acc"></div></div>
+    </div>
+  </div>
+
+  
+  <div class="view" id="view-historico">
+    <div class="card">
+      <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-13"></use></svg></span>Histórico de sessões</h3><div class="hist-filter" style="display:flex;gap:10px;align-items:center;"><select id="hist-disc"></select><span class="hint" id="hist-count"></span></div></div>
+      <div style="overflow-x:auto;"><table class="htable" id="hist-table"></table></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+      <button class="btn-ghost btn-sm" id="export">Exportar dados (JSON)</button>
+      <button class="btn-ghost btn-sm" id="import">Importar dados (JSON)</button>
+      <button class="btn-ghost btn-sm" id="clearall" style="color:var(--red);">Apagar tudo</button>
+    </div>
+  </div>
+
+  
+  <div class="view" id="view-edital">
+    <div class="kpis" id="edital-kpis"></div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-6"></use></svg></span>Adicionar tópicos do edital</h3><span class="hint">cole vários de uma vez</span></div>
+      <div class="form-grid">
+        <div class="field"><label>Disciplina</label><select id="ed-disc"></select></div>
+        <div class="field"><label>Incidência (aplica aos tópicos colados)</label><select id="ed-inc"><option value="">Sem classificação</option><option value="alta">Alta incidência</option><option value="media">Média incidência</option><option value="baixa">Baixa incidência</option></select></div>
+        <div class="field" style="grid-column:1/-1"><label>Tópicos (um por linha)</label><textarea id="ed-topics" rows="4" placeholder="Princípios fundamentais&#10;Direitos e garantias fundamentais&#10;Organização do Estado"></textarea></div>
+      </div>
+      <div style="margin-top:14px;"><button class="btn" id="ed-add">Adicionar tópicos</button></div>
+    </div>
+    <div id="edital-list"></div>
+  </div>
+
+  
+  <div class="view" id="view-pesos">
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-7"></use></svg></span>Distribuição de pesos e tempo</h3><span class="hint" id="dist-hint"></span></div>
+      <div class="list-filter">
+        <input type="search" id="dist-q" class="lf-q" placeholder="Buscar matéria…">
+        <select id="dist-mode" class="lf-status"><option value="all">Todas as matérias</option><option value="data">Apenas com dados</option></select>
+        <span class="lf-count" id="dist-filter-count"></span>
+      </div>
+      <div style="overflow-x:auto;"><table class="htable" id="dist-table"></table></div>
+      <div class="tip"><div class="d"></div><p><b>Como funciona:</b> informe a <b>quantidade de questões</b> e o <b>peso</b> de cada matéria no edital, e seu <b>nível</b> de domínio (1 = não estudei → 5 = dominado). A <b>meta semanal</b> é distribuída priorizando matérias que valem mais pontos e onde você está mais fraco. Defina o total de horas em <b>Ajustes › Metas semanais</b>.</p></div>
+    </div>
+  </div>
+
+  
+  <div class="view" id="view-anki">
+    <div class="ux-hero">
+      <div class="ux-panel dark" id="anki-signal">
+        <span class="ux-pill">Anki · analisador de retenção</span>
+        <div class="ux-title">Retenção, não produção de cartões.</div>
+        <p class="ux-sub">Use esta tela para medir se o Anki está fixando conteúdo. O objetivo é detectar queda de retenção cedo, ajustar volume de novos cartões e decidir quando revisar o caderno de erros.</p>
+        <div class="retention-bar"><i style="width:0%"></i></div>
+        <div class="retention-meta">
+          <div class="mini"><b>—</b><span>último registro</span></div>
+          <div class="mini"><b>—</b><span>média 7 dias</span></div>
+          <div class="mini"><b>—</b><span>tendência</span></div>
+        </div>
+      </div>
+      <div class="card ux-form-card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-32"></use></svg></span>Registrar retenção do dia</h3><span class="hint">30 segundos</span></div>
+        <div class="form-grid">
+          <div class="field"><label>Data</label><input id="a-date" type="date"></div>
+          <div class="field"><label>Retenção verdadeira (%)</label><input id="a-ret" type="number" min="0" max="100" placeholder="88"></div>
+          <div class="field"><label>Revisões feitas</label><input id="a-rev" type="number" min="0" placeholder="220"></div>
+          <div class="field"><label>Tempo no Anki (min)</label><input id="a-min" type="number" min="0" placeholder="45"></div>
+          <div class="field" style="grid-column:1/-1"><label>Observação rápida</label><input id="a-note" placeholder="ex.: retenção caiu após muitos cartões novos de Tributário"></div>
+        </div>
+        <div class="ux-actions"><button class="btn" id="anki-save">Salvar análise</button><span class="ux-pill good">Ideal: 85% a 90%</span><span class="ux-pill warn">Atenção: &lt; 80%</span></div>
+      </div>
+    </div>
+
+    <div class="kpis" id="anki-kpis"></div>
+
+    <div class="grid g-2" style="margin-bottom:16px;align-items:start;">
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-32"></use></svg></span>Curva de retenção</h3><span class="hint">últimos registros</span></div>
+        <div id="anki-ret-chart"></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-11"></use></svg></span>Carga de revisão</h3><span class="hint">volume diário</span></div>
+        <div id="anki-load-chart"></div>
+      </div>
+    </div>
+
+    <div class="grid g-2" style="align-items:start;">
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-34"></use></svg></span>Leitura do sistema</h3><span class="hint">próxima decisão</span></div>
+        <div class="insight-list" id="anki-insights"></div>
+      </div>
+      <div class="card compact-table">
+        <div class="card-h"><h3>Histórico de retenção</h3><span class="hint" id="anki-count"></span></div>
+        <div style="overflow-x:auto;"><table class="htable" id="anki-table"></table></div>
+      </div>
+    </div>
+    <div class="tip"><div class="d"></div><p><b>Uso recomendado:</b> registre só o dado que decide conduta: <b>retenção verdadeira</b>. Se ficar abaixo de <b>80%</b>, reduza cartões novos, revise os erros recentes e faça questões do tema antes de aumentar volume.</p></div>
+  </div>
+
+  
+  <div class="view" id="view-relatorio">
+    <div class="card" style="margin-bottom:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div>
+          <h2 class="serif" id="rel-title" style="font-size:23px;font-weight:600;letter-spacing:-.01em;">Relatório semanal</h2>
+          <p style="font-size:13px;color:var(--text-3);margin-top:2px;"><b id="rel-prev-lbl"></b> · <span id="rel-range"></span></p>
+        </div>
+        <div id="rel-actions" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <select id="rel-period" class="btn-ghost btn-sm" style="padding:6px 10px;border-radius:8px;cursor:pointer;"><option value="7">Semanal</option><option value="14">Quinzenal</option><option value="30">Mensal</option><option value="91">Trimestral</option><option value="182">Semestral</option><option value="365">Anual</option></select><button class="btn-ghost btn-sm" id="rel-older">← Anterior</button>
+          <button class="btn-ghost btn-sm" id="rel-newer">Próxima →</button>
+          <button class="btn btn-sm" id="rel-print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-35"></use></svg>Imprimir / PDF</button>
+        </div>
+      </div>
+    </div>
+    <div class="kpis" id="rel-kpis"></div>
+    <div class="kpis" id="rel-kpis2"></div>
+    <div class="grid g-2">
+      <div class="card"><div class="card-h"><h3>Metas da semana</h3></div><div id="rel-goals"></div></div>
+      <div class="card"><div class="card-h"><h3>Pendências</h3></div><div id="rel-pend"></div></div>
+    </div>
+    <div class="grid g-2" style="margin-top:16px;">
+      <div class="card"><div class="card-h"><h3>Tempo por disciplina</h3><span class="hint">na semana</span></div><div id="rel-disc"></div></div>
+      <div class="card"><div class="card-h"><h3>Tempo por categoria</h3><span class="hint">na semana</span></div><div id="rel-cat"></div></div>
+    </div>
+  </div>
+
+  
+  <div class="view" id="view-calendario">
+    <div class="card">
+      <div class="cal-top">
+        <div class="cal-nav">
+          <button id="cal-prev" title="Mês anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:18px;height:18px;stroke-width:2.2"><use href="#ic-36"></use></svg></button>
+          <button id="cal-next" title="Próximo mês"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:18px;height:18px;stroke-width:2.2"><use href="#ic-37"></use></svg></button>
+        </div>
+        <div class="cal-title" id="cal-title">—</div>
+        <button class="btn-ghost btn-sm" id="cal-today">Hoje</button>
+        <button class="btn btn-sm" id="cal-new" style="margin-left:auto;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-23"></use></svg>Novo evento</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div class="cal-legend">
+        <span><i style="background:var(--emerald)"></i>Eventos por matéria (cor da disciplina)</span>
+        <span><i style="background:#c0392f"></i>Simulado / prova</span>
+        <span><i style="background:#6b4fbb"></i>Meta</span>
+        <span><i style="background:#c2790c"></i>Tarefa</span>
+        <span><i style="border:1.5px dashed var(--text-3);background:transparent"></i>Revisão agendada</span>
+      </div>
+    </div>
+    <div class="tip"><div class="d"></div><p><b>Sincronizado:</b> revisões agendadas (teoria/lei seca), simulados e o dia da prova aparecem sozinhos no calendário, na cor da matéria. Clique em qualquer dia para ver tudo e adicionar seus próprios eventos. Para rotina semanal fixa, use <b>Ciclo de Estudos</b>.</p></div>
+  </div>
+
+  
+  <div class="view" id="view-erros">
+    <div class="errors-page-grid">
+      <div class="card ux-form-card error-register-card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-38"></use></svg></span>Registrar erro</h3><span class="hint">o essencial</span></div>
+        <div class="form-grid error-form-grid">
+          <div class="field"><label>Disciplina</label><select id="er-disc"></select></div>
+          <div class="field"><label>Tópico do edital</label><input id="er-topic" placeholder="ex.: prescrição tributária"></div>
+          <div class="field" style="grid-column:1/-1"><label>Erro cometido</label><textarea id="er-note" rows="4" placeholder="O que eu marquei ou confundi?"></textarea></div>
+          <div class="field" style="grid-column:1/-1"><label>Correção em uma frase</label><textarea id="er-fix" rows="3" placeholder="Qual era o raciocínio correto?"></textarea></div>
+          <div class="field guided-error-box" style="grid-column:1/-1"><label>Revisão guiada de erro</label><select id="er-action"><option value="Fazer 5 questões do tópico">Fazer 5 questões do tópico</option><option value="Reler a lei seca do ponto">Reler a lei seca do ponto</option><option value="Criar 1 cartão no Anki">Criar 1 cartão no Anki</option><option value="Revisar jurisprudência do tema">Revisar jurisprudência do tema</option><option value="Reescrever a distinção em uma frase">Reescrever a distinção em uma frase</option></select><p>Digite um tópico cadastrado no edital para criar vínculo automático.</p></div>
+          <div class="field hidden-error-field"><label>Status</label><select id="er-status"><option value="pendente">Pendente</option><option value="revisar">Revisar</option><option value="resolvido">Resolvido</option></select></div>
+          <div class="field hidden-error-field"><label>Causa provável</label><select id="er-cause"><option value="revisão guiada">Revisão guiada</option><option value="conceito">Conceito</option><option value="lei seca">Lei seca</option><option value="jurisprudência">Jurisprudência</option><option value="pegadinha">Pegadinha da banca</option><option value="memória">Memória</option><option value="leitura">Leitura apressada</option><option value="cálculo/prazo">Cálculo ou prazo</option></select></div>
+        </div>
+        <div style="margin-top:14px;"><button class="btn" id="er-add">Salvar erro</button></div>
+      </div>
+
+      <div class="card error-review-card">
+        <div class="card-h"><h3>Fila de revisão</h3><span class="hint">prioridade</span></div>
+        <div id="er-review-list" class="error-review-list"></div>
+      </div>
+    </div>
+
+    <div class="card error-registered-card">
+      <div class="card-h error-table-head"><h3>Erros<br>registrados</h3><div class="ux-toolbar"><input id="er-search" placeholder="Pesquisar"><select id="er-filter"></select><select id="er-status-filter"><option value="">Todos</option><option value="pendente">Pendentes</option><option value="revisar">Revisar</option><option value="resolvido">Resolvidos</option></select><span class="hint" id="er-count"></span></div></div>
+      <div style="overflow-x:auto;"><table class="htable error-table"><thead><tr><th>Erro</th><th>Disciplina</th><th>Correção</th><th>Status</th><th>Ação</th></tr></thead><tbody id="er-table-body"></tbody></table></div>
+    </div>
+
+    <div class="tip error-flow-tip"><div class="d"></div><p><b>Fluxo mínimo:</b> registre o erro, escreva a correção correta e resolva quando conseguir explicar o ponto sem consultar o material.</p></div>
+  </div>
+
+  
+  <div class="view" id="view-conquistas">
+    <div class="kpis" id="conq-kpis"></div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-10"></use></svg></span>Em progresso</h3><span class="hint">próximas metas</span></div>
+      <div class="ach-grid" id="conq-progress"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:16px;height:16px;stroke-width:2;margin-right:2px"><use href="#ic-39"></use></svg>Conquistadas</h3><span class="hint" id="conq-done-count"></span></div>
+      <div class="ach-grid" id="conq-done"></div>
+    </div>
+    <div class="tip"><div class="d"></div><p><b>De onde vêm os dados:</b> as conquistas são calculadas automaticamente a partir das suas sessões em <b>Foco &amp; Sessão</b>, dos simulados e dos dias com estudo. Não precisa marcar nada à mão.</p></div>
+  </div>
+
+  
+  <div class="view" id="view-ajustes">
+    <div class="card settings-save-card" style="margin-bottom:16px;">
+      <div class="card-h settings-save-head">
+        <h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-40"></use></svg></span>Salvar ajustes</h3>
+        <span class="hint">aplica em toda a plataforma</span>
+      </div>
+      <p class="settings-save-text">Depois de alterar prova, metas, perfil, aparência, disciplinas, intervalos de revisão ou opções do sistema, clique em <b>Salvar ajustes</b> para persistir os dados e reaplicar as mudanças em todos os painéis, gráficos, calendário, relatórios e cards do início.</p>
+      <div class="settings-save-actions">
+        <button class="btn" id="settings-save-all" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-40"></use></svg>Salvar ajustes</button>
+        <span class="settings-save-status" id="settings-save-status">Nenhuma alteração manual salva nesta sessão.</span>
+      </div>
+    </div>
+    <div class="grid g-2" style="margin-bottom:16px;">
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-41"></use></svg></span>Sua prova</h3></div>
+        <div class="field" style="margin-bottom:13px;"><label>Nome / cargo</label><input id="e-name" placeholder="ex.: Concurso, Certificação, Prova"></div>
+        <div class="field"><label>Data da prova</label><input id="e-date" type="date"></div>
+          <div class="field" style="margin-top:6px">
+            <label>MINHAS PROVAS</label>
+            <div id="exams-list" style="display:flex;flex-direction:column;gap:6px"></div>
+            <button type="button" id="exam-add-btn" class="btn-ghost" style="margin-top:8px;align-self:flex-start;font-size:13px;padding:6px 12px;border:1px dashed var(--border-2);border-radius:var(--r-sm);background:transparent;color:var(--text-2);cursor:pointer">+ Adicionar prova</button>
+          </div>
+        <div class="tip" style="margin-top:16px;"><div class="d"></div><p>Aciona a contagem regressiva no painel e no topo da tela.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-28"></use></svg></span>Metas semanais</h3></div>
+        <div class="field" style="margin-bottom:13px;"><label>Horas por semana</label><input id="g-hours" type="number" min="0" placeholder="15"></div>
+        <div class="field"><label>Questões por semana</label><input id="g-q" type="number" min="0" placeholder="200"></div>
+        <div class="tip" style="margin-top:16px;"><div class="d"></div><p>Acompanhe o progresso da semana no painel inicial.</p></div>
+      </div>
+    </div>
+    <div class="grid g-2">
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-42"></use></svg></span>Seu perfil</h3></div>
+        <div class="field" style="margin-bottom:13px;"><label>Seu nome</label><input id="p-name" placeholder="Como quer ser chamado(a)"></div>
+        <div class="field"><label>Sua meta / objetivo</label><input id="p-goal" placeholder="ex.: Aprovação em 2026"></div>
+        <div class="tip" style="margin-top:16px;"><div class="d"></div><p>Aparece no topo do painel. Salvo automaticamente.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-43"></use></svg></span>Aparência</h3><span class="hint">escolha seu tema</span></div>
+        <div class="theme-grid" id="theme-grid"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-44"></use></svg></span>Disciplinas</h3><span class="hint">adicione, remova e dê cor</span></div>
+      <div id="disc-list"></div>
+      <div style="display:flex;gap:9px;margin-top:13px;flex-wrap:wrap;">
+        <input id="disc-new" placeholder="Nova disciplina (ex.: Direito Tributário)" style="flex:1;min-width:200px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface-2);border:1px solid var(--border-2);border-radius:10px;padding:11px 13px;">
+        <button class="btn" id="disc-add">Adicionar</button>
+      </div>
+      <div class="tip" style="margin-top:14px;"><div class="d"></div><p>As cores aparecem nos gráficos e relatórios. Remover uma disciplina não apaga o que você já registrou no histórico.</p></div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-5"></use></svg></span>Intervalos de revisão</h3><span class="hint">revisão espaçada</span></div>
+      <p style="font-size:13.5px;color:var(--text-2);line-height:1.6;margin-bottom:14px;">Quando você registra uma sessão de <b>teoria</b> ou <b>lei seca</b>, o sistema agenda revisões automáticas nestes intervalos (em dias). O padrão 1 · 7 · 30 segue a curva do esquecimento.</p>
+      <div id="rev-intervals"></div>
+      <button class="add-blk" id="rev-iv-add" style="max-width:280px;"><span style="font-size:16px">+</span> Adicionar intervalo</button>
+      <div class="tip" style="margin-top:14px;"><div class="d"></div><p>Alterar os intervalos só afeta <b>novas</b> revisões agendadas a partir de agora. As já existentes ficam como estão.</p></div>
+    </div>
+    <div class="card system-data-card" style="margin-top:16px;">
+      <div class="card-h system-data-head">
+        <h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><use href="#ic-45"></use></svg></span>Sistema e dados</h3>
+        <span class="hint">backup · armazenamento · segurança local</span>
+      </div>
+      <p class="system-data-intro">Centralize aqui tudo que antes aparecia na tela de login: modo de acesso, sincronização, exportação, importação, backup manual e limpeza local.</p>
+
+      <div class="system-options-grid">
+        <label class="system-check"><input type="checkbox" id="sys-backup-reminder" checked><span>Lembrar backup periódico.</span></label>
+        <label class="system-check"><input type="checkbox" id="sys-compact-sidebar"><span>Ativar sidebar compacta como padrão.</span></label>
+        <label class="system-check"><input type="checkbox" id="sys-confirm-delete" checked><span>Confirmar antes de excluir registros.</span></label>
+        <label class="system-check"><input type="checkbox" id="sys-local-pdf" checked><span>Salvar PDFs localmente no navegador.</span></label>
+      </div>
+
+      <div class="system-sync-box">
+        <div class="system-sync-title">
+          <div><b>Sincronização e backup</b><span id="settings-provider-note">Escolha como quer proteger seus dados.</span></div>
+          <span class="ux-pill" id="settings-provider-current">Supabase Cloud</span>
+        </div>
+        <div class="system-provider-grid" id="settings-provider-grid">
+          <button class="system-provider active" type="button" data-provider="supabase"><b>S</b><span><strong>Supabase</strong><small>automática com login</small></span></button>
+          <button class="system-provider" type="button" data-provider="icloud"><b>☁</b><span><strong>iCloud Drive</strong><small>backup JSON manual</small></span></button>
+          <button class="system-provider" type="button" data-provider="gdrive"><b>G</b><span><strong>Google Drive</strong><small>preparado para API</small></span></button>
+          <button class="system-provider" type="button" data-provider="onedrive"><b>1D</b><span><strong>OneDrive</strong><small>preparado para API</small></span></button>
+        </div>
+      </div>
+
+      <div class="system-actions-grid">
+        <div>
+          <div class="sys-label">Exportar dados</div>
+          <button class="btn-ghost" id="export2">Exportar backup JSON</button>
+          <p>Gera uma cópia completa de sessões, ciclos, revisões, simulados, edital, Anki, erros, biblioteca, metas e aparência.</p>
+        </div>
+        <div>
+          <div class="sys-label">Importar dados</div>
+          <div class="system-btn-row"><button class="btn-ghost" id="import2">Importar e substituir</button><button class="btn-ghost" id="import-merge">Importar e mesclar</button></div>
+          <p>Use substituir para restaurar um backup integral; use mesclar para adicionar dados sem apagar o que já existe.</p>
+        </div>
+        <div>
+          <div class="sys-label">Acesso</div>
+          <div class="system-btn-row"><button class="btn-ghost" id="settings-open-login">Abrir login / nuvem</button><button class="btn-ghost" id="settings-local-mode">Continuar local</button></div>
+          <p>Modo local funciona neste navegador. Para alternar dispositivos, faça backup JSON ou use login com sincronização.</p>
+        </div>
+        <div>
+          <div class="sys-label">Limpeza</div>
+          <button class="btn-ghost danger" id="settings-clear-pdfs">Apagar PDFs salvos</button>
+          <p>Remove apenas PDFs armazenados localmente na biblioteca. Os registros de estudo permanecem preservados.</p>
+        </div>
+      </div>
+      <input type="file" id="import-file" accept="application/json,.json" style="display:none">
+    </div>
+  </div>
+
+  </div>
+</div>
+
+<div id="focus-mode">
+  <button class="fm-exit" id="fm-exit">✕ Sair (Esc)</button>
+  <div class="fm-flash" id="fm-flash"></div>
+  <div class="fm-inner">
+    <div class="fm-modes">
+      <button class="fm-mode active" id="fm-mode-livre" data-mode="livre">Livre</button>
+      <button class="fm-mode" id="fm-mode-pomo" data-mode="pomo">Pomodoro</button>
+    </div>
+    <input id="fm-task" class="fm-task" placeholder="No que você vai focar agora?">
+
+    <div id="fm-pomo-presets" class="fm-presets" style="display:none;">
+      <button class="fm-preset active" data-f="25" data-b="5">25 / 5</button>
+      <button class="fm-preset" data-f="50" data-b="10">50 / 10</button>
+      <button class="fm-preset" data-f="90" data-b="15">90 / 15</button>
+      <button class="fm-preset" data-f="0" data-b="0" id="fm-preset-custom">Personalizado</button>
+    </div>
+    <div id="fm-custom" class="fm-custom" style="display:none;">
+      <label>Foco <input id="fm-cf" type="number" min="1" max="180" value="25">min</label>
+      <label>Pausa <input id="fm-cb" type="number" min="1" max="60" value="5">min</label>
+    </div>
+
+    <div class="fm-phase" id="fm-phase" style="display:none;">Foco</div>
+    <div class="fm-time" id="fm-time">00:00:00</div>
+    <div class="fm-state" id="fm-state">parado</div>
+    <div class="fm-btns">
+      <button class="btn" id="fm-start">Iniciar</button>
+      <button class="btn-ghost" id="fm-reset">Zerar</button>
+      <button class="btn-ghost fm-sound on" id="fm-sound" title="Som dos alertas">🔔 Som</button>
+    </div>
+    <div class="fm-cycles" id="fm-cycles" style="display:none;"></div>
+    <div class="fm-foot" id="fm-foot"></div>
+  </div>
+</div>
+
+<div id="cal-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-h"><h3 id="cal-modal-title">Dia</h3><button class="modal-x" id="cal-modal-x">✕</button></div>
+    <div id="cal-day-list"></div>
+    <button class="add-blk" id="cal-add-ev" style="margin-top:6px;"><span style="font-size:16px">+</span> Adicionar evento</button>
+    <div id="cal-form" style="display:none;margin-top:6px;">
+      <div class="form-grid">
+        <div class="field" style="grid-column:1/-1"><label>Título</label><input id="cal-f-title" placeholder="ex.: Resolver 30 questões de Penal"></div>
+        <div class="field"><label>Matéria</label><select id="cal-f-disc"></select></div>
+        <div class="field"><label>Tipo</label><select id="cal-f-type">
+          <option value="estudo">Estudo</option><option value="tarefa">Tarefa</option><option value="meta">Meta</option><option value="prova">Prova/Simulado</option><option value="outro">Outro</option>
+        </select></div>
+        <div class="field"><label>Horário (opcional)</label><input id="cal-f-time" type="time"></div>
+        <div class="field"><label>Data</label><input id="cal-f-date" type="date"></div>
+        <div class="field" style="grid-column:1/-1"><label>Anotação (opcional)</label><input id="cal-f-note" placeholder="detalhes, material, link..."></div>
+      </div>
+      <label class="cal-rep"><input type="checkbox" id="cal-f-rep"> Repetir semanalmente por <input type="number" id="cal-f-weeks" min="1" max="52" value="4" style="width:58px;"> semana(s)</label>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center;">
+        <button class="btn" id="cal-f-save">Salvar evento</button>
+        <button class="btn-ghost btn-sm" id="cal-f-cancel">Cancelar</button>
+        <button class="btn-ghost btn-sm" id="cal-f-del" style="color:var(--red);margin-left:auto;display:none;">Excluir</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Toast para notificações -->
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast"><span class="tk"><svg viewBox="0 0 24 24"><use href="#ic-39"></use></svg></span><span id="toast-txt">salvo</span></div>
 
-<!-- Scripts - será minificado em produção -->
-<script src="js/app.js" defer></script>
 
+
+
+
+
+<div id="catedra-auth" aria-hidden="true">
+  <div class="ca-auth-shell">
+    <section class="ca-auth-hero">
+      <div class="ca-brand-line">
+        <div class="ca-brand-mark">C</div>
+        <div><div class="ca-brand-name">Cátedra</div><div class="ca-brand-sub">Estudos Jurídicos</div></div>
+      </div>
+      <div class="ca-hero-copy">
+        <div class="ca-kicker">Painel privado de estudos</div>
+        <h2>Seu ciclo, revisões e progresso em um só lugar.</h2>
+        <p>Entre para carregar seus dados salvos na nuvem ou continue localmente com backup por arquivo. Ideal para alternar entre notebook, tablet e celular sem perder o histórico.</p>
+      </div>
+      <div class="ca-proof-grid">
+        <div class="ca-proof"><b>Cloud</b><span>Sincronização com Supabase</span></div>
+        <div class="ca-proof"><b>JSON</b><span>Backup para iCloud Drive</span></div>
+        <div class="ca-proof"><b>Offline</b><span>Uso local no dispositivo</span></div>
+      </div>
+    </section>
+
+    <section class="ca-auth-card">
+      <div class="ca-card-head">
+        <div><h3 id="ca-title">Entrar</h3><p id="ca-subtitle">Acesse sua conta Cátedra para sincronização automática.</p></div>
+        <div class="ca-sync-pill" id="ca-provider-label">Supabase Cloud</div>
+      </div>
+
+      <div class="ca-tabs" role="tablist" aria-label="Modo de acesso">
+        <button type="button" class="ca-tab active" id="ca-login-tab">Entrar</button>
+        <button type="button" class="ca-tab" id="ca-register-tab">Cadastrar</button>
+      </div>
+
+      <div class="ca-field"><label for="ca-email">E-mail</label><input id="ca-email" type="email" autocomplete="email" placeholder="seu@email.com"></div>
+      <div class="ca-field"><label for="ca-senha">Senha</label><input id="ca-senha" type="password" autocomplete="current-password" placeholder="sua senha"></div>
+      <div class="ca-field" id="ca-name-wrap" style="display:none;"><label for="ca-nome">Nome</label><input id="ca-nome" type="text" autocomplete="name" placeholder="seu nome"></div>
+
+      <button id="ca-btn" class="ca-primary" type="button">Entrar e sincronizar</button>
+      <div class="ca-secondary-row">
+        <button id="ca-offline-btn" class="ca-light-btn" type="button">Continuar local</button>
+        <button id="ca-clear-local" class="ca-light-btn" type="button">Voltar ao login</button>
+      </div>
+      <p id="ca-msg"></p>
+
+      <div class="ca-divider">Sincronização</div>
+      <div class="ca-sync-grid" id="ca-sync-grid">
+        <button class="ca-sync-option active" type="button" data-provider="supabase"><span class="ca-cloud-ico">S</span><span><span class="ca-sync-main">Supabase</span><span class="ca-sync-sub">automática com login</span></span></button>
+        <button class="ca-sync-option" type="button" data-provider="icloud"><span class="ca-cloud-ico">☁</span><span><span class="ca-sync-main">iCloud Drive</span><span class="ca-sync-sub">backup JSON manual</span></span></button>
+        <button class="ca-sync-option" type="button" data-provider="gdrive"><span class="ca-cloud-ico">G</span><span><span class="ca-sync-main">Google Drive</span><span class="ca-sync-sub">preparado para API</span></span></button>
+        <button class="ca-sync-option" type="button" data-provider="onedrive"><span class="ca-cloud-ico">1D</span><span><span class="ca-sync-main">OneDrive</span><span class="ca-sync-sub">preparado para API</span></span></button>
+      </div>
+      <div class="ca-sync-note" id="ca-sync-note">Supabase é a sincronização automática já conectada ao login. iCloud Drive funciona como backup: exporte o JSON e salve na pasta iCloud Drive.</div>
+      <div class="ca-sync-actions">
+        <button id="ca-export-cloud" class="ca-light-btn" type="button">Exportar backup</button>
+        <button id="ca-import-cloud" class="ca-light-btn" type="button">Importar backup</button>
+      </div>
+      <input id="ca-sync-file" type="file" accept="application/json,.json" style="display:none;">
+    </section>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="assets/app.min.js"></script>
 </body>
 </html>
