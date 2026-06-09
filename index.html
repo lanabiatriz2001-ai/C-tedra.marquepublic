@@ -6543,60 +6543,96 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
 </script>
 <!-- ===== fim PATCH EDITAL ===== -->
 
-<!-- Edital: reorganização do seletor de disciplinas (topo, design clean) -->
-<style id="edital-reorg-css">
-#edital-disc-picker{margin:0 0 18px 0;animation:edrgfade .35s ease}@keyframes edrgfade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}#edital-disc-picker .edrg-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px 2px;gap:12px}#edital-disc-picker .edrg-label{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted,#8a8f98);display:flex;align-items:center;gap:8px}#edital-disc-picker .edrg-label svg{width:15px;height:15px;opacity:.7}#edital-disc-picker .edrg-count{font-size:12px;font-weight:600;color:var(--muted,#8a8f98)}#edital-disc-picker .ed-tabs{display:flex;flex-wrap:wrap;gap:9px;padding:0;margin:0;background:transparent;border:0;overflow:visible}#edital-disc-picker .ed-tab{display:inline-flex;align-items:center;gap:9px;padding:9px 15px;border-radius:13px;border:1px solid var(--line,rgba(130,140,160,.18));background:var(--card2,rgba(255,255,255,.55));color:var(--ink,#1e2430);font-size:13.5px;font-weight:600;cursor:pointer;transition:all .18s cubic-bezier(.4,0,.2,1);backdrop-filter:blur(6px);box-shadow:0 1px 2px rgba(20,25,40,.04)}#edital-disc-picker .ed-tab:hover{transform:translateY(-2px);border-color:rgba(130,140,160,.4);box-shadow:0 6px 16px rgba(20,25,40,.10)}#edital-disc-picker .ed-tab.active{background:linear-gradient(135deg,var(--accent,#6d5ef0),var(--accent2,#8b5cf6));color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(109,94,240,.35)}#edital-disc-picker .ed-tab.active .ed-tab-count{background:rgba(255,255,255,.22);color:#fff}#edital-disc-picker .ed-tab.active .ed-tab-dot{box-shadow:0 0 0 2px rgba(255,255,255,.55)}#edital-disc-picker .ed-tab-dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;transition:box-shadow .18s}#edital-disc-picker .ed-tab-t{white-space:nowrap}#edital-disc-picker .ed-tab-count{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--chip,rgba(130,140,160,.14));color:var(--muted,#6b7280);line-height:1.4}@media (max-width:640px){#edital-disc-picker .ed-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:thin}#edital-disc-picker .ed-tab{flex:0 0 auto}}
+<!-- Edital V2: reorder (dados acima, disciplinas abaixo), distribuicao removida, peso em estatisticas, form mesclado em ajustes -->
+<style id="edital-v2-css">
+#edital-disc-picker{margin:0 0 20px 0}#edital-disc-picker .edrg-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px 2px;gap:12px}#edital-disc-picker .edrg-label{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-2,#8a8f98);display:flex;align-items:center;gap:8px}#edital-disc-picker .edrg-label svg{width:14px;height:14px;opacity:.6}#edital-disc-picker .edrg-count{font-size:11.5px;font-weight:600;color:var(--text-2,#8a8f98)}#edital-disc-picker .ed-tabs{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;background:transparent;border:0;overflow:visible}#edital-disc-picker .ed-tab{position:relative;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;border:1px solid var(--border,rgba(130,140,160,.16));background:var(--surface,#fff);color:var(--text,#1e2430);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s cubic-bezier(.4,0,.2,1)}#edital-disc-picker .ed-tab:hover{border-color:var(--emerald,#0c8a5b);background:var(--surface-2,#fafaf8);transform:translateY(-1px)}#edital-disc-picker .ed-tab.active{background:var(--emerald,#0c8a5b);color:#fff;border-color:var(--emerald,#0c8a5b);box-shadow:0 4px 14px rgba(12,138,91,.28)}#edital-disc-picker .ed-tab.active .ed-tab-count{background:rgba(255,255,255,.22);color:#fff}#edital-disc-picker .ed-tab.active .ed-tab-dot{box-shadow:0 0 0 2px rgba(255,255,255,.6)}#edital-disc-picker .ed-tab-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;transition:box-shadow .2s}#edital-disc-picker .ed-tab-t{white-space:nowrap}#edital-disc-picker .ed-tab-count{font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;background:var(--chip,rgba(130,140,160,.12));color:var(--text-2,#6b7280);line-height:1.5}@media (max-width:640px){#edital-disc-picker .ed-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:thin}#edital-disc-picker .ed-tab{flex:0 0 auto}}.v2-dist-hidden{display:none !important}.v2-merged-form{margin-top:16px;padding-top:16px;border-top:1px dashed var(--border,rgba(130,140,160,.22))}.v2-merged-form .v2-mf-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2,#8a8f98);margin:0 0 10px}#stats-peso-card .v2-peso-grid{display:grid;grid-template-columns:1fr auto;gap:8px 14px;align-items:center;max-height:340px;overflow:auto;padding-right:4px}#stats-peso-card .v2-peso-name{font-size:13.5px;font-weight:600;color:var(--text,#1e2430);display:flex;align-items:center;gap:9px}#stats-peso-card .v2-peso-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}#stats-peso-card .v2-peso-input{width:78px;padding:7px 10px;border-radius:9px;border:1px solid var(--border,rgba(130,140,160,.2));background:var(--surface,#fff);color:var(--text,#1e2430);font-size:13.5px;font-weight:600;text-align:center}#stats-peso-card .v2-peso-input:focus{outline:none;border-color:var(--emerald,#0c8a5b);box-shadow:0 0 0 3px rgba(12,138,91,.12)}#stats-peso-card .v2-peso-hd{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2,#8a8f98)}
 </style>
 <script>
 (function(){
-  if(window.__editalReorgPicker)return; window.__editalReorgPicker=true;
-  function ensureHost(){
+  if(window.__editalV2Reorg)return; window.__editalV2Reorg=true;
+  function ensurePicker(){
     var view=document.getElementById('view-edital'); if(!view)return null;
     var host=document.getElementById('edital-disc-picker');
     if(!host){
       host=document.createElement('div'); host.id='edital-disc-picker';
       var head=document.createElement('div'); head.className='edrg-head';
       var label=document.createElement('div'); label.className='edrg-label';
-      label.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Disciplina</span>';
+      label.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Disciplinas</span>';
       var cnt=document.createElement('div'); cnt.className='edrg-count'; cnt.id='edrg-count';
       head.appendChild(label); head.appendChild(cnt); host.appendChild(head);
-      var intro=view.querySelector('.ux4-view-intro');
-      var kpis=document.getElementById('edital-kpis');
-      if(intro&&intro.nextSibling){ view.insertBefore(host,intro.nextSibling); }
-      else if(kpis){ view.insertBefore(host,kpis); }
-      else { view.insertBefore(host,view.firstChild); }
+      view.appendChild(host);
     }
     return host;
   }
   function relocate(){
-    var host=ensureHost(); if(!host)return;
+    var view=document.getElementById('view-edital'); if(!view)return;
+    var intro=view.querySelector('.ux4-view-intro');
+    var meta=document.getElementById('edital-meta-wrap');
+    var host=ensurePicker();
     var fresh=document.querySelector('#edital-list .ed-tabs');
-    if(!fresh){ var any=document.querySelector('#view-edital .ed-tabs'); if(any&&any.parentElement===host){ dedupe(host); updateCount(host); } return; }
-    var olds=host.querySelectorAll('.ed-tabs');
-    for(var i=0;i<olds.length;i++){ olds[i].parentNode.removeChild(olds[i]); }
-    host.appendChild(fresh);
-    dedupe(host); updateCount(host);
-  }
-  function dedupe(host){
-    var t=host.querySelectorAll('.ed-tabs');
-    for(var i=0;i<t.length-1;i++){ t[i].parentNode.removeChild(t[i]); }
-  }
-  function updateCount(host){
+    if(fresh){ var olds=host.querySelectorAll('.ed-tabs'); for(var i=0;i<olds.length;i++){olds[i].parentNode.removeChild(olds[i]);} host.appendChild(fresh); }
+    var t=host.querySelectorAll('.ed-tabs'); for(var j=0;j<t.length-1;j++){t[j].parentNode.removeChild(t[j]);}
     var cnt=document.getElementById('edrg-count'); var tabs=host.querySelector('.ed-tabs');
     if(cnt&&tabs){ var n=tabs.querySelectorAll('.ed-tab').length; cnt.textContent=n+(n===1?' matéria':' matérias'); }
+    if(intro&&meta&&meta.parentElement===view){ if(intro.nextSibling!==meta) view.insertBefore(meta,intro.nextSibling); }
+    if(meta&&host&&host.parentElement===view){ if(meta.nextSibling!==host) view.insertBefore(host,meta.nextSibling); }
+    Array.from(view.children).forEach(function(c){ if(c.classList&&c.classList.contains('card') && /Distribuição de pesos e tempo/.test(c.textContent)){ c.classList.add('v2-dist-hidden'); } });
   }
-  window.__editalReorgRelocate=relocate;
-  function hook(){
-    if(typeof window.renderEdital==='function' && !window.renderEdital.__reorgWrapped){
-      var orig=window.renderEdital;
-      window.renderEdital=function(){ var r=orig.apply(this,arguments); try{relocate();}catch(e){} return r; };
-      window.renderEdital.__reorgWrapped=true;
+  window.__editalV2Relocate=relocate;
+  function mergeForm(){
+    var ed=document.getElementById('view-edital'); var aj=document.getElementById('view-ajustes'); if(!ed||!aj)return;
+    var addCard=Array.from(ed.children).find(function(k){return k.classList&&k.classList.contains('card')&&/Adicionar tópicos do edital/.test(k.textContent);});
+    if(!addCard) return;
+    var discCard=Array.from(aj.children).find(function(k){return k.querySelector&&k.querySelector('#disc-add');});
+    if(!discCard) return;
+    var wrap=document.createElement('div'); wrap.className='v2-merged-form';
+    var ttl=document.createElement('div'); ttl.className='v2-mf-title'; ttl.textContent='Tópicos e incidência do edital';
+    wrap.appendChild(ttl);
+    var inner=document.createElement('div');
+    Array.from(addCard.childNodes).forEach(function(nd){ inner.appendChild(nd); });
+    wrap.appendChild(inner);
+    discCard.appendChild(wrap);
+    addCard.parentNode.removeChild(addCard);
+  }
+  function discListArr(){ try{ return (window.state&&window.state.discs)?window.state.discs.slice():[]; }catch(e){ return []; } }
+  function discColor(name){ try{ var c=window.state&&window.state.discColors; return (c&&c[name])||'#7c4dff'; }catch(e){ return '#7c4dff'; } }
+  function getPeso(name){ try{ var p=window.state&&window.state.plano&&window.state.plano[name]; return (p&&p.peso!=null)?p.peso:1; }catch(e){ return 1; } }
+  function setPeso(name,val){ try{ if(!window.state.plano)window.state.plano={}; var o=window.state.plano[name]||{}; o.peso=parseFloat(val); if(isNaN(o.peso)||o.peso<0)o.peso=0; window.state.plano[name]=o; if(typeof window.save==='function')window.save(); if(typeof window.recomputeDist==='function'){try{window.recomputeDist();}catch(e){}} if(typeof window.__catedraRefreshAll==='function'){try{window.__catedraRefreshAll();}catch(e){}} }catch(e){} }
+  window.__v2SetPeso=setPeso;
+  function ensurePesoCard(){
+    var st=document.getElementById('view-stats'); if(!st)return null;
+    var card=document.getElementById('stats-peso-card');
+    if(!card){
+      card=document.createElement('div'); card.className='card'; card.id='stats-peso-card';
+      card.innerHTML='<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:14px"><div><div style="font-size:16px;font-weight:700;color:var(--text,#14181f)">Peso por disciplina</div><div style="font-size:12.5px;color:var(--text-2,#6b7280);margin-top:2px">define a importância relativa de cada matéria</div></div></div><div class="v2-peso-grid" id="stats-peso-grid"></div>';
+      var panel=Array.from(st.children).find(function(k){return /Painel por disciplina/.test(k.textContent);});
+      if(panel&&panel.nextSibling){ st.insertBefore(card,panel.nextSibling); } else { st.appendChild(card); }
     }
+    return card;
   }
-  hook();
-  var tries=0; var iv=setInterval(function(){ hook(); relocate(); if(++tries>20)clearInterval(iv); },400);
-  document.addEventListener('DOMContentLoaded',function(){hook();relocate();});
-  setTimeout(function(){hook();relocate();},800);
+  function renderPeso(){
+    var card=ensurePesoCard(); if(!card)return;
+    var grid=document.getElementById('stats-peso-grid'); if(!grid)return;
+    var ds=discListArr(); var esc=window.escapeHtml||function(x){return x;};
+    var html='<div class="v2-peso-hd">Disciplina</div><div class="v2-peso-hd" style="text-align:center">Peso</div>';
+    ds.forEach(function(d){
+      var col=discColor(d); var pv=getPeso(d);
+      html+='<div class="v2-peso-name"><span class="v2-peso-dot" style="background:'+col+'"></span><span>'+esc(d)+'</span></div>';
+      html+='<div style="text-align:center"><input class="v2-peso-input" type="number" min="0" step="0.5" value="'+pv+'" data-disc="'+esc(d)+'"></div>';
+    });
+    grid.innerHTML=html;
+    grid.querySelectorAll('.v2-peso-input').forEach(function(inp){ inp.addEventListener('change',function(){ setPeso(inp.getAttribute('data-disc'), inp.value); }); });
+  }
+  window.__v2RenderPeso=renderPeso;
+  function hookRender(){
+    if(typeof window.renderEdital==='function' && !window.renderEdital.__v2){ var o=window.renderEdital; window.renderEdital=function(){var r=o.apply(this,arguments);try{relocate();}catch(e){}return r;}; window.renderEdital.__v2=true; }
+    if(typeof window.renderStats==='function' && !window.renderStats.__v2){ var o2=window.renderStats; window.renderStats=function(){var r=o2.apply(this,arguments);try{renderPeso();}catch(e){}return r;}; window.renderStats.__v2=true; }
+  }
+  function tick(){ hookRender(); try{relocate();}catch(e){} try{mergeForm();}catch(e){} try{renderPeso();}catch(e){} }
+  hookRender();
+  var n=0; var iv=setInterval(function(){ tick(); if(++n>25)clearInterval(iv); },400);
+  document.addEventListener('DOMContentLoaded',tick);
+  setTimeout(tick,800); setTimeout(tick,1600);
 })();
 </script>
 </body>
