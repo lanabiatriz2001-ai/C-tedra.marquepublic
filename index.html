@@ -2775,10 +2775,10 @@ function fillErrorSelects(){
   const sf=document.getElementById('er-status-filter');if(sf&&!sf.dataset.bound){sf.onchange=renderErros;sf.dataset.bound='1';}
 }
 function errStatusLabel(s){return s==='resolvido'?'Resolvido':(s==='revisar'?'Revisar':'Pendente');}
-function renderErros(){
+function renderErros(){if(!document.getElementById('er-search')&&!document.getElementById('er-table-body')){return;}
   state.errors=state.errors||[];fillErrorSelects();
   const normalized=state.errors.map(e=>({...e,status:e.status||'pendente',cause:e.cause||'revisão guiada',fix:e.fix||'',action:e.action||''}));
-  const q=(document.getElementById('er-search')?.value||'').toLowerCase();
+  const q=((document.getElementById('er-search')||{})?.value||'').toLowerCase();
   const f=document.getElementById('er-filter')?.value||'';
   const st=document.getElementById('er-status-filter')?.value||'';
   let list=[...normalized].sort((a,b)=>{
@@ -2827,7 +2827,7 @@ function renderErros(){
   document.getElementById('er-status').value='pendente';
   save();renderErros();renderErrosBadge();toast('erro salvo ✓');
 };
-document.getElementById('er-search').oninput=renderErros;
+(document.getElementById('er-search')||{}).oninput=renderErros;
 
 /* ===== conquistas ===== */
 function achList(){
