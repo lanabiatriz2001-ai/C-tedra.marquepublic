@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+em<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -1211,9 +1211,6 @@ body{background:var(--canvas);}
     <div class="grid g-2">
       <div class="card">
         <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6" stroke-linecap="round"/></svg></span>Seu perfil</h3></div>
-        <div class="field" style="margin-bottom:13px;"><label>Seu nome</label><input id="p-name" placeholder="Como quer ser chamado(a)"></div>
-        <div class="field"><label>Sua meta / objetivo</label><input id="p-goal" placeholder="ex.: Aprovação em 2026"></div>
-        <div class="tip" style="margin-top:16px;"><div class="d"></div><p>Aparece no topo do painel. Salvo automaticamente.</p></div>
         <div class="field" style="margin-top:14px;"><button type="button" id="ajustes-abrir-personalizacao" class="btn-pri" onclick="var b=document.querySelector('.nav-item[data-view=&quot;personalizacao&quot;]');if(b){b.click();}else{var v=document.getElementById('view-personalizacao');if(v){document.querySelectorAll('.view').forEach(function(x){x.classList.remove('active');x.style.display='none';});v.classList.add('active');v.style.display='';}}" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 14px;border-radius:10px;cursor:pointer;font-weight:600;">⚙️ Abrir Personalização do usuário</button><p style="margin-top:8px;font-size:12px;color:var(--text-3);">Preferências estratégicas (objetivo, banca, nível, energia, prioridades) ficam na aba Personalização.</p></div>
       </div>
       <div class="card">
@@ -1740,15 +1737,15 @@ document.getElementById('menu-btn').onclick=()=>{document.getElementById('nav').
 document.getElementById('theme-btn').onclick=()=>document.querySelector('[data-view=ajustes]').click();
 
 /* perfil/prova/metas inputs */
-document.getElementById('p-name').oninput=e=>{state.profile=state.profile||{};state.profile.name=e.target.value;save();renderProfile();};
-document.getElementById('p-goal').oninput=e=>{state.profile=state.profile||{};state.profile.goal=e.target.value;save();renderProfile();};
+(document.getElementById('p-name')||{}).oninput=e=>{state.profile=state.profile||{};state.profile.name=e.target.value;save();renderProfile();};
+(document.getElementById('p-goal')||{}).oninput=e=>{state.profile=state.profile||{};state.profile.goal=e.target.value;save();renderProfile();};
 document.getElementById('e-name').oninput=e=>{state.exam=state.exam||{};state.exam.name=e.target.value;save();renderCountdown();};
 document.getElementById('e-date').oninput=e=>{state.exam=state.exam||{};state.exam.date=e.target.value;save();renderCountdown();};
 document.getElementById('g-hours').oninput=e=>{state.goals=state.goals||{};state.goals.hoursWk=parseInt(e.target.value)||0;save();renderGoals();};
 document.getElementById('g-q').oninput=e=>{state.goals=state.goals||{};state.goals.questionsWk=parseInt(e.target.value)||0;save();renderGoals();};
 function renderAjustes(){
-  document.getElementById('p-name').value=(state.profile&&state.profile.name)||'';
-  document.getElementById('p-goal').value=(state.profile&&state.profile.goal)||'';
+  (document.getElementById('p-name')||{}).value=(state.profile&&state.profile.name)||'';
+  (document.getElementById('p-goal')||{}).value=(state.profile&&state.profile.goal)||'';
   document.getElementById('e-name').value=(state.exam&&state.exam.name)||'';
   document.getElementById('e-date').value=(state.exam&&state.exam.date)||'';
   document.getElementById('g-hours').value=(state.goals&&state.goals.hoursWk)||'';
@@ -2815,7 +2812,7 @@ function renderErros(){
   tb.querySelectorAll('.er-mark-done').forEach(b=>b.onclick=()=>{const id=Number(b.closest('tr').dataset.id);const e=state.errors.find(x=>x.id===id);if(e){e.status='resolvido';e.resolvedAt=todayStr();save();renderErros();renderErrosBadge();toast('erro resolvido ✓');}});
   tb.querySelectorAll('.er-reopen').forEach(b=>b.onclick=()=>{const id=Number(b.closest('tr').dataset.id);const e=state.errors.find(x=>x.id===id);if(e){e.status='pendente';save();renderErros();renderErrosBadge();}});
 }
-document.getElementById('er-add').onclick=()=>{
+(document.getElementById('er-add')||{}).onclick=()=>{
   const note=document.getElementById('er-note').value.trim();
   if(!note){toast('descreva o erro');return;}
   const disc=document.getElementById('er-disc').value;
@@ -5817,18 +5814,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         + '</div></div>');
     }
 
-    var profileCard = by('p-goal') && by('p-goal').closest('.card');
-    if(profileCard && !by('settings-profile-extra')){
-      profileCard.insertAdjacentHTML('beforeend', '<div class="settings-extra-section" id="settings-profile-extra"><div class="settings-extra-title">Perfil de estudo</div><div class="settings-extra-grid">'
-        + fieldHTML('p-level','Nível atual',null,'', [['iniciante','Iniciante'],['intermediario','Intermediário'],['avancado','Avançado']])
-        + fieldHTML('p-shift','Turno preferido',null,'', [['manha','Manhã'],['tarde','Tarde'],['noite','Noite'],['variavel','Variável']])
-        + fieldHTML('p-style','Estilo principal',null,'', [['questoes','Questões primeiro'],['teoria','Teoria primeiro'],['lei-seca','Lei seca primeiro'],['misto','Misto']])
-        + fieldHTML('p-availability','Disponibilidade diária','text','ex.: 2h durante a semana')
-        + fieldHTML('p-weak','Pontos fracos prioritários','text','ex.: Tributário e Financeiro')
-        + fieldHTML('p-routine','Ritmo de rotina',null,'', [['leve','Leve'],['moderado','Moderado'],['intensivo','Intensivo'],['reta-final','Reta final']])
-        + '</div></div>');
-    }
-
     var revCard = by('rev-intervals') && by('rev-intervals').closest('.card');
     if(revCard && !by('settings-review-extra')){
       revCard.insertAdjacentHTML('beforeend', '<div class="settings-extra-section" id="settings-review-extra"><div class="settings-extra-title">Formas de revisão</div><div class="settings-extra-grid">'
@@ -5857,7 +5842,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function hydrateAjustes(){
     var st = S(); var g = st.goals || {}, p = st.profile || {}, r = st.reviewPrefs || {}, sys = Object.assign({backupReminder:true,compactSidebar:false,confirmDelete:true,localPdf:true,autoOpenCentral:false,showBadges:true}, st.systemSettings || {});
     setVal('g-days', g.daysWk || 5); setVal('g-daily-min', g.dailyMin || ''); setVal('g-daily-q', g.dailyQuestions || ''); setVal('g-rev', g.revisionsWk || ''); setVal('g-law', g.lawMinWk || ''); setVal('g-juris', g.jurisMinWk || ''); setVal('g-sims', g.simuladosMonth || '');
-    setVal('p-level', p.level || 'intermediario'); setVal('p-shift', p.shift || 'variavel'); setVal('p-style', p.style || 'misto'); setVal('p-availability', p.availability || ''); setVal('p-weak', p.weakPoints || ''); setVal('p-routine', p.routine || 'moderado');
+  
     setVal('rv-method', r.method || 'misto'); setVal('rv-max-day', r.maxDaily || ''); setVal('rv-reminder-hour', r.reminderHour || ''); setVal('rv-cards-day', r.cardsDay || ''); setVal('rv-use-anki', r.useAnki !== false); setVal('rv-use-questions', r.useQuestions !== false); setVal('rv-use-errors', r.useErrors !== false); setVal('rv-use-law', !!r.useLaw);
     setVal('sys-backup-reminder', sys.backupReminder !== false); setVal('sys-compact-sidebar', !!sys.compactSidebar); setVal('sys-confirm-delete', sys.confirmDelete !== false); setVal('sys-local-pdf', sys.localPdf !== false);
     applySystemSettings(); applyProvider(localStorage.getItem(PROVIDER_KEY) || 'supabase');
@@ -5865,7 +5850,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function collectAjustes(){
     var st = S(); st.profile = st.profile || {}; st.exam = st.exam || {}; st.goals = st.goals || {}; st.reviewPrefs = st.reviewPrefs || {}; st.systemSettings = st.systemSettings || {};
     if(by('p-name')) st.profile.name = getVal('p-name').trim(); if(by('p-goal')) st.profile.goal = getVal('p-goal').trim();
-    st.profile.level = getVal('p-level') || 'intermediario'; st.profile.shift = getVal('p-shift') || 'variavel'; st.profile.style = getVal('p-style') || 'misto'; st.profile.availability = getVal('p-availability').trim(); st.profile.weakPoints = getVal('p-weak').trim(); st.profile.routine = getVal('p-routine') || 'moderado';
     if(by('e-name')) st.exam.name = getVal('e-name').trim(); if(by('e-date')) st.exam.date = getVal('e-date');
     if(by('g-hours')) st.goals.hoursWk = parseInt(getVal('g-hours'),10) || 0; if(by('g-q')) st.goals.questionsWk = parseInt(getVal('g-q'),10) || 0;
     st.goals.daysWk = parseInt(getVal('g-days'),10) || 5; st.goals.dailyMin = parseInt(getVal('g-daily-min'),10) || 0; st.goals.dailyQuestions = parseInt(getVal('g-daily-q'),10) || 0; st.goals.revisionsWk = parseInt(getVal('g-rev'),10) || 0; st.goals.lawMinWk = parseInt(getVal('g-law'),10) || 0; st.goals.jurisMinWk = parseInt(getVal('g-juris'),10) || 0; st.goals.simuladosMonth = parseInt(getVal('g-sims'),10) || 0;
