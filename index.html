@@ -1213,6 +1213,7 @@ body{background:var(--canvas);}
         <div class="field" style="margin-bottom:13px;"><label>Seu nome</label><input id="p-name" placeholder="Como quer ser chamado(a)"></div>
         <div class="field"><label>Sua meta / objetivo</label><input id="p-goal" placeholder="ex.: Aprovação em 2026"></div>
         <div class="tip" style="margin-top:16px;"><div class="d"></div><p>Aparece no topo do painel. Salvo automaticamente.</p></div>
+        <div class="field" style="margin-top:14px;"><button type="button" id="ajustes-abrir-personalizacao" class="btn-pri" onclick="var b=document.querySelector('.nav-item[data-view=&quot;personalizacao&quot;]');if(b){b.click();}else{var v=document.getElementById('view-personalizacao');if(v){document.querySelectorAll('.view').forEach(function(x){x.classList.remove('active');x.style.display='none';});v.classList.add('active');v.style.display='';}}" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 14px;border-radius:10px;cursor:pointer;font-weight:600;">⚙️ Abrir Personalização do usuário</button><p style="margin-top:8px;font-size:12px;color:var(--text-3);">Preferências estratégicas (objetivo, banca, nível, energia, prioridades) ficam na aba Personalização.</p></div>
       </div>
       <div class="card">
         <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="13.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="17.5" cy="10.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="8.5" cy="7.5" r="1.2" fill="currentColor" stroke="none"/><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2s-1-1.5-1-2.5.8-1.5 1.8-1.5H16a6 6 0 0 0 6-6c0-5-4.5-8-10-8Z" stroke-linejoin="round"/></svg></span>Aparência</h3><span class="hint">escolha seu tema</span></div>
@@ -4144,7 +4145,7 @@ function rolloverDay(){
 <script>
 (function(){
   'use strict';
-  var KEY='ux5Personalizacao';
+  var KEY='catedra_user_personalization';var OLD_KEY='ux5Personalizacao';try{if(!localStorage.getItem(KEY)){var __old=localStorage.getItem(OLD_KEY);if(__old){localStorage.setItem(KEY,__old);}}}catch(e){}
   function $(id){return document.getElementById(id);} 
   function qs(s,r){return (r||document).querySelector(s);} 
   function qsa(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
@@ -4181,7 +4182,7 @@ function rolloverDay(){
   function setPath(o,p,v){var a=p.split('.'),x=o; for(var i=0;i<a.length-1;i++){x[a[i]]=x[a[i]]||{}; x=x[a[i]];} x[a[a.length-1]]=v;}
   function nval(el){return parseInt(el.value,10)||0;}
   function labelMap(v){return ({iniciante:'Iniciante',intermediario:'Intermediário',avancado:'Avançado',leve:'Leve',equilibrado:'Equilibrado',rigido:'Rígido',procuradoria:'Estudo estratégico',reta_final:'Reta final',erros:'Recuperação de pontos fracos',simulados:'Simulados e correção',ciclo:'Ciclo por blocos',cebraspe:'CEBRASPE',fgv:'FGV',fcc:'FCC',vunesp:'Vunesp',cesgranrio:'Cesgranrio',outra:'Outra',professor:'Modo professor',tecnico:'Direto e técnico',motivacional:'Motivacional',cobranca:'Cobrança de prova'}[v]||v||'—');}
-  function openUx5View(){qsa('.nav-item').forEach(function(x){x.classList.remove('active');});qsa('.view').forEach(function(x){x.classList.remove('active');});var btn=qs('.nav-item[data-view="personalizacao"]');var view=$('view-personalizacao');if(btn)btn.classList.add('active');if(view)view.classList.add('active');var nav=$('nav'),foot=$('side-foot');if(nav)nav.classList.remove('open');if(foot)foot.classList.remove('open');renderSettings();renderUx5AdviceEverywhere();applyFocusPrefs();}
+  function openUx5View(){qsa('.nav-item').forEach(function(x){x.classList.remove('active');});qsa('.view').forEach(function(x){x.classList.remove('active');});var btn=qs('.nav-item[data-view="personalizacao"]');var view=$('view-personalizacao');if(btn)btn.classList.add('active');if(view)view.classList.add('active');var nav=$('nav'),foot=$('side-foot');if(nav)nav.classList.remove('open');if(foot)foot.classList.remove('open');renderSettings();renderUx5AdviceEverywhere();applyFocusPrefs();safe(function(){if(window.__catedraRefreshAll){window.__catedraRefreshAll('personalizacao-save');}});}
   function ensureUx5Nav(){
     var nav=$('nav'); if(!nav)return;
     var btn=qs('.nav-item[data-view="personalizacao"]');
@@ -4638,7 +4639,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     qa('.nav-label',nav).forEach(function(label){label.remove();});
 
     var desempenho=['inicio','ciclo','revisoes','edital','calendario','simulados','dominio','conquistas','desempenho','stats'];
-    var sistema=['historico','ajustes'];
+    var sistema=['historico','personalizacao','ajustes'];
 
     var frag=document.createDocumentFragment();
     frag.appendChild(makeLabel('Desempenho','nav-label-desempenho'));
