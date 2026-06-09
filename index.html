@@ -787,7 +787,7 @@
       <div class="session-modal-head"><h3>Registrar sessão</h3><button class="icon-btn" id="session-close" title="Fechar" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg></button></div>
       <div class="form-grid">
         <div class="field"><label>Disciplina</label><select id="f-disc"></select></div>
-        <div class="field"><label>Tópico</label><input id="f-topic" placeholder="ex.: Controle de constitucionalidade"></div>
+        <div class="field"><label>Tópico</label><input id="f-topic" list="f-topic-list" autocomplete="off" placeholder="ex.: Controle de constitucionalidade"><datalist id="f-topic-list"></datalist></div>
         <div class="field"><label>Data</label><input id="f-date" type="date"></div>
         <div class="field"><label>Categoria</label><select id="f-cat">
           <option value="teoria">Teoria (1ª vez)</option><option value="revisao">Revisão</option>
@@ -796,6 +796,7 @@
         <div class="field"><label>Tempo (min)</label><input id="f-min" type="number" min="0" placeholder="50"></div>
         <div class="field"><label>Questões</label><input id="f-q" type="number" min="0" placeholder="20"></div>
         <div class="field"><label>Acertos</label><input id="f-c" type="number" min="0" placeholder="16"></div>
+        <div class="field"><label>Brancos</label><input id="f-b" type="number" min="0" placeholder="0"></div>
       </div>
       <div class="session-modal-foot">
         <button class="btn-ghost btn-sm" id="log-fill">Usar tempo do cronômetro</button>
@@ -2025,19 +2026,21 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeFocus();});
 document.getElementById('log-fill').onclick=()=>{document.getElementById('f-min').value=Math.round(state.timerSec/60);toast('tempo preenchido');};
 
 /* ===== log sessão ===== */
-function fillDisc(){const s=document.getElementById('f-disc');s.innerHTML=DISCIPLINAS.map(d=>'<option>'+d+'</option>').join('');}
+function fillDisc(){const s=document.getElementById('f-disc');if(!s)return;s.innerHTML=DISCIPLINAS.map(d=>'<option>'+d+'</option>').join('');if(!s._tw){s._tw=1;s.addEventListener('change',fillTopics);}fillTopics();}
+function fillTopics(){const s=document.getElementById('f-disc'),dl=document.getElementById('f-topic-list');if(!dl)return;const disc=s?s.value:'';const ed=Array.isArray(state.edital)?state.edital:[];dl.innerHTML=ed.filter(t=>t.disc===disc&&t.t).map(t=>'<option value="'+String(t.t).replace(/"/g,'&quot;')+'"></option>').join('');}
 document.getElementById('log-save').onclick=()=>{
   const disc=document.getElementById('f-disc').value;const topic=document.getElementById('f-topic').value.trim();
   const cat=document.getElementById('f-cat').value;const min=parseInt(document.getElementById('f-min').value)||0;
-  const q=parseInt(document.getElementById('f-q').value)||0;const c=parseInt(document.getElementById('f-c').value)||0;
+  const q=parseInt(document.getElementById('f-q').value)||0;const c=parseInt(document.getElementById('f-c').value)||0;const b=parseInt((document.getElementById('f-b')||{}).value)||0;
   const _df=document.getElementById('f-date');const date=(_df&&_df.value)?_df.value:todayStr();
-  const sess={id:Date.now(),date,disc,topic:topic||'(sem tópico)',cat,min,q,c};
+  const sess={id:Date.now(),date,disc,topic:topic||'(sem tópico)',cat,min,q,c,b};
   if(min<=0&&q<=0){toast('informe tempo ou questões');return;}
+  if(topic&&Array.isArray(state.edital)){var _ei=state.edital.find(function(x){return x.disc===disc&&String(x.t||'').trim().toLowerCase()===topic.toLowerCase();});if(_ei){sess.editalId=_ei.id;_ei.done=true;}}
   state.sessions.push(sess);
   if(cat==='teoria'||cat==='leiseca')getRevIntervals().forEach(iv=>state.revisions.push({id:sess.id+'_'+iv.d,sid:sess.id,disc,topic:sess.topic,label:iv.d+(iv.d===1?' dia':' dias'),due:addDays(date,iv.d),done:false}));
   if(!state.studyDays.includes(date))state.studyDays.push(date);
-  ['f-topic','f-min','f-q','f-c'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  save();renderStreak();renderHome();renderRevBadge();toast('sessão registrada ✓');
+  ['f-topic','f-min','f-q','f-c','f-b'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  save();renderStreak();renderHome();renderRevBadge();try{if(typeof renderCountdown==='function')renderCountdown();}catch(e){}try{if(typeof renderEditalCard==='function')renderEditalCard();}catch(e){}try{if(typeof renderEdital==='function')renderEdital();}catch(e){}try{if(typeof renderStats==='function')renderStats();}catch(e){}try{if(window.renderDesempenho)renderDesempenho();}catch(e){}toast('sessão registrada ✓');
   const _m=document.getElementById('session-modal');if(_m)_m.classList.remove('open');
 };
 
@@ -6639,7 +6642,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     var acertoMedio=totalQ>0?Math.round(totalC/totalQ*100):0;
     var tS=S.filter(function(s){return s.date===today;}), tSim=sims.filter(function(s){return s.date===today;});
     var hojeAcertos=0,hojeErros=0,hojeBrancos=0,hojeMin=0,porDisc={};
-    tS.forEach(function(s){hojeAcertos+=(+s.c||0);hojeErros+=Math.max(0,(+s.q||0)-(+s.c||0));hojeMin+=(+s.min||0);var d=s.disc||'(sem mat\u00e9ria)';porDisc[d]=(porDisc[d]||0)+(+s.min||0);});
+    tS.forEach(function(s){hojeAcertos+=(+s.c||0);hojeBrancos+=(+s.b||0);hojeErros+=Math.max(0,(+s.q||0)-(+s.c||0)-(+s.b||0));hojeMin+=(+s.min||0);var d=s.disc||'(sem mat\u00e9ria)';porDisc[d]=(porDisc[d]||0)+(+s.min||0);});
     tSim.forEach(function(s){hojeAcertos+=(+s.c||0);hojeErros+=(+s.wrong||0);hojeBrancos+=(+s.blank||0);});
     var wk=S.filter(function(s){return s.date>=ws;});
     var wkMin=wk.reduce(function(a,s){return a+(+s.min||0);},0), wkQ=wk.reduce(function(a,s){return a+(+s.q||0);},0);
