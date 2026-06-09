@@ -730,7 +730,6 @@
     <button class="nav-item" data-view="ciclo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v4H4zM4 10h16v4H4zM4 16h16v4H4z" stroke-linejoin="round"/></svg>Ciclo de Estudos<span class="nav-badge" id="nav-ciclo" style="display:none;background:var(--amber)">0</span></button>
     <button class="nav-item" data-view="revisoes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v4h-4" stroke-linecap="round" stroke-linejoin="round"/></svg>Revisões<span class="nav-badge" id="nav-rev" style="display:none">0</span></button>
     <button class="nav-item" data-view="edital"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2h9l5 5v15H6z" stroke-linejoin="round"/><path d="M14 2v6h6M9 13h6M9 17h6" stroke-linecap="round" stroke-linejoin="round"/></svg>Edital<span class="nav-badge" id="nav-edital" style="display:none">0%</span></button>
-    <button class="nav-item" data-view="calendario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4" stroke-linecap="round" stroke-linejoin="round"/></svg>Calendário</button>
     <div class="nav-label">Desempenho</div>
     <button class="nav-item" data-view="simulados"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 4h6a1 1 0 0 1 1 1v1h2v15H6V6h2V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 4h6v3H9z" stroke-linejoin="round"/><path d="M9 12l1.5 1.5L13 11M9 17h6" stroke-linecap="round" stroke-linejoin="round"/></svg>Simulados</button>
     <button class="nav-item" data-view="conquistas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 4h10v4a5 5 0 0 1-10 0V4ZM5 4H3v2a3 3 0 0 0 3 3M19 4h2v2a3 3 0 0 1-3 3M9 17h6M8 21h8M12 13v4" stroke-linecap="round" stroke-linejoin="round"/></svg>Conquistas</button>
@@ -1079,61 +1078,6 @@
       <div class="card"><div class="card-h"><h3>Tempo por disciplina</h3><span class="hint">na semana</span></div><div id="rel-disc"></div></div>
       <div class="card"><div class="card-h"><h3>Tempo por categoria</h3><span class="hint">na semana</span></div><div id="rel-cat"></div></div>
     </div>
-  </div>
-
-  <!-- ===== CALENDÁRIO ===== -->
-  <div class="view" id="view-calendario">
-    <div class="card">
-      <div class="cal-top">
-        <div class="cal-nav">
-          <button id="cal-prev" title="Mês anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:18px;height:18px;stroke-width:2.2"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <button id="cal-next" title="Próximo mês"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:18px;height:18px;stroke-width:2.2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        </div>
-        <div class="cal-title" id="cal-title">—</div>
-        <button class="btn-ghost btn-sm" id="cal-today">Hoje</button>
-        <button class="btn btn-sm" id="cal-new" style="margin-left:auto;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>Novo evento</button>
-      </div>
-      <div class="cal-grid" id="cal-grid"></div>
-      <div class="cal-legend">
-        <span><i style="background:var(--emerald)"></i>Eventos por matéria (cor da disciplina)</span>
-        <span><i style="background:#c0392f"></i>Simulado / prova</span>
-        <span><i style="background:#6b4fbb"></i>Meta</span>
-        <span><i style="background:#c2790c"></i>Tarefa</span>
-        <span><i style="border:1.5px dashed var(--text-3);background:transparent"></i>Revisão agendada</span>
-      </div>
-    </div>
-    <div class="tip"><div class="d"></div><p><b>Sincronizado:</b> revisões agendadas (teoria/lei seca), simulados e o dia da prova aparecem sozinhos no calendário, na cor da matéria. Clique em qualquer dia para ver tudo e adicionar seus próprios eventos. Para rotina semanal fixa, use <b>Ciclo de Estudos</b>.</p></div>
-  </div>
-
-  <!-- ===== CADERNO DE ERROS ===== -->
-  <div class="view" id="view-erros">
-    <div class="errors-page-grid">
-      <div class="card ux-form-card error-register-card">
-        <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2h12v20l-6-3-6 3z" stroke-linejoin="round"/><path d="M12 7v4M12 14h.01" stroke-linecap="round"/></svg></span>Registrar erro</h3><span class="hint">o essencial</span></div>
-        <div class="form-grid error-form-grid">
-          <div class="field"><label>Disciplina</label><select id="er-disc"></select></div>
-          <div class="field"><label>Tópico do edital</label><input id="er-topic" placeholder="ex.: prescrição tributária"></div>
-          <div class="field" style="grid-column:1/-1"><label>Erro cometido</label><textarea id="er-note" rows="4" placeholder="O que eu marquei ou confundi?"></textarea></div>
-          <div class="field" style="grid-column:1/-1"><label>Correção em uma frase</label><textarea id="er-fix" rows="3" placeholder="Qual era o raciocínio correto?"></textarea></div>
-          <div class="field guided-error-box" style="grid-column:1/-1"><label>Revisão guiada de erro</label><select id="er-action"><option value="Fazer 5 questões do tópico">Fazer 5 questões do tópico</option><option value="Reler a lei seca do ponto">Reler a lei seca do ponto</option><option value="Criar 1 cartão no Anki">Criar 1 cartão no Anki</option><option value="Revisar jurisprudência do tema">Revisar jurisprudência do tema</option><option value="Reescrever a distinção em uma frase">Reescrever a distinção em uma frase</option></select><p>Digite um tópico cadastrado no edital para criar vínculo automático.</p></div>
-          <div class="field hidden-error-field"><label>Status</label><select id="er-status"><option value="pendente">Pendente</option><option value="revisar">Revisar</option><option value="resolvido">Resolvido</option></select></div>
-          <div class="field hidden-error-field"><label>Causa provável</label><select id="er-cause"><option value="revisão guiada">Revisão guiada</option><option value="conceito">Conceito</option><option value="lei seca">Lei seca</option><option value="jurisprudência">Jurisprudência</option><option value="pegadinha">Pegadinha da banca</option><option value="memória">Memória</option><option value="leitura">Leitura apressada</option><option value="cálculo/prazo">Cálculo ou prazo</option></select></div>
-        </div>
-        <div style="margin-top:14px;"><button class="btn" id="er-add">Salvar erro</button></div>
-      </div>
-
-      <div class="card error-review-card">
-        <div class="card-h"><h3>Fila de revisão</h3><span class="hint">prioridade</span></div>
-        <div id="er-review-list" class="error-review-list"></div>
-      </div>
-    </div>
-
-    <div class="card error-registered-card">
-      <div class="card-h error-table-head"><h3>Erros<br>registrados</h3><div class="ux-toolbar"><input id="er-search" placeholder="Pesquisar"><select id="er-filter"></select><select id="er-status-filter"><option value="">Todos</option><option value="pendente">Pendentes</option><option value="revisar">Revisar</option><option value="resolvido">Resolvidos</option></select><span class="hint" id="er-count"></span></div></div>
-      <div style="overflow-x:auto;"><table class="htable error-table"><thead><tr><th>Erro</th><th>Disciplina</th><th>Correção</th><th>Status</th><th>Ação</th></tr></thead><tbody id="er-table-body"></tbody></table></div>
-    </div>
-
-    <div class="tip error-flow-tip"><div class="d"></div><p><b>Fluxo mínimo:</b> registre o erro, escreva a correção correta e resolva quando conseguir explicar o ponto sem consultar o material.</p></div>
   </div>
 
   <!-- ===== CONQUISTAS ===== -->
