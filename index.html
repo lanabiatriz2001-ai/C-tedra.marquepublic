@@ -730,7 +730,6 @@
     <button class="nav-item" data-view="ciclo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v4H4zM4 10h16v4H4zM4 16h16v4H4z" stroke-linejoin="round"/></svg>Ciclo de Estudos<span class="nav-badge" id="nav-ciclo" style="display:none;background:var(--amber)">0</span></button>
     <button class="nav-item" data-view="revisoes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v4h-4" stroke-linecap="round" stroke-linejoin="round"/></svg>Revisões<span class="nav-badge" id="nav-rev" style="display:none">0</span></button>
     <button class="nav-item" data-view="edital"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2h9l5 5v15H6z" stroke-linejoin="round"/><path d="M14 2v6h6M9 13h6M9 17h6" stroke-linecap="round" stroke-linejoin="round"/></svg>Edital<span class="nav-badge" id="nav-edital" style="display:none">0%</span></button>
-    <button class="nav-item" data-view="pesos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 3v18M5 21h14M9 17v-5M13 17V8M17 17v-9" stroke-linecap="round" stroke-linejoin="round"/></svg>Pesos &amp; Pontos</button>
     <button class="nav-item" data-view="calendario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4" stroke-linecap="round" stroke-linejoin="round"/></svg>Calendário</button>
     <div class="nav-label">Desempenho</div>
     <button class="nav-item" data-view="simulados"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 4h6a1 1 0 0 1 1 1v1h2v15H6V6h2V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 4h6v3H9z" stroke-linejoin="round"/><path d="M9 12l1.5 1.5L13 11M9 17h6" stroke-linecap="round" stroke-linejoin="round"/></svg>Simulados</button>
@@ -989,11 +988,6 @@
       </div>
       <div style="margin-top:14px;"><button class="btn" id="ed-add">Adicionar tópicos</button></div>
     </div>
-    <div id="edital-list"></div>
-  </div>
-
-  <!-- ===== PESOS & PONTOS (planilha, página própria) ===== -->
-  <div class="view" id="view-pesos">
     <div class="card" style="margin-bottom:16px;">
       <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 3v18M5 21h14M9 17v-5M13 17V8M17 17v-9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Distribuição de pesos e tempo</h3><span class="hint" id="dist-hint"></span></div>
       <div class="list-filter">
@@ -1004,6 +998,7 @@
       <div style="overflow-x:auto;"><table class="htable" id="dist-table"></table></div>
       <div class="tip"><div class="d"></div><p><b>Como funciona:</b> informe a <b>quantidade de questões</b> e o <b>peso</b> de cada matéria no edital, e seu <b>nível</b> de domínio (1 = não estudei → 5 = dominado). A <b>meta semanal</b> é distribuída priorizando matérias que valem mais pontos e onde você está mais fraco. Defina o total de horas em <b>Ajustes › Metas semanais</b>.</p></div>
     </div>
+    <div id="edital-list"></div>
   </div>
 
   <!-- ===== ANKI ===== -->
@@ -1706,7 +1701,6 @@ document.querySelectorAll('.nav-item').forEach(b=>b.onclick=()=>{
   if(v==='revisoes')renderRevisions();
   if(v==='simulados')renderSimulados();
   if(v==='edital')renderEdital();
-  if(v==='pesos'){try{state.plano=state.plano||{};renderDistribuicao();}catch(e){}}
   if(v==='historico')renderHistory();
   if(v==='calendario')renderCalendar();
   if(v==='erros')renderErros();
@@ -2269,6 +2263,7 @@ function renderEdital(){
   const _ex=acoes.querySelector('#ed-act-exportar');if(_ex)_ex.onclick=()=>{const txt=disc+'\n'+items.map((t,i)=>String(i+1).padStart(2,'0')+'. '+t.t+(t.inc?(' ['+t.inc+']'):'')).join('\n');try{navigator.clipboard.writeText(txt);toast('disciplina copiada ✓');}catch(e){toast('copie manualmente');}};
   const _sv=acoes.querySelector('#ed-act-salvar');if(_sv)_sv.onclick=()=>{save();toast('alterações salvas ✓');};
   applyEditalFilter();
+  try{state.plano=state.plano||{};renderDistribuicao();}catch(e){}
 }
 function applyEditalFilter(){
   const f=window.editalFilter||{q:'',status:'all',inc:'all'};
@@ -4317,30 +4312,12 @@ function weekMinutes(){return safe(()=>{const base=new Date(iso()+'T00:00:00'),s
 function goalMin(){return safe(()=>state.personalizacao?.goals?.min||60,60)}
 function daysToExam(){return safe(()=>{if(!state.exam?.date)return null;const a=new Date(iso()+'T00:00:00'),b=new Date(state.exam.date+'T00:00:00');return Math.max(0,Math.ceil((b-a)/86400000))},null)}
 function streak(){return safe(()=>{const days=[...new Set(state.studyDays||[])].sort();if(!days.length)return 0;let cur=iso(),n=0;if(!days.includes(cur))cur=addDay(cur,-1);while(days.includes(cur)){n++;cur=addDay(cur,-1)}return n},0)}
-function buildFocusQueue(){const items=[],rev=pendingReviews()[0],block=nextCycleBlock(),err=openErrors()[0],ed=unresolvedEdital(),remaining=Math.max(0,goalMin()-todayMinutes());if(rev)items.push({id:'rev_'+rev.id,title:'Fazer 1 revisão: '+(rev.topic||'tópico sem nome'),desc:(rev.disc?rev.disc+' · ':'')+'vencida para '+fmtBR(rev.due)+'.',view:'revisoes'});if(block)items.push({id:'block_'+block.id,title:'Executar bloco do foco: '+(block.t||block.tag||'próxima atividade'),desc:block.d||'abrir o próximo bloco do ciclo do dia.',view:block.action||'ciclo'});if(err)items.push({id:'err_'+err.id,title:'Zerar 1 item do caderno: '+(err.topic||'erro sem tópico'),desc:(err.disc?err.disc+' · ':'')+(err.fix||'revisar causa e próxima ação.'),view:'erros'});if(ed)items.push({id:'ed_'+ed.id,title:'Avançar 1 tópico do plano: '+ed.t,desc:(ed.disc||'sem disciplina')+' · item ainda pendente.',view:'edital'});if(remaining>0)items.push({id:'goal_today',title:'Completar meta do dia: '+remaining+' min',desc:'Registrar a sessão com a data correta.',view:'foco'});if(!items.length)items.push({id:'ok_day',title:'Dia organizado',desc:'Sem pendências críticas. Use o foco para aprofundar ou revisar leve.',view:'foco'});return items.slice(0,5)}
-function orientationList(){const arr=[],rev=pendingReviews().length,err=openErrors().length,rem=Math.max(0,goalMin()-todayMinutes()),cyc=completionCycle();if(rem>0)arr.push({tone:'warn',title:'Meta diária em aberto',text:'Faltam '+rem+' min para a meta mínima de hoje.'});if(rev>0)arr.push({tone:'bad',title:'Revisões precisam prioridade',text:'Há '+rev+' revisão(ões) vencida(s). Quite a fila antes de abrir muita frente nova.'});if(cyc.total&&cyc.pct<100)arr.push({tone:'info',title:'Foco do dia ainda aberto',text:'O ciclo está em '+cyc.done+'/'+cyc.total+' bloco(s). Continue pelo próximo bloco recomendado.'});if(err>0)arr.push({tone:'warn',title:'Erros pedem fechamento',text:'Existem '+err+' item(ns) no caderno de erros aguardando ação.'});if(!arr.length)arr.push({tone:'good',title:'Dia sob controle',text:'Acompanhe a execução pela Central e registre o que foi feito.'});return arr.slice(0,4)}
-const NOTIF_DISMISS_KEY='catedra.dismissedNotifications.v1';
-function alertBaseId(type,extra=''){return type+'|'+iso()+'|'+String(extra||'')}
-function getDismissedAlerts(){return safe(()=>{const raw=localStorage.getItem(NOTIF_DISMISS_KEY);const arr=raw?JSON.parse(raw):[];return Array.isArray(arr)?arr:[]},[])}
-function setDismissedAlerts(arr){safe(()=>localStorage.setItem(NOTIF_DISMISS_KEY,JSON.stringify(Array.from(new Set(arr)).slice(-80))),null)}
-function rawNotifications(){const arr=[],rev=pendingReviews(),err=openErrors(),exam=daysToExam(),rem=Math.max(0,goalMin()-todayMinutes());if(rem>0)arr.push({id:alertBaseId('meta-diaria',rem),tone:'warn',title:'Lembrete de meta diária',text:'Ainda faltam '+rem+' min para bater a meta mínima de hoje.',view:'foco'});if(rev.length)arr.push({id:alertBaseId('revisoes',(rev[0].id||rev[0].due||rev[0].topic||'')+'|'+rev.length),tone:'bad',title:'Alerta de revisões',text:rev.length+' revisão(ões) vencida(s). A primeira é '+(rev[0].topic||'sem tópico')+'.',view:'revisoes'});if(err.length)arr.push({id:alertBaseId('erros',(err[0].id||err[0].topic||'')+'|'+err.length),tone:'info',title:'Caderno de erros',text:'Há '+err.length+' item(ns) aguardando resolução. O próximo é '+(err[0].topic||'sem tópico')+'.',view:'erros'});if(exam!==null)arr.push({id:alertBaseId('prova',safe(()=>state.exam.date,'')+'|'+exam),tone:exam<=15?'bad':'warn',title:'Lembrete de data importante',text:(exam===0?'Hoje':'Faltam '+exam+' dia(s)')+' para a data cadastrada.',view:'inicio'});if(!safe(()=>state.sessions.some(s=>s.date===iso()),false))arr.push({id:alertBaseId('registro-dia'),tone:'warn',title:'Registro do dia',text:'Nenhuma sessão foi registrada hoje até agora.',view:'foco'});return arr.slice(0,5)}
-function notifications(){const all=rawNotifications(),active=new Set(all.map(a=>a.id));const clean=getDismissedAlerts().filter(id=>active.has(id));setDismissedAlerts(clean);const gone=new Set(clean);return all.filter(a=>!gone.has(a.id))}
-function dismissAlert(id){setDismissedAlerts(getDismissedAlerts().concat(id));renderAlerts();updateBadge();safe(()=>toast('Notificação descartada'),null)}
-function dismissAllAlerts(){const ids=rawNotifications().map(a=>a.id);setDismissedAlerts(getDismissedAlerts().concat(ids));renderAlerts();updateBadge();safe(()=>toast('Notificações descartadas'),null)}
-function ensureButtons(){if(!$('public-center-fab')){const b=document.createElement('button');b.id='public-center-fab';b.className='public-center-fab';b.title='Central do dia';b.innerHTML='<svg viewBox="0 0 24 24"><path d="M5 5h14v10H8l-3 3V5Z" stroke-linejoin="round"/><path d="M8 9h8M8 12h5" stroke-linecap="round"/></svg>';document.body.appendChild(b);b.onclick=()=>{const p=ensurePanel();p.classList.toggle('open');renderCentral()}}if(!$('public-alert-fab')){const b=document.createElement('button');b.id='public-alert-fab';b.className='public-alert-fab';b.title='Alertas e lembretes';b.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 4a4 4 0 0 1 4 4v2.4c0 .9.3 1.8.9 2.5L18.5 15H5.5l1.6-2.1c.6-.7.9-1.6.9-2.5V8a4 4 0 0 1 4-4Z" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" stroke-linecap="round"/></svg><span class="public-alert-badge">0</span>';document.body.appendChild(b);b.onclick=()=>{const p=ensureAlertPanel();p.classList.toggle('open');renderAlerts()}}updateBadge()}
-function ensurePanel(){let p=$('public-center-panel');if(!p){p=document.createElement('div');p.id='public-center-panel';p.className='public-center-panel';document.body.appendChild(p)}return p}function ensureAlertPanel(){let p=$('public-alert-panel');if(!p){p=document.createElement('div');p.id='public-alert-panel';p.className='public-alert-panel';document.body.appendChild(p)}return p}
-function centralNav(){const active=q('.nav-item.active')?.dataset.view||'inicio',items=[['inicio','Hoje','M3 12 12 3l9 9M5 10v10h14V10'],['foco','Foco','M12 6v6l3 2M12 22a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z'],['revisoes','Revisões','M21 12a9 9 0 1 1-3-6.7M21 4v4h-4'],['erros','Erros','M6 2h12v20l-6-3-6 3zM12 7v4M12 14h.01'],['relatorio','Relatório','M6 2h9l5 5v15H6zM14 2v6h6M9 17v-4M12 17v-6M15 17v-2']];return '<div class="public-central-nav">'+items.map(i=>'<button type="button" data-central-view="'+i[0]+'" class="'+(active===i[0]?'active':'')+'"><svg viewBox="0 0 24 24" fill="none"><path d="'+i[2]+'" stroke-linecap="round" stroke-linejoin="round"/></svg><span>'+i[1]+'</span></button>').join('')+'</div>'}
-function renderCentral(){const p=ensurePanel(),queue=buildFocusQueue(),tips=orientationList();p.innerHTML='<div class="public-center-hero"><h3>Central do dia</h3><p>Menu suspenso para navegar, acompanhar o foco do dia e fechar pendências rápidas sem sair do contexto.</p></div>'+centralNav()+'<div class="public-mini-card"><h4>Orientação rápida <span class="mini-hint">dentro da central</span></h4><ul class="public-advice-list">'+tips.map(t=>'<li class="'+t.tone+'"><strong>'+esc(t.title)+'</strong><br>'+esc(t.text)+'</li>').join('')+'</ul></div><div class="public-mini-card"><h4>Fila de próximas ações <span class="mini-hint">foco do dia</span></h4><div class="public-checklist">'+queue.map(item=>'<label class="public-check"><input type="checkbox"><div class="public-check-main"><strong>'+esc(item.title)+'</strong><span>'+esc(item.desc)+'</span></div><button type="button" class="public-check-open" data-open="'+esc(item.view)+'">Abrir</button></label>').join('')+'</div><div class="public-panel-actions"><button class="primary" id="central-next-action" type="button">Iniciar próxima ação</button><button class="secondary" id="central-open-alerts" type="button">Ver alertas</button></div></div>';qa('[data-central-view]',p).forEach(b=>b.onclick=()=>{openView(b.dataset.centralView);setTimeout(renderCentral,60)});qa('[data-open]',p).forEach(b=>b.onclick=()=>{openView(b.dataset.open);p.classList.remove('open')});qa('.public-check input',p).forEach(i=>i.onchange=()=>i.closest('.public-check').classList.toggle('done',i.checked));$('central-next-action').onclick=()=>{openView(queue[0]?.view||'foco');p.classList.remove('open')};$('central-open-alerts').onclick=()=>{renderAlerts();ensureAlertPanel().classList.add('open');p.classList.remove('open')}}
-function updateBadge(){const n=notifications().length,b=q('.public-alert-badge'),tb=$('topbar-notif-badge');if(b){b.textContent=String(n);b.style.display=n>0?'flex':'none'}if(tb){tb.textContent=String(n);tb.style.display=n>0?'flex':'none'}}
-function renderAlerts(){ensureButtons();const p=ensureAlertPanel(),list=notifications();p.innerHTML='<div class="public-alert-head"><div><h4>Alertas e lembretes</h4><div class="hint">visualize ou descarte avisos rápidos do sistema</div></div><div class="public-alert-head-actions">'+(list.length?'<button class="btn-ghost btn-sm" id="dismiss-all-alerts">Descartar todas</button>':'')+'<button class="btn-ghost btn-sm" id="close-alert-panel">fechar</button></div></div><div class="public-alert-list">'+(list.length?list.map(a=>'<div class="public-alert-item '+a.tone+'"><div class="dot"></div><div><b>'+esc(a.title)+'</b><span>'+esc(a.text)+'</span></div><div class="public-alert-actions"><button type="button" class="public-alert-view" data-alert-open="'+esc(a.view)+'">Visualizar</button><button type="button" class="public-alert-dismiss" data-alert-dismiss="'+esc(a.id)+'">Descartar</button></div></div>').join(''):'<div class="empty">Sem alertas no momento.</div>')+'</div>';$('close-alert-panel').onclick=()=>p.classList.remove('open');const da=$('dismiss-all-alerts');if(da)da.onclick=()=>dismissAllAlerts();qa('[data-alert-open]',p).forEach(b=>b.onclick=()=>{openView(b.dataset.alertOpen);p.classList.remove('open')});qa('[data-alert-dismiss]',p).forEach(b=>b.onclick=()=>dismissAlert(b.dataset.alertDismiss));updateBadge()}
 function patchFocus(){const grid=q('#view-foco .form-grid');if(grid&&!$('f-date')){const field=document.createElement('div');field.className='field';field.innerHTML='<label>Data da atividade</label><input id="f-date" type="date">';const ref=$('f-min')?.closest('.field');ref?grid.insertBefore(field,ref):grid.appendChild(field)}if($('f-date')&&!$('f-date').value)$('f-date').value=iso();const opt=q('#f-cat option[value="teoria"]');if(opt)opt.textContent='Teoria';const btn=$('log-save');if(btn&&!btn.dataset.datePatch){btn.dataset.datePatch='1';btn.addEventListener('click',()=>{setTimeout(()=>{const d=$('f-date')?.value;if(d&&state.sessions&&state.sessions.length){const s=state.sessions[state.sessions.length-1];if(s&&s.date===iso()){s.date=d;state.revisions=(state.revisions||[]).filter(r=>String(r.sid)!==String(s.id));if(s.cat==='teoria'||s.cat==='leiseca'){safe(()=>getRevIntervals(),[{d:1},{d:7},{d:30}]).forEach(iv=>state.revisions.push({id:s.id+'_'+iv.d,sid:s.id,disc:s.disc,topic:s.topic,label:iv.d+(iv.d===1?' dia':' dias'),due:addDay(d,iv.d),done:false}))}state.studyDays=[...new Set((state.sessions||[]).map(x=>x.date).filter(Boolean))].sort();saveState();refresh()}}},120)},true)}}
 function patchHome(){const ring=q('#view-inicio .ring-card');if(ring)ring.classList.add('compact-balance');}
 function applyPanelFilter(){const table=$('panel-table'),val=$('panel-filter')?.value||'';if(!table)return;qa('tr',table).forEach((tr,i)=>{if(i===0){tr.style.display='';return}const disc=tr.children[0]?.textContent?.trim()||'';tr.style.display=(!val||disc===val)?'':'none'})}
 function patchErrors(){const inp=$('er-topic'),disc=$('er-disc');if(!inp)return;if(!inp.getAttribute('list'))inp.setAttribute('list','er-topic-list');if(!$('er-topic-list')){const dl=document.createElement('datalist');dl.id='er-topic-list';inp.after(dl)}const update=()=>{const d=disc?.value||'';$('er-topic-list').innerHTML=[...new Set((state.edital||[]).filter(it=>!d||it.disc===d).map(it=>it.t).filter(Boolean))].slice(0,300).map(t=>'<option value="'+esc(t)+'"></option>').join('')};if(disc&&!disc.dataset.topicBind){disc.dataset.topicBind='1';disc.onchange=update}if(!inp.dataset.topicBind){inp.dataset.topicBind='1';inp.oninput=()=>{const m=(state.edital||[]).find(it=>(!disc?.value||it.disc===disc.value)&&String(it.t||'').toLowerCase().includes(inp.value.toLowerCase()));let h=$('er-topic-linked');if(!h){h=document.createElement('div');h.id='er-topic-linked';h.className='err-linked';inp.closest('.field')?.appendChild(h)}h.innerHTML=m?'<span>Correlacionado com</span><span class="pill">'+esc(m.disc||'Plano')+' · '+esc(m.t)+'</span>':'<span style="color:var(--text-3)">Sem correlação automática com o plano ainda.</span>'}}update()}
-function addLibraryTab(){if($('view-biblioteca'))return;const nav=$('nav'),content=q('.content');if(!nav||!content)return;const btn=document.createElement('button');btn.className='nav-item';btn.dataset.view='biblioteca';btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h7a3 3 0 0 1 3 3v13H7a3 3 0 0 0-3-3V4Zm16 0h-7a3 3 0 0 0-3 3v13h7a3 3 0 0 1 3-3V4Z" stroke-linejoin="round"/></svg>Biblioteca';nav.appendChild(btn);const view=document.createElement('div');view.id='view-biblioteca';view.className='view';view.innerHTML='<div class="card"><div class="card-h"><h3>Biblioteca</h3><span class="hint">salvar PDFs localmente</span></div><div class="form-grid"><div class="field"><label>Título</label><input id="lib-title"></div><div class="field"><label>Arquivo PDF</label><input id="lib-file" type="file" accept="application/pdf,.pdf"></div><div class="field"><label>Disciplina</label><select id="lib-disc">'+(window.DISCIPLINAS||[]).map(d=>'<option>'+esc(d)+'</option>').join('')+'</select></div><div class="field"><label>Tipo</label><select id="lib-type"><option>PDF</option><option>Lei seca</option><option>Resumo</option><option>Questões</option><option>Jurisprudência</option></select></div></div><button class="btn" id="lib-save" style="margin-top:12px">Salvar PDF</button></div><div class="card" style="margin-top:16px"><div class="card-h"><h3>Materiais salvos</h3><span class="hint">neste navegador</span></div><div id="lib-list"></div></div>';content.appendChild(view);btn.onclick=()=>{openView('biblioteca');renderLib()};$('lib-save').onclick=saveLib;renderLib()}
-function db(){return new Promise((res,rej)=>{const r=indexedDB.open('catedraLib',1);r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('pdfs'))d.createObjectStore('pdfs',{keyPath:'id'})};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}async function allLib(){const d=await db();return await new Promise(res=>{const tx=d.transaction('pdfs','readonly'),s=tx.objectStore('pdfs'),r=s.getAll();r.onsuccess=()=>res(r.result||[]);tx.oncomplete=()=>d.close()})}async function putLib(x){const d=await db();return await new Promise(res=>{const tx=d.transaction('pdfs','readwrite');tx.objectStore('pdfs').put(x);tx.oncomplete=()=>{d.close();res()}})}async function delLib(id){const d=await db();return await new Promise(res=>{const tx=d.transaction('pdfs','readwrite');tx.objectStore('pdfs').delete(id);tx.oncomplete=()=>{d.close();res()}})}async function saveLib(){const f=$('lib-file')?.files?.[0];if(!f){safe(()=>toast('selecione um PDF'),null);return}await putLib({id:'pdf_'+Date.now(),title:$('lib-title').value||f.name,fileName:f.name,disc:$('lib-disc').value,type:$('lib-type').value,blob:f,createdAt:new Date().toISOString()});$('lib-title').value='';$('lib-file').value='';renderLib();safe(()=>toast('PDF salvo'),null)}async function renderLib(){const host=$('lib-list');if(!host)return;const arr=await allLib();host.innerHTML=arr.length?arr.map(x=>'<div class="rev"><div class="rev-m"><div class="rev-t">'+esc(x.title)+'</div><div class="rev-s">'+esc(x.disc)+' · '+esc(x.type)+' · '+esc(x.fileName)+'</div></div><button class="btn-ghost btn-sm" data-open="'+x.id+'">Abrir</button><button class="btn-ghost btn-sm" data-del="'+x.id+'">Excluir</button></div>').join(''):'<div class="empty">Nenhum PDF salvo ainda.</div>';qa('[data-open]',host).forEach(b=>b.onclick=async()=>{const x=(await allLib()).find(i=>i.id===b.dataset.open);if(x){const u=URL.createObjectURL(x.blob);window.open(u,'_blank');setTimeout(()=>URL.revokeObjectURL(u),60000)}});qa('[data-del]',host).forEach(b=>b.onclick=async()=>{await delLib(b.dataset.del);renderLib()})}
 function patchConquistas(){qa('#view-conquistas .challenge-main .lvl').forEach(el=>{const m=String(el.textContent||'').match(/(\d+)/);if(!m)return;const n=Number(m[1]),map={1:'Iniciante',2:'Base',3:'Intermediário',4:'Avançado',5:'Elite',6:'Mestre',7:'Lenda'};el.textContent=map[n]||('Nível '+n);el.title='dificuldade '+n})}
-function boot(){ensureButtons();renderCentral();renderAlerts();patchFocus();patchHome();patchErrors();addLibraryTab();patchConquistas();['cf-stats-advice','cf-report-advice','ux4-stats-advice','ux4-report-advice'].forEach(id=>$(id)?.remove());qa('.nav-item[data-view]').forEach(b=>b.addEventListener('click',()=>setTimeout(()=>{patchFocus();patchHome();patchErrors();patchConquistas();renderAlerts();renderCentral()},80)));['renderHome','renderErros','renderConquistas','renderStats','renderRelatorio'].forEach(name=>{const fn=window[name];if(typeof fn==='function'&&!fn.__finalPatch){window[name]=function(){const r=fn.apply(this,arguments);setTimeout(()=>{patchFocus();patchHome();patchErrors();patchConquistas();renderAlerts();renderCentral();['cf-stats-advice','cf-report-advice','ux4-stats-advice','ux4-report-advice'].forEach(id=>$(id)?.remove())},50);return r};window[name].__finalPatch=true}})}
+function boot(){patchFocus();patchHome();patchErrors();patchConquistas();['cf-stats-advice','cf-report-advice','ux4-stats-advice','ux4-report-advice'].forEach(id=>$(id)?.remove());qa('.nav-item[data-view]').forEach(b=>b.addEventListener('click',()=>setTimeout(()=>{patchFocus();patchHome();patchErrors();patchConquistas()},80)));['renderHome','renderErros','renderConquistas','renderStats','renderRelatorio'].forEach(name=>{const fn=window[name];if(typeof fn==='function'&&!fn.__finalPatch){window[name]=function(){const r=fn.apply(this,arguments);setTimeout(()=>{patchFocus();patchHome();patchErrors();patchConquistas();['cf-stats-advice','cf-report-advice','ux4-stats-advice','ux4-report-advice'].forEach(id=>$(id)?.remove())},50);return r};window[name].__finalPatch=true}})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 </script>
@@ -4432,99 +4409,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </script>
 <!-- ===== fim CÁTEDRA · DOMÍNIO E RISCO ===== -->
 
-<!-- ===== CATEDRA PATCH · FOCO DO DIA NA PAGINA INICIAL ===== -->
-<style>
-  .home-day-focus{position:relative;overflow:hidden;border:1px solid color-mix(in srgb,var(--purple) 34%,var(--border));border-radius:28px;padding:32px 38px;margin-bottom:18px;background:linear-gradient(135deg,#2f2944 0%,#654065 58%,#7b3d6b 100%);color:#fff;box-shadow:var(--sh-md);}
-  .home-day-focus::after{content:"";position:absolute;right:-46px;top:-72px;width:230px;height:230px;border-radius:50%;background:rgba(255,84,163,.23);}
-  .home-day-focus .focus-top{display:flex;align-items:center;justify-content:space-between;gap:14px;position:relative;z-index:1;margin-bottom:22px;}
-  .home-day-focus .focus-label{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:800;letter-spacing:.01em;}
-  .home-day-focus .focus-icon{width:45px;height:45px;border-radius:14px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
-  .home-day-focus .focus-icon svg{width:22px;height:22px;stroke-width:2.3;}
-  .home-day-focus .focus-fast{font-size:14px;color:rgba(255,255,255,.58);font-weight:600;}
-  .home-day-focus h2{font-family:'Newsreader',serif;font-size:clamp(34px,5.3vw,68px);font-weight:600;letter-spacing:-.045em;line-height:.98;margin:0 0 22px;position:relative;z-index:1;}
-  .home-day-focus .why{font-size:16px;color:rgba(255,255,255,.68);line-height:1.45;max-width:980px;position:relative;z-index:1;margin-bottom:22px;}
-  .home-day-focus .why b{color:rgba(255,255,255,.86);}
-  .home-day-focus .focus-chips{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1;margin-bottom:28px;}
-  .home-day-focus .focus-chip{border:1px solid rgba(255,255,255,.20);background:rgba(255,255,255,.09);color:rgba(255,255,255,.78);border-radius:999px;padding:9px 17px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;}
-  .home-day-focus .focus-bottom{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;position:relative;z-index:1;}
-  .home-day-focus .focus-primary{background:#ff4aa0;color:#fff;border:none;border-radius:16px;padding:15px 24px;font-size:15px;font-weight:900;box-shadow:0 16px 36px rgba(255,74,160,.25);}
-  .home-day-focus .focus-primary:hover{transform:translateY(-1px);box-shadow:0 18px 44px rgba(255,74,160,.34);}
-  .home-day-focus .focus-secondary,.home-day-focus .focus-action{background:rgba(255,255,255,.08);color:rgba(255,255,255,.84);border:1px solid rgba(255,255,255,.20);border-radius:16px;padding:15px 18px;font-size:14px;font-weight:900;}
-  .home-day-focus .focus-secondary:hover,.home-day-focus .focus-action:hover{background:rgba(255,255,255,.13);color:#fff;}
-  .home-day-focus .focus-action.warn{border-color:rgba(245,178,74,.42);color:#ffd89a;}
-  .home-day-focus .focus-action.danger{border-color:rgba(255,130,154,.38);color:#ffb8c8;}
-  .home-day-focus .focus-priority{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 22px;position:relative;z-index:1;}
-  .home-day-focus .focus-mini{background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.13);border-radius:16px;padding:13px 14px;min-height:82px;}
-  .home-day-focus .focus-mini small{display:block;color:rgba(255,255,255,.48);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;}
-  .home-day-focus .focus-mini b{display:block;color:#fff;font-size:15px;line-height:1.25;}
-  .home-day-focus .focus-mini span{display:block;color:rgba(255,255,255,.58);font-size:12px;line-height:1.35;margin-top:4px;}
-  .home-quick-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:0 0 16px;}
-  .home-quick-card{border:1px solid var(--border);background:var(--surface);border-radius:18px;padding:15px 16px;box-shadow:var(--sh-sm);cursor:pointer;text-align:left;color:var(--text);}
-  .home-quick-card:hover{transform:translateY(-2px);box-shadow:var(--sh-md);border-color:color-mix(in srgb,var(--emerald) 35%,var(--border));}
-  .home-quick-card b{display:block;font-size:13.5px;margin-bottom:4px;}
-  .home-quick-card span{display:block;font-size:12px;color:var(--text-3);line-height:1.35;}
-  .home-quick-card.primary{background:linear-gradient(135deg,color-mix(in srgb,#ff4aa0 18%,var(--surface)),var(--surface));border-color:color-mix(in srgb,#ff4aa0 42%,var(--border));}
-  @media(max-width:980px){.home-day-focus .focus-priority{grid-template-columns:1fr 1fr}.home-quick-strip{grid-template-columns:1fr 1fr;}}
-  @media(max-width:720px){.home-day-focus{padding:24px 20px;border-radius:22px}.home-day-focus .focus-top{align-items:flex-start}.home-day-focus .focus-fast{display:none}.home-day-focus .focus-bottom{justify-content:stretch}.home-day-focus .focus-primary,.home-day-focus .focus-secondary,.home-day-focus .focus-action{width:100%;justify-content:center}.home-day-focus h2{font-size:38px}.home-day-focus .why{font-size:14px}.home-day-focus .focus-priority,.home-quick-strip{grid-template-columns:1fr}}
-
-</style>
-<script>
-(function(){
-  function by(id){return document.getElementById(id)}
-  function q(s,r){return (r||document).querySelector(s)}
-  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-  function safe(fn,fb){try{return fn()}catch(e){return fb}}
-  function today(){return safe(function(){return todayStr()},new Date().toISOString().slice(0,10))}
-  function minToday(){return safe(function(){return (state.sessions||[]).filter(function(s){return s.date===today()}).reduce(function(a,s){return a+(+s.min||0)},0)},0)}
-  function dueRevs(){return safe(function(){return (state.revisions||[]).filter(function(r){return !r.done&&r.due<=today()})},[])}
-  function errCount(){return safe(function(){return (state.errors||[]).filter(function(e){return (e.status||'pendente')!=='resolvido'}).length},0)}
-  function cycleInfo(){return safe(function(){var ids=blockIds(state.dia), c=dc(state.dia); return {ids:ids,done:ids.filter(function(i){return c[i]}).length,total:ids.length,doneMap:c}}, {ids:[],done:0,total:0,doneMap:{}})}
-  function cycleBlockById(id){return safe(function(){var arr=[]; (state.backlog||[]).forEach(function(x){arr.push(x)}); (FIXOS||[]).forEach(function(x){arr.push(x)}); var d=(DIAS||[]).find(function(x){return x.k===state.dia})||{}; if(d.special)(d.special||[]).forEach(function(x){arr.push(x)}); else if(d.rot)arr.push(Object.assign({id:'rot_'+state.dia},d.rot)); return arr.find(function(x){return x.id===id})||null},null)}
-  function currentDisc(){return safe(function(){return (state.disciplinas&&state.disciplinas[0])||(typeof DISCIPLINAS!=='undefined'&&DISCIPLINAS[0])||'Direito Constitucional'},'Direito Constitucional')}
-  function nextActivity(){
-    var revs=dueRevs(), ci=cycleInfo(), firstPending=null;
-    for(var i=0;i<ci.ids.length;i++){if(!ci.doneMap[ci.ids[i]]){firstPending=cycleBlockById(ci.ids[i]);break}}
-    if(revs.length){return {title:'Tarefas do Dia',why:'há revisão pendente; resolver agora evita dívida de estudo silenciosa.',disc:(revs[0].disc||currentDisc()),cat:'revisao',suggested:25,kind:'Revisão',cycle:ci.done+'/'+ci.total,rev:revs.length,err:errCount(),source:'rev'}}
-    if(firstPending){return {title:firstPending.t||'Atividade do ciclo',why:firstPending.d||'próximo bloco aberto no ciclo do dia.',disc:currentDisc(),cat:(/lei/i.test(firstPending.t||'')?'leiseca':/quest|simulado/i.test(firstPending.t||'')?'questoes':/anki|revis/i.test(firstPending.t||'')?'revisao':'teoria'),suggested:firstPending.feat?25:50,kind:firstPending.tag||'Ciclo de Estudos',cycle:ci.done+'/'+ci.total,rev:revs.length,err:errCount(),source:'cycle'}}
-    return {title:'Revisar erros e consolidar o dia',why:'ciclo concluído; use o bloco para fechar lacunas antes de abrir conteúdo novo.',disc:currentDisc(),cat:'revisao',suggested:30,kind:'Fechamento',cycle:ci.done+'/'+ci.total,rev:revs.length,err:errCount(),source:'done'}
-  }
-  function setActive(a){state.activeFocus={title:a.title,desc:a.why,disc:a.disc,cat:a.cat,suggestedMinutes:a.suggested,createdAt:Date.now(),source:'home-day-focus'}; safe(function(){save()},null)}
-  function openView(v){if(v==='foco'){if(window.openSessionModal)window.openSessionModal();return;}var b=q('.nav-item[data-view="'+v+'"]'); if(b)b.click()}
-
-  function renderHomeQuickStrip(home){
-    var strip=by('home-quick-strip'); if(!strip){strip=document.createElement('div');strip.id='home-quick-strip';strip.className='home-quick-strip'; var focus=by('home-day-focus'); if(focus&&focus.nextSibling)home.insertBefore(strip,focus.nextSibling); else home.insertBefore(strip,home.firstChild);}
-    strip.innerHTML='<button class="home-quick-card primary" id="hq-focus"><b>Focar</b><span>abre o cronômetro com o bloco sugerido</span></button><button class="home-quick-card" id="hq-cycle"><b>Ciclo de Estudos</b><span>ver, concluir ou repactuar atrasadas</span></button><button class="home-quick-card" id="hq-reschedule"><b>Remarcar</b><span>mover atividade para o calendário</span></button><button class="home-quick-card" id="hq-errors"><b>Corrigir erro</b><span>abrir recuperação guiada</span></button><button class="home-quick-card" id="hq-report"><b>Decidir amanhã</b><span>ver estatísticas e relatório</span></button>';
-    var a=nextActivity();
-    var f=by('hq-focus'), c=by('hq-cycle'), r=by('hq-reschedule'), e=by('hq-errors'), st=by('hq-report');
-    if(f)f.onclick=function(){setActive(a); safe(function(){openFocus()},function(){openView('foco')});};
-    if(c)c.onclick=function(){openView('ciclo')};
-    if(r)r.onclick=function(){openView('calendario')};
-    if(e)e.onclick=function(){openView('erros')};
-    if(st)st.onclick=function(){openView('stats')};
-  }
-  function renderHomeDayFocus(){
-    var home=by('view-inicio'); if(!home)return; var card=by('home-day-focus'); if(!card){card=document.createElement('div');card.id='home-day-focus';card.className='home-day-focus'}
-    var intro=q('.ux4-view-intro',home); var anchor=intro?intro.nextSibling:home.firstChild; if(card.parentNode!==home||card.previousSibling!==intro){home.insertBefore(card,anchor)}
-    var a=nextActivity();
-    card.innerHTML='<div class="focus-top"><div class="focus-label"><span class="focus-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></span><span>Foco do dia</span></div><div class="focus-fast">decisão em 5 segundos</div></div>'+ 
-      '<h2>'+esc(a.title)+'</h2><p class="why"><b>Por que:</b> '+esc(a.why)+'</p>'+ 
-      '<div class="focus-priority"><div class="focus-mini"><small>prioridade</small><b>'+esc(a.kind)+'</b><span>atividade que deve aparecer primeiro hoje</span></div><div class="focus-mini"><small>tempo sugerido</small><b>'+esc(a.suggested)+' min</b><span>abre já vinculado ao cronômetro</span></div><div class="focus-mini"><small>ciclo</small><b>'+esc(a.cycle)+'</b><span>progresso do dia</span></div><div class="focus-mini"><small>pendências</small><b>'+esc(a.rev)+' revisão · '+esc(a.err)+' erro</b><span>recuperação antes de avançar</span></div></div>'+
-      '<div class="focus-chips"><span class="focus-chip">'+esc(a.disc)+'</span><span class="focus-chip">'+esc(a.cat)+'</span><span class="focus-chip">remarcar</span><span class="focus-chip">descartar</span><span class="focus-chip">repactuar</span><span class="focus-chip">concluir</span></div>'+ 
-      '<div class="focus-bottom"><button class="focus-primary" id="home-day-start">Focar agora</button><button class="focus-action" id="home-day-done">Concluir</button><button class="focus-action warn" id="home-day-reschedule">Remarcar</button><button class="focus-action warn" id="home-day-repact">Repactuar</button><button class="focus-action danger" id="home-day-discard">Descartar</button><button class="focus-secondary" id="home-day-cycle">Ver ciclo completo</button></div>';
-    var start=by('home-day-start'), cyc=by('home-day-cycle'), done=by('home-day-done'), res=by('home-day-reschedule'), rep=by('home-day-repact'), dis=by('home-day-discard');
-    if(start)start.onclick=function(){setActive(a); safe(function(){renderRegularFocusContext()},null); safe(function(){renderFocusOverlayContext()},null); safe(function(){openFocus()},function(){openView('foco')});};
-    if(cyc)cyc.onclick=function(){openView('ciclo')};
-    if(done)done.onclick=function(){safe(function(){toast('Atividade concluída. Registre a sessão para consolidar os dados.')},null); openView('foco')};
-    if(res)res.onclick=function(){safe(function(){toast('Use Calendário ou Ciclo de Estudos para remarcar a atividade.')},null); openView('calendario')};
-    if(rep)rep.onclick=function(){safe(function(){toast('Abrindo ciclo para repactuar atrasadas e reorganizar o dia.')},null); openView('ciclo')};
-    if(dis)dis.onclick=function(){safe(function(){toast('Atividade descartada visualmente. Ajuste definitivo no ciclo ou nas revisões.')},null);};
-    renderHomeQuickStrip(home);
-  }
-  function hook(){var old=window.renderHome; if(typeof old==='function'&&!old._homeDayFocus){window.renderHome=function(){var r=old.apply(this,arguments); setTimeout(renderHomeDayFocus,30); return r}; window.renderHome._homeDayFocus=true} renderHomeDayFocus()}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',hook); else hook();
-})();
-</script>
-<!-- ===== fim CATEDRA PATCH · FOCO DO DIA NA PAGINA INICIAL ===== -->
 
 <script>
 (function(){
@@ -4728,7 +4612,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
     qa('.nav-label',nav).forEach(function(label){label.remove();});
 
-    var desempenho=['inicio','ciclo','revisoes','edital','calendario','simulados','dominio','conquistas','desempenho','pesos','stats'];
+    var desempenho=['inicio','ciclo','revisoes','edital','calendario','simulados','dominio','conquistas','desempenho','stats'];
     var sistema=['historico','ajustes'];
 
     var frag=document.createDocumentFragment();
@@ -4782,184 +4666,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </script>
 <!-- ===== fim PATCH: Organização do menu por funcionalidades ===== -->
 
-<!-- ===== PATCH HOME COMPACTA · FOCO + FEEDBACK + METAS/PROVA ===== -->
-<style id="catedra-home-compacta-css">
-  .home-command-grid{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(280px,.78fr);gap:16px;align-items:start;margin-bottom:16px;}
-  .home-command-main{display:grid;gap:12px;min-width:0;}
-  .home-command-side{display:grid;gap:12px;min-width:0;}
-  .home-command-side .card{margin-bottom:0!important;}
-  .home-command-side #countdown-card{min-height:auto;}
-  .home-command-side .countdown{gap:14px;}
-  .home-command-side .cd-num{font-size:clamp(38px,5vw,52px);}
-  .home-command-side .goal{margin-bottom:12px;}
-  .home-command-side .card-h{margin-bottom:13px;}
-  .home-command-side .card{padding:18px;}
-  .home-day-focus{border-radius:22px!important;padding:20px 22px!important;margin-bottom:0!important;box-shadow:var(--sh-sm)!important;background:linear-gradient(135deg,#2f2944 0%,#5b3c60 62%,#743a68 100%)!important;}
-  .home-day-focus::after{right:-54px!important;top:-86px!important;width:178px!important;height:178px!important;opacity:.75;}
-  .home-day-focus .focus-top{margin-bottom:12px!important;}
-  .home-day-focus .focus-icon{width:34px!important;height:34px!important;border-radius:11px!important;}
-  .home-day-focus .focus-icon svg{width:17px!important;height:17px!important;}
-  .home-day-focus .focus-label{font-size:13px!important;gap:9px!important;}
-  .home-day-focus .focus-fast{font-size:12px!important;}
-  .home-day-focus h2{font-size:clamp(25px,3.25vw,42px)!important;line-height:1!important;margin:0 0 10px!important;max-width:760px;}
-  .home-day-focus .why{font-size:13px!important;line-height:1.45!important;margin:0 0 13px!important;max-width:760px;color:rgba(255,255,255,.70)!important;}
-  .home-day-focus .focus-priority{grid-template-columns:repeat(4,1fr)!important;gap:8px!important;margin:0 0 13px!important;}
-  .home-day-focus .focus-mini{min-height:0!important;padding:10px 11px!important;border-radius:13px!important;}
-  .home-day-focus .focus-mini small{font-size:9.5px!important;margin-bottom:5px!important;letter-spacing:.09em!important;}
-  .home-day-focus .focus-mini b{font-size:13.5px!important;}
-  .home-day-focus .focus-mini span{display:none!important;}
-  .home-day-focus .focus-chips{display:none!important;}
-  .home-day-focus .focus-bottom{justify-content:flex-start!important;gap:8px!important;}
-  .home-day-focus .focus-primary,.home-day-focus .focus-secondary,.home-day-focus .focus-action{border-radius:12px!important;padding:10px 14px!important;font-size:12.5px!important;}
-  .home-day-focus .focus-action.warn:nth-of-type(n+4),.home-day-focus .focus-action.danger{display:none!important;}
-  .home-quick-strip{display:none!important;}
-  .home-feedback-integrado{grid-column:1/-1;position:relative;overflow:hidden;color:#fff;background:linear-gradient(115deg,#252338 0%,#201d31 46%,#563050 100%);border:1px solid rgba(174,151,218,.30);border-radius:30px;padding:28px;box-shadow:0 22px 56px rgba(24,18,38,.22);}
-  .home-feedback-integrado::before{content:"";position:absolute;inset:auto -12% -44% 42%;height:72%;background:radial-gradient(circle at center,rgba(255,78,166,.24),transparent 66%);pointer-events:none;}
-  .home-feedback-integrado>*{position:relative;z-index:1;}
-  .home-feedback-integrado .hf-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;}
-  .home-feedback-integrado .hf-brand{display:flex;align-items:flex-start;gap:15px;}
-  .home-feedback-integrado .hf-mark{width:46px;height:46px;border-radius:17px;background:rgba(239,80,161,.28);border:1px solid rgba(239,80,161,.46);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);flex:0 0 auto;}
-  .home-feedback-integrado h3{font-size:17px;font-weight:900;color:rgba(255,255,255,.92);margin:4px 0 8px;letter-spacing:0;}
-  .home-feedback-integrado .hf-sub{font-size:13px;font-weight:700;color:rgba(255,255,255,.38);margin:0;line-height:1.35;}
-  .home-feedback-integrado .hf-side-note{font-size:13px;font-weight:800;color:rgba(255,255,255,.36);padding-top:13px;white-space:nowrap;}
-  .home-feedback-integrado .hf-panel{display:grid;grid-template-columns:minmax(260px,.86fr) minmax(0,1.54fr);gap:18px;align-items:stretch;}
-  .home-feedback-integrado .hf-risk-card{min-height:228px;border:1px solid rgba(176,148,217,.26);background:rgba(20,18,33,.52);border-radius:25px;padding:32px 34px 28px;display:flex;flex-direction:column;justify-content:space-between;}
-  .home-feedback-integrado .hf-risk-num{font-family:'Newsreader',serif;font-size:clamp(58px,7.8vw,92px);font-weight:700;line-height:.9;color:#ef5aa6;margin:0;}
-  .home-feedback-integrado .hf-risk-num span{font-family:Inter,system-ui,sans-serif;font-size:.40em;color:rgba(255,255,255,.60);margin-left:6px;}
-  .home-feedback-integrado .hf-risk-label{font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:0;color:rgba(255,255,255,.70);margin-top:12px;}
-  .home-feedback-integrado .hf-progress{height:12px;border-radius:999px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);overflow:hidden;margin-top:30px;}
-  .home-feedback-integrado .hf-progress-bar{display:block;height:100%;width:var(--hf-risk,0%);border-radius:inherit;background:linear-gradient(90deg,#ee6843 0%,#f3b345 45%,#ef58a6 100%);}
-  .home-feedback-integrado .hf-metrics{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:14px;}
-  .home-feedback-integrado .hf-metric{min-height:118px;border:1px solid rgba(176,148,217,.25);background:rgba(22,20,35,.62);border-radius:24px;padding:20px 18px;display:flex;flex-direction:column;justify-content:flex-start;}
-  .home-feedback-integrado .hf-metric-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;min-width:0;}
-  .home-feedback-integrado .hf-dot{width:17px;height:17px;border-radius:50%;background:#ef5aa6;box-shadow:0 0 0 9px rgba(255,255,255,.08);flex:0 0 auto;}
-  .home-feedback-integrado .hf-metric.red .hf-dot{background:#e95b52;}
-  .home-feedback-integrado .hf-metric.amber .hf-dot{background:#e9a83c;}
-  .home-feedback-integrado .hf-metric.purple .hf-dot{background:#8065d8;}
-  .home-feedback-integrado .hf-metric b{font-size:15px;font-weight:900;color:rgba(255,255,255,.88);line-height:1.2;word-break:break-word;}
-  .home-feedback-integrado .hf-metric p{font-size:12.5px;font-weight:700;color:rgba(255,255,255,.53);line-height:1.35;margin:0;}
-  .home-command-side-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);margin:0 0 8px;}
-  .ux5-top-note#ux5-home-personal{display:none!important;}
-  .home-legacy-side-grid{display:none!important;}
-  @media(max-width:1180px){.home-feedback-integrado .hf-panel{grid-template-columns:1fr}.home-feedback-integrado .hf-metrics{grid-template-columns:repeat(2,minmax(0,1fr));}}
-  @media(max-width:980px){.home-command-grid{grid-template-columns:1fr}.home-day-focus .focus-priority{grid-template-columns:1fr 1fr!important}.home-command-side{grid-template-columns:1fr 1fr}.home-command-side .card{min-height:100%;}}
-  @media(max-width:720px){.home-command-side{grid-template-columns:1fr}.home-day-focus{padding:18px!important}.home-day-focus .focus-fast{display:none!important}.home-day-focus .focus-priority{grid-template-columns:1fr 1fr!important}.home-day-focus .focus-primary,.home-day-focus .focus-secondary,.home-day-focus .focus-action{width:auto!important}.home-feedback-integrado{padding:22px;border-radius:24px}.home-feedback-integrado .hf-head{display:block}.home-feedback-integrado .hf-side-note{white-space:normal;padding-top:10px}.home-feedback-integrado .hf-risk-card{min-height:190px;padding:26px 24px}.home-feedback-integrado .hf-metrics{grid-template-columns:1fr 1fr}.home-feedback-integrado .hf-metric{border-radius:18px;min-height:112px;padding:17px 15px}}
-  @media(max-width:420px){.home-day-focus .focus-priority{grid-template-columns:1fr!important}.home-day-focus .focus-bottom{display:grid!important;grid-template-columns:1fr 1fr}.home-day-focus .focus-primary{grid-column:1/-1}.home-feedback-integrado{padding:18px}.home-feedback-integrado .hf-metrics{grid-template-columns:1fr}}
-</style>
-<script id="catedra-home-compacta-js">
-(function(){
-  'use strict';
-  function by(id){return document.getElementById(id)}
-  function q(s,r){return (r||document).querySelector(s)}
-  function esc(s){return String(s==null?'':s).replace(/[&<>\"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]})}
-  function safe(fn,fb){try{return fn()}catch(e){return fb}}
-  function today(){return safe(function(){return window.todayStr()},new Date().toISOString().slice(0,10))}
-  function st(){return window.state||{};}
-  function dueReviews(){var d=today(),s=st();return (s.revisions||[]).filter(function(r){return !r.done&&String(r.due||'')<=d}).length}
-  function openErrors(){var s=st();return (s.errors||[]).filter(function(e){return (e.status||'pendente')!=='resolvido'}).length}
-  function todayMinutes(){var d=today(),s=st();return (s.sessions||[]).filter(function(x){return x.date===d}).reduce(function(a,x){return a+(+x.min||0)},0)}
-  function weeklyMinutes(){var s=st(),now=new Date(today()+'T00:00:00'),day=now.getDay()||7,start=new Date(now);start.setDate(now.getDate()-day+1);var a=start.toISOString().slice(0,10);return (s.sessions||[]).filter(function(x){return x.date>=a&&x.date<=today()}).reduce(function(t,x){return t+(+x.min||0)},0)}
-  function goalMin(){var s=st();return ((+((s.goals||{}).hours)||0)*60)||0}
-  function cycleInfo(){return safe(function(){var ids=window.blockIds(st().dia),c=window.dc(st().dia);return {done:ids.filter(function(i){return c[i]}).length,total:ids.length}}, {done:0,total:0})}
-  function score(){var gm=goalMin(),wm=weeklyMinutes(),rev=dueReviews(),err=openErrors(),cy=cycleInfo(),base=55;if(gm)base+=Math.min(25,Math.round(wm/gm*25));if(cy.total)base+=Math.round((cy.done/cy.total)*10);base-=Math.min(18,rev*4);base-=Math.min(12,err*3);return Math.max(0,Math.min(100,base))}
-  function recentMinutes(){var s=st(),d=today(),start=new Date(d+'T00:00:00');start.setDate(start.getDate()-6);var a=start.toISOString().slice(0,10);return (s.sessions||[]).filter(function(x){return x.date>=a&&x.date<=d}).reduce(function(t,x){return t+(+x.min||0)},0)}
-  function dailyGoal(){var s=st();return safe(function(){return +(s.personalizacao&&s.personalizacao.goals&&s.personalizacao.goals.min)||60},60)}
-  function fmtMin(m){m=+m||0;return m>=60?((m/60).toFixed(1).replace('.0','')+'h'):(m+' min')}
-  function examInfo(){var s=st();if(!s.examDate)return ['--','data não definida'];return [safe(function(){var a=new Date(today()+'T00:00:00'),b=new Date(s.examDate+'T00:00:00'),n=Math.ceil((b-a)/86400000);return n>=0?n+' dias':'encerrada'},'--'),'até a prova']}
-  function renderFeedback(){var box=by('home-platform-feedback');if(!box)return;
-    var st0=st(),d=today();
-    var todaySess=(st0.sessions||[]).filter(function(s){return s.date===d;});
-    var nSess=todaySess.length,qToday=todaySess.reduce(function(a,s){return a+(+s.q||0);},0),cToday=todaySess.reduce(function(a,s){return a+(+s.c||0);},0);
-    var accToday=qToday>0?Math.round(cToday/qToday*100)+'%':'—';
-    var tm=todayMinutes(),week=recentMinutes(),cy=cycleInfo(),rev=dueReviews(),err=openErrors(),exam=examInfo();
-    var edPct=safe(function(){return (window.editalStats?window.editalStats():{pct:0}).pct;},0)||0;
-    var dg=dailyGoal(),goalPct=dg?Math.min(100,Math.round(tm/dg*100)):0;
-    var bigT=tm>=60?((tm/60).toFixed(1).replace('.0','')+'h'):(tm+'m');
-    var metrics=[
-      ['','Sessões hoje',nSess,nSess?'registradas hoje':'nenhuma sessão ainda'],
-      ['','Questões hoje',qToday,qToday?('acerto '+accToday):'sem questões hoje'],
-      ['purple','Ciclo',cy.done+'/'+cy.total,'blocos concluídos hoje'],
-      ['amber','Revisões',rev,rev?'a fazer (hoje/atrasadas)':'em dia'],
-      ['red','Erros',err,'pendências no caderno'],
-      ['','Edital',edPct+'%','tópicos concluídos'],
-      ['amber','Semana',fmtMin(week),'nos últimos 7 dias'],
-      ['amber','Prova',exam[0],exam[1]]
-    ];
-    box.style.setProperty('--hf-risk',goalPct+'%');
-    box.innerHTML='<div class="hf-head"><div class="hf-brand"><span class="hf-mark"></span><div><h3>Resumo do dia</h3><p class="hf-sub">o que você realizou hoje e os pontos principais</p></div></div><div class="hf-side-note">visão consolidada</div></div><div class="hf-panel"><div class="hf-risk-card"><div><div class="hf-risk-num">'+bigT+'</div><div class="hf-risk-label">estudado hoje'+(dg?(' · meta '+fmtMin(dg)):'')+'</div></div><div class="hf-progress"><span class="hf-progress-bar"></span></div></div><div class="hf-metrics">'+metrics.map(function(m){return '<div class="hf-metric '+m[0]+'"><div class="hf-metric-top"><span class="hf-dot"></span><b>'+esc(m[1])+' · '+esc(m[2])+'</b></div><p>'+esc(m[3])+'</p></div>'}).join('')+'</div></div>';}
-  function compactFocus(){var card=by('home-day-focus');if(!card)return;var h=card.querySelector('h2');if(h&&/Anki|revisão espaçada/i.test(h.textContent))h.textContent='Tarefas do Dia';else if(h&&h.textContent==='Revisar erros e consolidar o dia')h.textContent='Consolidar o dia';var why=card.querySelector('.why');if(why)why.innerHTML=why.innerHTML.replace('pendência acumulada; resolver agora evita dívida de estudo silenciosa.','pendência acumulada; resolver agora evita dívida.').replace('ciclo concluído; use o bloco para fechar lacunas antes de abrir conteúdo novo.','feche lacunas antes de abrir conteúdo novo.');}
-  function ensureLayout(){var _dl=document.getElementById('view-inicio');if(_dl&&_dl.dataset.dash==='1')return;var home=by('view-inicio');if(!home)return;var personal=by('ux5-home-personal');if(personal)personal.remove();var focus=by('home-day-focus');if(!focus)return;compactFocus();var grid=by('home-command-grid');if(!grid){grid=document.createElement('div');grid.id='home-command-grid';grid.className='home-command-grid';grid.innerHTML='<div class="home-command-main" id="home-command-main"></div><aside class="home-command-side" id="home-command-side"></aside>';var intro=q('.ux4-view-intro',home);home.insertBefore(grid,intro?intro.nextSibling:home.firstChild);}var main=by('home-command-main'),side=by('home-command-side');var fb=by('home-platform-feedback');if(!fb){fb=document.createElement('div');fb.id='home-platform-feedback';fb.className='home-feedback-integrado';}/* v2: feedback apenas garantido no DOM; posição (último) é controlada pelo patch inicio-v2 */if(!fb.parentNode&&home){home.appendChild(fb);}if(main&&focus.parentNode!==main)main.insertBefore(focus,main.firstChild);var quick=by('home-quick-strip');if(quick)quick.remove();renderFeedback();var countdown=by('countdown-card'),goals=by('goals'),goalCard=goals?goals.closest('.card'):null;if(side){if(countdown&&countdown.parentNode!==side)side.appendChild(countdown);if(goalCard&&goalCard.parentNode!==side)side.appendChild(goalCard)}var legacy=countdown&&goalCard?countdown.closest('.grid.g-2'):null;if(legacy&&legacy.parentNode===home&&!legacy.querySelector('.card'))legacy.classList.add('home-legacy-side-grid');Array.prototype.forEach.call(home.querySelectorAll('.grid.g-2'),function(g){if(!g.querySelector('.card'))g.classList.add('home-legacy-side-grid')});}
-  function boot(){ensureLayout();var old=window.renderHome;if(typeof old==='function'&&!old._homeCompacta){window.renderHome=function(){var r=old.apply(this,arguments);setTimeout(ensureLayout,45);setTimeout(ensureLayout,160);return r};window.renderHome._homeCompacta=true}setInterval(function(){if(by('view-inicio')&&by('view-inicio').classList.contains('active'))ensureLayout()},4500)}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
-})();
-</script>
-<!-- ===== fim PATCH HOME COMPACTA ===== -->
 
-<!-- ===== PATCH: mover progresso e blocos para dentro do Foco do dia ===== -->
-<style id="catedra-move-cycle-into-focus-css">
-  #view-inicio > .grid.g-hero:has(.ring-card),
-  #view-inicio > .grid.g-hero:has(#home-blocks){display:none!important;}
-  .home-day-focus .home-focus-cycle-wrap{margin-top:14px;border-top:1px solid rgba(255,255,255,.13);padding-top:13px;display:grid;grid-template-columns:.72fr 1.28fr;gap:10px;align-items:stretch;}
-  .home-day-focus .home-focus-cycle-wrap .card{background:rgba(255,255,255,.055)!important;border:1px solid rgba(255,255,255,.13)!important;box-shadow:none!important;color:#fff!important;padding:13px!important;border-radius:15px!important;min-height:0!important;}
-  .home-day-focus .home-focus-cycle-wrap .card:hover{box-shadow:none!important;transform:none!important;}
-  .home-day-focus .home-focus-cycle-wrap .card-h{margin-bottom:8px!important;}
-  .home-day-focus .home-focus-cycle-wrap .card-h h3{font-size:12.5px!important;color:rgba(255,255,255,.86)!important;}
-  .home-day-focus .home-focus-cycle-wrap .card-h .hint{font-size:11px!important;color:rgba(255,255,255,.48)!important;}
-  .home-day-focus .home-focus-cycle-wrap .ico{background:rgba(255,74,162,.18)!important;color:#ff4aa2!important;}
-  .home-day-focus .home-focus-cycle-wrap .ring-card{display:grid!important;grid-template-columns:96px 1fr!important;align-items:center!important;text-align:left!important;column-gap:13px!important;}
-  .home-day-focus .home-focus-cycle-wrap .ring-card .card-h{grid-column:1/-1;width:100%!important;}
-  .home-day-focus .home-focus-cycle-wrap .ring-wrap{width:96px!important;height:96px!important;margin:0!important;}
-  .home-day-focus .home-focus-cycle-wrap .ring-wrap svg{width:96px!important;height:96px!important;}
-  .home-day-focus .home-focus-cycle-wrap .ring-bg{stroke:rgba(255,255,255,.16)!important;}
-  .home-day-focus .home-focus-cycle-wrap .ring-mid .big{font-size:26px!important;color:#fff!important;}
-  .home-day-focus .home-focus-cycle-wrap .ring-mid .sm{font-size:9px!important;color:rgba(255,255,255,.48)!important;}
-  .home-day-focus .home-focus-cycle-wrap .ring-cap{font-size:12.5px!important;color:rgba(255,255,255,.67)!important;margin:0!important;padding:10px 12px!important;border:1px solid rgba(255,255,255,.10)!important;border-radius:12px!important;background:rgba(255,255,255,.045)!important;}
-  .home-day-focus .home-focus-cycle-wrap .ring-cap b{color:#ff4aa2!important;}
-  .home-day-focus .home-focus-blocks-card #home-blocks{max-height:238px!important;overflow:auto!important;padding-right:4px!important;}
-  .home-day-focus .home-focus-blocks-card .mini-blk{border-bottom-color:rgba(255,255,255,.10)!important;padding:8px 0!important;}
-  .home-day-focus .home-focus-blocks-card .mini-tx .t{font-size:12.8px!important;color:rgba(255,255,255,.88)!important;}
-  .home-day-focus .home-focus-blocks-card .mini-tx .s{font-size:11px!important;color:rgba(255,255,255,.45)!important;}
-  .home-day-focus .home-focus-blocks-card .mini-tag{font-size:9.5px!important;background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.12)!important;color:rgba(255,255,255,.55)!important;}
-  .home-day-focus .home-focus-blocks-card .mini-dot{background:rgba(255,255,255,.04)!important;border-color:rgba(255,255,255,.20)!important;}
-  .home-day-focus .home-focus-blocks-card .mini-dot.on{background:var(--emerald)!important;border-color:var(--emerald)!important;}
-  @media(max-width:900px){.home-day-focus .home-focus-cycle-wrap{grid-template-columns:1fr}.home-day-focus .home-focus-cycle-wrap .ring-card{grid-template-columns:88px 1fr!important}.home-day-focus .home-focus-cycle-wrap .ring-wrap,.home-day-focus .home-focus-cycle-wrap .ring-wrap svg{width:88px!important;height:88px!important}}
-</style>
-<script id="catedra-move-cycle-into-focus-js">
-(function(){
-  'use strict';
-  function by(id){return document.getElementById(id)}
-  function q(s,r){return (r||document).querySelector(s)}
-  function moveCycleIntoFocus(){
-    var home=by('view-inicio'), focus=by('home-day-focus');
-    if(!home||!focus)return;
-    var ring=q('.ring-card',home), blocks=by('home-blocks'), blocksCard=blocks?blocks.closest('.card'):null;
-    if(!ring&&!blocksCard)return;
-    var wrap=by('home-focus-cycle-wrap');
-    if(!wrap){
-      wrap=document.createElement('div');
-      wrap.id='home-focus-cycle-wrap';
-      wrap.className='home-focus-cycle-wrap';
-      focus.appendChild(wrap);
-    }
-    if(ring&&ring.parentNode!==wrap){ring.classList.add('home-focus-cycle-card');wrap.appendChild(ring)}
-    if(blocksCard&&blocksCard.parentNode!==wrap){blocksCard.classList.add('home-focus-blocks-card');wrap.appendChild(blocksCard)}
-    Array.prototype.forEach.call(home.querySelectorAll('.grid.g-hero'),function(g){
-      if(!g.querySelector('.card'))g.classList.add('home-legacy-side-grid');
-    });
-  }
-  function boot(){
-    moveCycleIntoFocus();
-    var old=window.renderHome;
-    if(typeof old==='function'&&!old._cycleInsideFocus){
-      window.renderHome=function(){var r=old.apply(this,arguments);setTimeout(moveCycleIntoFocus,60);setTimeout(moveCycleIntoFocus,220);return r};
-      window.renderHome._cycleInsideFocus=true;
-    }
-    setInterval(function(){if(by('view-inicio')&&by('view-inicio').classList.contains('active'))moveCycleIntoFocus()},4500);
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
-})();
-</script>
-<!-- ===== fim PATCH: mover progresso e blocos para dentro do Foco do dia ===== -->
 
 <!-- ===== PATCH INÍCIO v2 · Feedback menor + Tarefas limpas + tabelas no rodapé + sino ===== -->
 <style id="catedra-inicio-v2-css">
@@ -5704,7 +5411,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     var id = active ? String(active.id || '').replace('view-','') : '';
     var map = {
       inicio:'renderHome', ciclo:'renderCycle', revisoes:'renderRevisions', simulados:'renderSimulados',
-      edital:'renderEdital', pesos:'renderDistribuicao', calendario:'renderCalendar', stats:'renderStats',
+      edital:'renderEdital', calendario:'renderCalendar', stats:'renderStats',
       desempenho:'renderDesempenho', historico:'renderHistory', relatorio:'renderRelatorio', ajustes:'renderAjustes',
       anki:'renderAnki', erros:'renderErros', conquistas:'renderConquistas', dominio:'renderDomain'
     };
@@ -5781,6 +5488,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     }
     var cfg = (options && typeof options === 'object') ? options : {};
     if(cfg.sync !== false) scheduleSync(cfg.reason || 'save', !!cfg.forceSync);
+    if(window.__catedraRefreshAll){ setTimeout(function(){ try{ window.__catedraRefreshAll('save'); }catch(e){} }, 60); }
     return out;
   };
 
@@ -6245,6 +5953,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function ensurePanels(){
     if(!by('public-center-panel')){ var p=document.createElement('div'); p.id='public-center-panel'; p.className='public-center-panel'; document.body.appendChild(p); }
     if(!by('public-alert-panel')){ var a=document.createElement('div'); a.id='public-alert-panel'; a.className='public-alert-panel'; document.body.appendChild(a); }
+    if(!by('public-center-fab')){ var cf=document.createElement('button'); cf.id='public-center-fab'; cf.className='public-center-fab'; cf.title='Central do dia'; cf.innerHTML='<svg viewBox="0 0 24 24"><path d="M5 5h14v10H8l-3 3V5Z" stroke-linejoin="round"/><path d="M8 9h8M8 12h5" stroke-linecap="round"/></svg>'; document.body.appendChild(cf); }
+    if(!by('public-alert-fab')){ var af=document.createElement('button'); af.id='public-alert-fab'; af.className='public-alert-fab'; af.title='Alertas e lembretes'; af.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 4a4 4 0 0 1 4 4v2.4c0 .9.3 1.8.9 2.5L18.5 15H5.5l1.6-2.1c.6-.7.9-1.6.9-2.5V8a4 4 0 0 1 4-4Z" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" stroke-linecap="round"/></svg><span class="public-alert-badge">0</span>'; document.body.appendChild(af); }
   }
   function navButton(view,label,path){ return '<button type="button" data-final-view="'+view+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="'+path+'" stroke-linecap="round" stroke-linejoin="round"/></svg><span>'+label+'</span></button>'; }
   function openView(v){ var btn=document.querySelector('.nav-item[data-view="'+v+'"]'); if(btn) btn.click(); else if(v==='foco' && by('open-session')) by('open-session').click(); }
@@ -6446,8 +6156,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     var seen={};
     qa('.nav-item[data-view]',nav).forEach(function(item){ var v=item.dataset.view; if(seen[v]){ item.dataset.catedraDuplicate='1'; item.remove(); } else { seen[v]=item; item.title=(item.textContent||'').trim(); } });
     qa('.nav-label',nav).forEach(function(label,idx){ var next=label.nextElementSibling; if(next && next.classList && next.classList.contains('nav-label')) label.remove(); if(idx>0 && label.textContent.trim()===qa('.nav-label',nav)[idx-1]?.textContent.trim()) label.remove(); });
-    var order=['inicio','ciclo','revisoes','edital','dominio','pesos','calendario','biblioteca','simulados','desempenho','stats','relatorio','conquistas','anki','erros','historico','ajustes'];
-    var groups=[['Estudo',['inicio','ciclo','revisoes','edital','dominio','pesos','calendario','biblioteca']],['Desempenho',['simulados','desempenho','stats','relatorio','conquistas','anki','erros']],['Sistema',['historico','ajustes']]];
+    var order=['inicio','ciclo','revisoes','edital','dominio','calendario','biblioteca','simulados','desempenho','stats','relatorio','conquistas','anki','erros','historico','ajustes'];
+    var groups=[['Estudo',['inicio','ciclo','revisoes','edital','dominio','calendario','biblioteca']],['Desempenho',['simulados','desempenho','stats','relatorio','conquistas','anki','erros']],['Sistema',['historico','ajustes']]];
     var frag=document.createDocumentFragment();
     groups.forEach(function(g){ var lab=document.createElement('div'); lab.className='nav-label'; lab.textContent=g[0]; frag.appendChild(lab); g[1].forEach(function(v){ var el=seen[v]||q('.nav-item[data-view="'+v+'"]',nav); if(el){ el.style.display=''; frag.appendChild(el); } }); });
     order.forEach(function(v){ var el=seen[v]||q('.nav-item[data-view="'+v+'"]',nav); if(el && !frag.contains(el)) frag.appendChild(el); });
@@ -6507,7 +6217,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     try{
       ensureArrays(); patchCycleFunctions(); buildIntegrationIndex(); persist();
       ['renderProfile','renderCountdown','renderGoals','renderResumo','renderStreak','renderRevBadge','renderErrosBadge','renderEditalBadge','renderEditalCard','renderHome','renderCycle','renderRevisions','renderStats','renderDistribuicao','renderSimulados','renderHistory','renderRelatorio','renderConquistas','renderCalendar','renderAnki','renderErros','renderDomain','renderDesempenho'].forEach(call);
-      dedupeNav(); applyCompactFromSettings(); ensureCentral(); updateBadges();
+      dedupeNav(); applyCompactFromSettings(); updateBadges();
       try{ document.dispatchEvent(new CustomEvent('catedra:integrated-sync',{detail:{reason:reason||'sync',metrics:st().integracao}})); }catch(e){}
     }finally{ syncBusy=false; }
   }
@@ -6532,10 +6242,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function wrapSave(){
     if(window.__catedraPublicacaoSaveWrapped) return;
     window.__catedraPublicacaoSaveWrapped=true;
-    var old=window.save;
-    window.save=function(){ var r; try{ r=old && old.apply(this,arguments); }catch(e){ persist(); } setTimeout(function(){ refreshAll('save'); },60); return r; };
+    window.__catedraRefreshAll = refreshAll;
   }
-  function boot(){ patchCycleFunctions(); wrapSave(); bindIntegrationEvents(); dedupeNav(); applyCompactFromSettings(); ensureCentral(); refreshAll('boot'); setTimeout(function(){ dedupeNav(); ensureCentral(); updateBadges(); },500); }
+  function boot(){ patchCycleFunctions(); wrapSave(); bindIntegrationEvents(); dedupeNav(); applyCompactFromSettings(); refreshAll('boot'); setTimeout(function(){ dedupeNav(); updateBadges(); },500); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
 </script>
