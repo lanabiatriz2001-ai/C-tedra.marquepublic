@@ -6542,6 +6542,63 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
 })();
 </script>
 <!-- ===== fim PATCH EDITAL ===== -->
+
+<!-- Edital: reorganização do seletor de disciplinas (topo, design clean) -->
+<style id="edital-reorg-css">
+#edital-disc-picker{margin:0 0 18px 0;animation:edrgfade .35s ease}@keyframes edrgfade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}#edital-disc-picker .edrg-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px 2px;gap:12px}#edital-disc-picker .edrg-label{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted,#8a8f98);display:flex;align-items:center;gap:8px}#edital-disc-picker .edrg-label svg{width:15px;height:15px;opacity:.7}#edital-disc-picker .edrg-count{font-size:12px;font-weight:600;color:var(--muted,#8a8f98)}#edital-disc-picker .ed-tabs{display:flex;flex-wrap:wrap;gap:9px;padding:0;margin:0;background:transparent;border:0;overflow:visible}#edital-disc-picker .ed-tab{display:inline-flex;align-items:center;gap:9px;padding:9px 15px;border-radius:13px;border:1px solid var(--line,rgba(130,140,160,.18));background:var(--card2,rgba(255,255,255,.55));color:var(--ink,#1e2430);font-size:13.5px;font-weight:600;cursor:pointer;transition:all .18s cubic-bezier(.4,0,.2,1);backdrop-filter:blur(6px);box-shadow:0 1px 2px rgba(20,25,40,.04)}#edital-disc-picker .ed-tab:hover{transform:translateY(-2px);border-color:rgba(130,140,160,.4);box-shadow:0 6px 16px rgba(20,25,40,.10)}#edital-disc-picker .ed-tab.active{background:linear-gradient(135deg,var(--accent,#6d5ef0),var(--accent2,#8b5cf6));color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(109,94,240,.35)}#edital-disc-picker .ed-tab.active .ed-tab-count{background:rgba(255,255,255,.22);color:#fff}#edital-disc-picker .ed-tab.active .ed-tab-dot{box-shadow:0 0 0 2px rgba(255,255,255,.55)}#edital-disc-picker .ed-tab-dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;transition:box-shadow .18s}#edital-disc-picker .ed-tab-t{white-space:nowrap}#edital-disc-picker .ed-tab-count{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--chip,rgba(130,140,160,.14));color:var(--muted,#6b7280);line-height:1.4}@media (max-width:640px){#edital-disc-picker .ed-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:thin}#edital-disc-picker .ed-tab{flex:0 0 auto}}
+</style>
+<script>
+(function(){
+  if(window.__editalReorgPicker)return; window.__editalReorgPicker=true;
+  function ensureHost(){
+    var view=document.getElementById('view-edital'); if(!view)return null;
+    var host=document.getElementById('edital-disc-picker');
+    if(!host){
+      host=document.createElement('div'); host.id='edital-disc-picker';
+      var head=document.createElement('div'); head.className='edrg-head';
+      var label=document.createElement('div'); label.className='edrg-label';
+      label.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Disciplina</span>';
+      var cnt=document.createElement('div'); cnt.className='edrg-count'; cnt.id='edrg-count';
+      head.appendChild(label); head.appendChild(cnt); host.appendChild(head);
+      var intro=view.querySelector('.ux4-view-intro');
+      var kpis=document.getElementById('edital-kpis');
+      if(intro&&intro.nextSibling){ view.insertBefore(host,intro.nextSibling); }
+      else if(kpis){ view.insertBefore(host,kpis); }
+      else { view.insertBefore(host,view.firstChild); }
+    }
+    return host;
+  }
+  function relocate(){
+    var host=ensureHost(); if(!host)return;
+    var fresh=document.querySelector('#edital-list .ed-tabs');
+    if(!fresh){ var any=document.querySelector('#view-edital .ed-tabs'); if(any&&any.parentElement===host){ dedupe(host); updateCount(host); } return; }
+    var olds=host.querySelectorAll('.ed-tabs');
+    for(var i=0;i<olds.length;i++){ olds[i].parentNode.removeChild(olds[i]); }
+    host.appendChild(fresh);
+    dedupe(host); updateCount(host);
+  }
+  function dedupe(host){
+    var t=host.querySelectorAll('.ed-tabs');
+    for(var i=0;i<t.length-1;i++){ t[i].parentNode.removeChild(t[i]); }
+  }
+  function updateCount(host){
+    var cnt=document.getElementById('edrg-count'); var tabs=host.querySelector('.ed-tabs');
+    if(cnt&&tabs){ var n=tabs.querySelectorAll('.ed-tab').length; cnt.textContent=n+(n===1?' matéria':' matérias'); }
+  }
+  window.__editalReorgRelocate=relocate;
+  function hook(){
+    if(typeof window.renderEdital==='function' && !window.renderEdital.__reorgWrapped){
+      var orig=window.renderEdital;
+      window.renderEdital=function(){ var r=orig.apply(this,arguments); try{relocate();}catch(e){} return r; };
+      window.renderEdital.__reorgWrapped=true;
+    }
+  }
+  hook();
+  var tries=0; var iv=setInterval(function(){ hook(); relocate(); if(++tries>20)clearInterval(iv); },400);
+  document.addEventListener('DOMContentLoaded',function(){hook();relocate();});
+  setTimeout(function(){hook();relocate();},800);
+})();
+</script>
 </body>
 </html>
 
