@@ -7392,7 +7392,7 @@ function v2gRiskScore(r){
   if(r.recAcc!=null){ risk += (r.recAcc<50?14 : r.recAcc<65?8 : r.recAcc<78?3 : 0); if(r.acc!=null && r.recAcc<r.acc-8)risk+=6; }
   risk += Math.min(22, r.errCount*5);
   risk += Math.min(16, r.recidiva*8);
-  risk += Math.min(26, r.revLate*6);
+  risk += Math.min(34, r.revLate*7);
   if(r.totQ===0)risk+=10; else if(r.totQ<10)risk+=6; else if(r.totQ<25)risk+=3;
   var incW=(/alt/i.test(r.inc)?2:/m[e\u00e9]d/i.test(r.inc)?1:0);
   risk += incW*5;
