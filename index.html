@@ -6543,7 +6543,7 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
 </script>
 <!-- ===== fim PATCH EDITAL ===== -->
 
-<!-- Edital V2e: painel 'Dados da disciplina' lateral no Edital (resumo + acoes rapidas); Inicio largura total; modal de sessao sincronizado (datalist de topicos por disciplina, vinculo por ID, novos campos: dificuldade/observacoes/revisao/erro, salvar topico no edital) -->
+<!-- Edital V2f: Simulados com Modelo da prova (ME/CE/misto) e Tipo de computo (normal/liquido), calculo bruto+liquido+percentuais, bloco misto, sugestao CESPE editavel; + V2e (painel lateral Edital, Inicio largura total, modal de sessao sincronizado) -->
 <style id="edital-v2-css">
 #edital-disc-picker{margin:4px 0 22px 0}#edital-disc-picker .edrg-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 14px 2px;gap:12px}#edital-disc-picker .edrg-label{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text-2,#8a8f98);display:flex;align-items:center;gap:8px}#edital-disc-picker .edrg-label svg{width:14px;height:14px;opacity:.55}#edital-disc-picker .edrg-count{font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--text-2,#9aa0ab)}#edital-disc-picker .ed-tabs{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;background:transparent;border:0;overflow:visible}#edital-disc-picker .ed-tab{position:relative;display:inline-flex;align-items:center;gap:9px;padding:9px 15px;border-radius:12px;border:1px solid var(--border,rgba(130,140,160,.14));background:var(--surface,#fff);color:var(--text,#1e2430);font-size:13px;font-weight:600;letter-spacing:-.01em;cursor:pointer;transition:transform .18s cubic-bezier(.4,0,.2,1),box-shadow .18s,border-color .18s,background .18s;box-shadow:0 1px 2px rgba(20,25,40,.03)}#edital-disc-picker .ed-tab:hover{border-color:var(--border,rgba(130,140,160,.3));background:var(--surface-2,#fafaf8);transform:translateY(-1.5px);box-shadow:0 6px 16px rgba(20,25,40,.07)}#edital-disc-picker .ed-tab.active{background:var(--emerald,#0c8a5b);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(12,138,91,.30);transform:none}#edital-disc-picker .ed-tab.active:hover{transform:translateY(-1.5px)}#edital-disc-picker .ed-tab.active .ed-tab-count{background:rgba(255,255,255,.2);color:#fff}#edital-disc-picker .ed-tab.active .ed-tab-dot{box-shadow:0 0 0 3px rgba(255,255,255,.35)}#edital-disc-picker .ed-tab-dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto;transition:box-shadow .18s}#edital-disc-picker .ed-tab-t{white-space:nowrap;line-height:1.2}#edital-disc-picker .ed-tab-count{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--chip,rgba(130,140,160,.1));color:var(--text-2,#7a808b);line-height:1.5;letter-spacing:.01em}@media (max-width:640px){#edital-disc-picker .ed-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:thin}#edital-disc-picker .ed-tab{flex:0 0 auto}}.v2-dist-hidden{display:none !important}.v2-merged-form{margin-top:16px;padding-top:16px;border-top:1px dashed var(--border,rgba(130,140,160,.22))}.v2-merged-form .v2-mf-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2,#8a8f98);margin:0 0 10px}#stats-peso-card .v2-peso-grid{display:grid;grid-template-columns:1fr auto;gap:8px 14px;align-items:center;max-height:340px;overflow:auto;padding-right:4px}#stats-peso-card .v2-peso-name{font-size:13.5px;font-weight:600;color:var(--text,#1e2430);display:flex;align-items:center;gap:9px}#stats-peso-card .v2-peso-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}#stats-peso-card .v2-peso-input{width:78px;padding:7px 10px;border-radius:9px;border:1px solid var(--border,rgba(130,140,160,.2));background:var(--surface,#fff);color:var(--text,#1e2430);font-size:13.5px;font-weight:600;text-align:center}#stats-peso-card .v2-peso-input:focus{outline:none;border-color:var(--emerald,#0c8a5b);box-shadow:0 0 0 3px rgba(12,138,91,.12)}#stats-peso-card .v2-peso-hd{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2,#8a8f98)}
 
@@ -6603,7 +6603,26 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
 .v2-check{display:flex;align-items:center;}
 .v2-chk{display:flex;align-items:center;gap:8px;font-size:14px;color:#334155;cursor:pointer;font-weight:500;}
 .v2-chk input{width:16px;height:16px;cursor:pointer;}
-#f-newtopic-wrap .v2-chk{color:#0c8a5b;font-weight:600;}</style>
+#f-newtopic-wrap .v2-chk{color:#0c8a5b;font-weight:600;}
+/* V2f: Simulados - modelo da prova e calculo liquido */
+.s-misto{border:1px dashed #e2e8f0;border-radius:12px;padding:12px;background:#fafbfc;}
+.s-misto-lbl,.s-result-lbl{display:block;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
+.s-misto-blk{margin-bottom:10px;}
+.s-misto-h{font-size:13px;font-weight:600;color:#334155;margin-bottom:6px;}
+.s-misto-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.s-misto-row label{display:flex;flex-direction:column;font-size:11px;color:#64748b;gap:3px;}
+.s-misto-row input{font:inherit;padding:7px 9px;border:1px solid #e2e8f0;border-radius:8px;}
+.s-result{background:#f8fafc;border:1px solid #eef2f7;border-radius:12px;padding:12px;}
+.s-result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;}
+.s-rc{display:flex;flex-direction:column;background:#fff;border:1px solid #eef2f7;border-radius:10px;padding:8px 10px;}
+.s-rk{font-size:11px;color:#64748b;}
+.s-rv{font-size:17px;font-weight:700;color:#0f172a;}
+.s-rc.s-final .s-rv{color:#0c8a5b;}
+.s-rc.s-neg .s-rv{color:#dc2626;}
+.s-misto-res{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:13px;color:#475569;}
+.s-misto-final{font-weight:700;color:#0c8a5b;}
+.s-cespe-alert{display:flex;align-items:center;gap:8px;background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;border-radius:10px;padding:10px 12px;font-size:13px;font-weight:500;}
+.s-alert-ic{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#dc2626;color:#fff;font-weight:700;font-size:13px;flex:0 0 auto;}</style>
 <script>
 (function(){
   if(window.__editalV2Reorg)return; window.__editalV2Reorg=true;
@@ -6993,7 +7012,171 @@ function metaQuickActions(){
     bar.querySelector('#edm-q-err').addEventListener('click',function(){ var n=document.querySelector('.nav-item[data-view="ciclo"]'); if(n)n.click(); });
   }catch(e){}
 }
-function tick(){ try{sessionModule();}catch(e){} try{metaQuickActions();}catch(e){} try{relabelAjustes();}catch(e){} try{statsInfoTable();}catch(e){} hookRender(); try{relocate();}catch(e){} try{buildDropdown();}catch(e){} try{mergeForm();}catch(e){} try{renderPeso();}catch(e){} try{ankiModule();}catch(e){} }
+
+function simBanca(){
+  try{ var pz=JSON.parse(localStorage.getItem('catedra_user_personalization')||'{}'); var b=(pz.bank||pz.banca||'')+''; return b.toLowerCase(); }catch(e){ return ''; }
+}
+function simIsCespe(){ var b=simBanca(); return b.indexOf('cespe')>=0||b.indexOf('cebraspe')>=0; }
+function simFields(){
+  try{
+    var sname=document.getElementById('s-name'); if(!sname)return;
+    var grid=sname.closest('.form-grid'); if(!grid)return;
+    if(document.getElementById('s-model'))return;
+    var stypeField=document.getElementById('s-type'); stypeField=stypeField?stypeField.closest('.field'):null;
+    var modelOpts=[['me','Múltipla escolha'],['ce','Certo/errado'],['misto','Misto']];
+    var compOpts=[['normal','Normal'],['liquido','Líquido']];
+    var f1=document.createElement('div'); f1.className='field';
+    f1.innerHTML='<label>Modelo da prova</label><select id="s-model" class="select-one">'+modelOpts.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>';}).join('')+'</select>';
+    var f2=document.createElement('div'); f2.className='field';
+    f2.innerHTML='<label>Tipo de cômputo</label><select id="s-computo" class="select-one">'+compOpts.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>';}).join('')+'</select>';
+    var f3=document.createElement('div'); f3.className='field'; f3.id='s-liqrule-field'; f3.style.display='none';
+    f3.innerHTML='<label>Desconto líquido (erros por acerto anulado)</label><input id="s-liqrule" type="number" step="0.5" min="0" value="1">';
+    if(stypeField&&stypeField.nextSibling){ grid.insertBefore(f1, stypeField.nextSibling); grid.insertBefore(f2, f1.nextSibling); grid.insertBefore(f3, f2.nextSibling); }
+    else { grid.appendChild(f1); grid.appendChild(f2); grid.appendChild(f3); }
+  }catch(e){}
+}
+function simMistoBlock(){
+  try{
+    var grid=document.getElementById('s-name'); grid=grid?grid.closest('.form-grid'):null; if(!grid)return;
+    if(document.getElementById('s-misto'))return;
+    var wrap=document.createElement('div'); wrap.id='s-misto'; wrap.className='field s-misto'; wrap.style.gridColumn='1/-1'; wrap.style.display='none';
+    function blk(pfx,title){ return '<div class="s-misto-blk"><div class="s-misto-h">'+title+'</div>'+
+      '<div class="s-misto-row">'+
+      '<label>Total<input id="'+pfx+'-total" type="number" min="0" value="0"></label>'+
+      '<label>Acertos<input id="'+pfx+'-c" type="number" min="0" value="0"></label>'+
+      '<label>Erros<input id="'+pfx+'-w" type="number" min="0" value="0"></label>'+
+      '<label>Brancos<input id="'+pfx+'-b" type="number" min="0" value="0"></label>'+
+      '</div></div>'; }
+    wrap.innerHTML='<label class="s-misto-lbl">Blocos do simulado misto</label>'+blk('s-me','Múltipla escolha')+blk('s-ce','Certo/errado');
+    grid.appendChild(wrap);
+  }catch(e){}
+}
+function simNum(id){ var e=document.getElementById(id); var v=e?parseFloat(e.value):0; return isNaN(v)?0:v; }
+function simCalc(){
+  var model=(document.getElementById('s-model')||{}).value||'me';
+  var comp=(document.getElementById('s-computo')||{}).value||'normal';
+  var rule=simNum('s-liqrule'); if(!rule)rule=1;
+  var r={model:model,comp:comp,rule:rule};
+  if(model==='misto'){
+    var meC=simNum('s-me-c'),meW=simNum('s-me-w'),meB=simNum('s-me-b'),meT=simNum('s-me-total')||(meC+meW+meB);
+    var ceC=simNum('s-ce-c'),ceW=simNum('s-ce-w'),ceB=simNum('s-ce-b'),ceT=simNum('s-ce-total')||(ceC+ceW+ceB);
+    r.c=meC+ceC; r.w=meW+ceW; r.b=meB+ceB; r.total=meT+ceT;
+    r.meScore=meC; r.ceScore=(comp==='liquido')?(ceC-ceW*rule):ceC;
+    r.brutoScore=meC+ceC; r.liquidoScore=r.meScore+r.ceScore;
+    r.score=r.liquidoScore;
+    r.meBlock={total:meT,c:meC,w:meW,b:meB,score:r.meScore};
+    r.ceBlock={total:ceT,c:ceC,w:ceW,b:ceB,score:r.ceScore};
+  } else {
+    var c=simNum('s-c'),w=simNum('s-w'),b=simNum('s-b'),total=simNum('s-total')||(c+w+b);
+    r.c=c; r.w=w; r.b=b; r.total=total;
+    r.brutoScore=c;
+    r.liquidoScore=(comp==='liquido')?(c-w*rule):c;
+    r.score=(comp==='liquido')?r.liquidoScore:c;
+  }
+  r.pctBruto=r.total>0?(r.brutoScore/r.total*100):0;
+  var fin=(comp==='liquido')?r.liquidoScore:r.brutoScore;
+  r.pctFinal=r.total>0?(fin/r.total*100):0;
+  if(r.pctFinal<0)r.pctFinal=0;
+  return r;
+}
+function simResultPanel(){
+  try{
+    var grid=document.getElementById('s-name'); grid=grid?grid.closest('.form-grid'):null; if(!grid)return;
+    var panel=document.getElementById('s-result');
+    if(!panel){ panel=document.createElement('div'); panel.id='s-result'; panel.className='field s-result'; panel.style.gridColumn='1/-1'; grid.appendChild(panel); }
+    var r=simCalc();
+    var liq=(r.comp==='liquido');
+    function cell(k,v,cls){ return '<div class="s-rc '+(cls||'')+'"><span class="s-rk">'+k+'</span><span class="s-rv">'+v+'</span></div>'; }
+    function f1(n){ return (Math.round(n*10)/10); }
+    var html='<div class="s-result-grid">';
+    html+=cell('Acertos', r.c);
+    html+=cell('Erros', r.w);
+    html+=cell('Brancos', r.b);
+    html+=cell('Pontuação bruta', f1(r.brutoScore));
+    if(liq) html+=cell('Pontuação líquida', f1(r.liquidoScore), (r.liquidoScore<0?'s-neg':''));
+    html+=cell('% bruto', f1(r.pctBruto)+'%');
+    html+=cell('% final', f1(r.pctFinal)+'%', 's-final');
+    html+='</div>';
+    if(r.model==='misto'){
+      html+='<div class="s-misto-res">'+
+        '<span>ME: '+f1(r.meBlock.score)+'/'+r.meBlock.total+'</span>'+
+        '<span>C/E: '+f1(r.ceBlock.score)+'/'+r.ceBlock.total+'</span>'+
+        '<span class="s-misto-final">Consolidado: '+f1(r.score)+'</span></div>';
+    }
+    panel.innerHTML='<label class="s-result-lbl">Resultado calculado</label>'+html;
+  }catch(e){}
+}
+function simToggle(){
+  try{
+    var model=(document.getElementById('s-model')||{}).value||'me';
+    var comp=(document.getElementById('s-computo')||{}).value||'normal';
+    var liqField=document.getElementById('s-liqrule-field');
+    var misto=document.getElementById('s-misto');
+    if(liqField) liqField.style.display=(comp==='liquido')?'':'none';
+    if(misto) misto.style.display=(model==='misto')?'':'none';
+    var alert=document.getElementById('s-cespe-alert');
+    if(alert){ alert.style.display=(model==='ce'&&comp==='liquido')?'':'none'; }
+  }catch(e){}
+}
+function simAlertEnsure(){
+  try{
+    var grid=document.getElementById('s-name'); grid=grid?grid.closest('.form-grid'):null; if(!grid)return;
+    if(document.getElementById('s-cespe-alert'))return;
+    var a=document.createElement('div'); a.id='s-cespe-alert'; a.className='field s-cespe-alert'; a.style.gridColumn='1/-1'; a.style.display='none';
+    a.innerHTML='<span class="s-alert-ic">!</span> Banca estilo CEBRASPE/CESPE: cada erro pode anular um acerto. Cuidado com o risco de chute.';
+    var anchor=document.getElementById('s-computo'); anchor=anchor?anchor.closest('.field'):null;
+    if(anchor&&anchor.nextSibling){ grid.insertBefore(a, anchor.nextSibling); } else { grid.appendChild(a); }
+  }catch(e){}
+}
+function simSuggestCespe(){
+  try{
+    if(window.__simCespeApplied)return;
+    var ms=document.getElementById('s-model'), cs=document.getElementById('s-computo');
+    if(!ms||!cs)return;
+    window.__simCespeApplied=true;
+    if(simIsCespe()){ ms.value='ce'; cs.value='liquido'; }
+  }catch(e){}
+}
+function simRecalc(){ simResultPanel(); simToggle(); }
+function simWireEvents(){
+  try{
+    var ids=['s-model','s-computo','s-liqrule','s-total','s-c','s-w','s-b','s-me-total','s-me-c','s-me-w','s-me-b','s-ce-total','s-ce-c','s-ce-w','s-ce-b'];
+    ids.forEach(function(id){ var e=document.getElementById(id); if(e&&!e.__simw){ e.__simw=true; e.addEventListener('input',simRecalc); e.addEventListener('change',simRecalc); } });
+    var save=document.getElementById('sim-save');
+    if(save&&!save.__simsave){ save.__simsave=true;
+      save.addEventListener('click',function(){ simSnap(); }, true);
+      save.addEventListener('click',function(){ setTimeout(simAfterSave,0); });
+    }
+  }catch(e){}
+}
+function simSnap(){ try{ window.__lastSimCalc=simCalc(); }catch(e){ window.__lastSimCalc=null; } }
+function simuladoModule(){
+  try{ simAlertEnsure(); simFields(); simMistoBlock(); simResultPanel(); simSuggestCespe(); simToggle(); simWireEvents(); }catch(e){}
+}
+function simAfterSave(){
+  try{
+    var r=window.__lastSimCalc; if(!r)return;
+    var raw=localStorage.getItem('catedra:state'); if(!raw)return;
+    var st=JSON.parse(raw);
+    if(!Array.isArray(st.simulados)||!st.simulados.length)return;
+    var sim=st.simulados[st.simulados.length-1]; if(!sim)return;
+    sim.model=r.model; sim.computo=r.comp; sim.liqRule=r.rule;
+    sim.brutoScore=r.brutoScore; sim.liquidoScore=r.liquidoScore;
+    sim.pctBruto=Math.round(r.pctBruto*10)/10; sim.pctFinal=Math.round(r.pctFinal*10)/10;
+    sim.score=(r.total>0)?Math.round(r.pctFinal):0;
+    if(r.model==='misto'){ sim.meBlock=r.meBlock; sim.ceBlock=r.ceBlock; sim.total=r.total; sim.c=r.c; sim.wrong=r.w; sim.blank=r.b; }
+    localStorage.setItem('catedra:state', JSON.stringify(st));
+    try{ if(window.state){ window.state.simulados=st.simulados; } }catch(e){}
+    try{ if(typeof save==='function')save(); }catch(e){}
+    try{ if(window.__catedraRefreshAll)window.__catedraRefreshAll(); }catch(e){}
+    try{ if(typeof renderSimulados==='function')renderSimulados(); }catch(e){}
+    try{ if(typeof updateSimDiag==='function')updateSimDiag(); }catch(e){}
+    try{ if(typeof renderStats==='function')renderStats(); }catch(e){}
+    try{ if(window.renderDesempenho)renderDesempenho(); }catch(e){}
+    window.__lastSimCalc=null;
+  }catch(e){}
+}
+function tick(){ try{simuladoModule();}catch(e){} try{sessionModule();}catch(e){} try{metaQuickActions();}catch(e){} try{relabelAjustes();}catch(e){} try{statsInfoTable();}catch(e){} hookRender(); try{relocate();}catch(e){} try{buildDropdown();}catch(e){} try{mergeForm();}catch(e){} try{renderPeso();}catch(e){} try{ankiModule();}catch(e){} }
 
 
   hookRender();
