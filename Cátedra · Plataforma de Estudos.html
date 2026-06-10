@@ -246,7 +246,7 @@ body{background:var(--canvas);}
   @media(max-width:880px){.g-hero,.g-2,.g-3{grid-template-columns:1fr;}}
 
   /* hero stat strip */
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:16px;}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:13px;margin-bottom:16px;}
   @media(max-width:760px){.kpis{grid-template-columns:1fr 1fr;}}
   .kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 19px;box-shadow:var(--sh-sm);position:relative;overflow:hidden;transition:background .3s,border-color .3s;}
   .kpi::after{content:"";position:absolute;right:-22px;top:-22px;width:70px;height:70px;border-radius:50%;background:var(--accent-bg,var(--emerald-soft));opacity:.5;}
@@ -883,13 +883,13 @@ body{background:var(--canvas);}
   <nav class="nav" id="nav">
     <div class="nav-label">Painel</div>
     <button class="nav-item active" data-view="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12 12 3l9 9M5 10v10h14V10" stroke-linecap="round" stroke-linejoin="round"/></svg>Início</button>
+    <button class="nav-item" data-view="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-linecap="round"/></svg>Estatísticas</button>
     <button class="nav-item" data-view="ciclo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v4H4zM4 10h16v4H4zM4 16h16v4H4z" stroke-linejoin="round"/></svg>Ciclo de Estudos<span class="nav-badge" id="nav-ciclo" style="display:none;background:var(--amber)">0</span></button>
     <button class="nav-item" data-view="revisoes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v4h-4" stroke-linecap="round" stroke-linejoin="round"/></svg>Revisões<span class="nav-badge" id="nav-rev" style="display:none">0</span></button>
     <button class="nav-item" data-view="edital"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2h9l5 5v15H6z" stroke-linejoin="round"/><path d="M14 2v6h6M9 13h6M9 17h6" stroke-linecap="round" stroke-linejoin="round"/></svg>Edital<span class="nav-badge" id="nav-edital" style="display:none">0%</span></button>
     <div class="nav-label">Desempenho</div>
     <button class="nav-item" data-view="simulados"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 4h6a1 1 0 0 1 1 1v1h2v15H6V6h2V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 4h6v3H9z" stroke-linejoin="round"/><path d="M9 12l1.5 1.5L13 11M9 17h6" stroke-linecap="round" stroke-linejoin="round"/></svg>Simulados</button>
     <button class="nav-item" data-view="conquistas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 4h10v4a5 5 0 0 1-10 0V4ZM5 4H3v2a3 3 0 0 0 3 3M19 4h2v2a3 3 0 0 1-3 3M9 17h6M8 21h8M12 13v4" stroke-linecap="round" stroke-linejoin="round"/></svg>Conquistas</button>
-    <button class="nav-item" data-view="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-linecap="round"/></svg>Estatísticas</button>
     <button class="nav-item" data-view="desempenho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18M7 14l3-4 4 3 5-7" stroke-linecap="round" stroke-linejoin="round"/></svg>Desempenho</button>
     <button class="nav-item" data-view="historico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4zM4 9h16M9 5v14" stroke-linejoin="round"/></svg>Histórico</button>
     <button class="nav-item" data-view="relatorio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2h9l5 5v15H6z" stroke-linejoin="round"/><path d="M14 2v6h6M9 17v-4M12 17v-6M15 17v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>Relatório</button>
@@ -2866,28 +2866,9 @@ function renderEdital(){
     +'<div class="ed-resumo-row"><span>Domínio médio</span><b>'+(dmAvg||0)+'%</b></div>'
     +'<div class="ed-resumo-row"><span>Progresso</span><b>'+pct+'%</b></div>'
     +'<div class="gbar" style="margin-top:10px;"><i style="width:'+pct+'%;background:'+colorOf(disc)+'"></i></div>';
-  const acoes=document.createElement('div');acoes.className='card';acoes.style.marginTop='16px';
-  acoes.innerHTML='<div class="card-h"><h3>Ações rápidas</h3><span class="hint">organização do edital</span></div>'
-    +'<div class="ed-acoes"><button class="btn-ghost" id="ed-act-import">⬇ Importar edital</button>'
-    +'<button class="btn-ghost" id="ed-act-addtop">＋ Adicionar tópicos</button>'
-    +'<button class="btn-ghost" id="ed-act-reorder">Reorganizar tópicos</button>'
-    +'<button class="btn-ghost" id="ed-act-sub">Adicionar subtópico</button>'
-    +'<button class="btn-ghost" id="ed-act-exportar">Exportar disciplina</button>'
-    +'<button class="btn" id="ed-act-salvar">Salvar alterações</button></div>';
-  aside.appendChild(resumo);aside.appendChild(acoes);
+  aside.appendChild(resumo);
   split.appendChild(card);split.appendChild(aside);
   list.appendChild(split);
-  const _goCard=id=>{const c=document.getElementById(id);if(!c){toast('card não encontrado');return;}
-    c.scrollIntoView({behavior:'smooth',block:'center'});
-    c.style.outline='2px solid var(--emerald)';c.style.outlineOffset='3px';
-    setTimeout(()=>{c.style.outline='';c.style.outlineOffset='';},1800);
-    const inp=c.querySelector('textarea,input');if(inp)setTimeout(()=>inp.focus(),450);};
-  const _im=acoes.querySelector('#ed-act-import');if(_im)_im.onclick=()=>_goCard('card-importar');
-  const _at=acoes.querySelector('#ed-act-addtop');if(_at)_at.onclick=()=>_goCard('card-ed-add');
-  const _re=acoes.querySelector('#ed-act-reorder');if(_re)_re.onclick=()=>{window.editalReorderMode=!window.editalReorderMode;renderEdital();};
-  const _sub=acoes.querySelector('#ed-act-sub');if(_sub)_sub.onclick=()=>{const tg=card.querySelector('.topic .sub-toggle');if(tg){tg.click();tg.scrollIntoView({block:'center'});}else toast('Cadastre um tópico primeiro');};
-  const _ex=acoes.querySelector('#ed-act-exportar');if(_ex)_ex.onclick=()=>{const txt=disc+'\n'+items.map((t,i)=>String(i+1).padStart(2,'0')+'. '+t.t+(t.inc?(' ['+t.inc+']'):'')).join('\n');try{navigator.clipboard.writeText(txt);toast('disciplina copiada ✓');}catch(e){toast('copie manualmente');}};
-  const _sv=acoes.querySelector('#ed-act-salvar');if(_sv)_sv.onclick=()=>{save();toast('alterações salvas ✓');};
   applyEditalFilter();
   try{state.plano=state.plano||{};renderDistribuicao();}catch(e){}
   /* monta a lateral única (Tópicos e status, Importar, Adicionar, ferramentas) de forma determinística */
@@ -3232,7 +3213,6 @@ function renderRelatorio(){
   let daysExam=999; try{ const _ed=S.examDate||S.examDateISO; if(_ed)daysExam=Math.ceil((new Date(_ed)-new Date(todayStr()))/86400000); }catch(e){}
   const retaFinal = strat==='reta_final' || (p.final&&p.final.enabled&&daysExam<=(p.final.days||30));
   const examName=String(S.examName||S.exam||(document.getElementById('e-name')||{}).value||'');
-  const isProcMun = /procurad/i.test(examName) || strat==='procuradoria';
 
   const fmtH=m=>{const h=Math.floor(m/60),r=Math.round(m%60);return h?(h+'h'+(r?(' '+r+'min'):'')):(r+'min');};
   const sec=(title,inner)=>'<div class="card rel-section"><h3>'+esc(title)+'</h3>'+inner+'</div>';
@@ -3275,7 +3255,6 @@ function renderRelatorio(){
   else if(level==='iniciante') next.push(['info','Como iniciante, mantenha blocos guiados: teoria curta seguida de questões do mesmo tema no mesmo dia.']);
   else if(level==='avancado') next.push(['info','Perfil avançado: concentre-se em pontos fracos, simulados completos e desempenho líquido.']);
   if(bank==='cebraspe') next.push(['warn','Banca CEBRASPE/CESPE: controle erros e brancos — cada erro anula um acerto. Evite o chute e priorize itens que você domina.']);
-  if(isProcMun) next.push(['info','Foco de Procuradoria Municipal: reforce Tributário, Financeiro, Administrativo e Constitucional — núcleo da Fazenda Pública.']);
   if(!next.length) next.push(['good','Mantenha o plano atual, com metas curtas e revisão diária.']);
   const nextHtml=sec('Conduta para a próxima semana',lines(next));
 
@@ -3706,7 +3685,7 @@ function rolloverDay(){
   .ap-mode-btn.active{
     color:#fff;
     border-color:transparent;
-    background:linear-gradient(135deg,#35c8ff,#2468ff);
+    background:linear-gradient(135deg,var(--emerald,#35c8ff),var(--emerald-d,#2468ff));
     box-shadow:0 12px 30px rgba(36,104,255,.25);
   }
   .ap-mode-btn.active span{color:rgba(255,255,255,.78);}
@@ -3795,13 +3774,20 @@ function rolloverDay(){
     return {a:a||'#35c8ff',b:b||'#2468ff'};
   }
   function applyAccent(a,b){
-    const root=document.documentElement.style;
-    root.setProperty('--emerald',a,'important');
-    root.setProperty('--emerald-d',b||shade(a,.18),'important');
-    root.setProperty('--emerald-soft',rgba(a,.14),'important');
-    root.setProperty('--emerald-ring',rgba(a,.40),'important');
-    root.setProperty('--primary',a,'important');
-    root.setProperty('--primary-d',b||shade(a,.18),'important');
+    const b2=b||shade(a,.18);
+    /* aplica no <html> e também no <body>: o tema azul (mentor-video-theme)
+       redeclara essas variáveis no body, então só o html não basta */
+    const targets=[document.documentElement.style];
+    if(document.body)targets.push(document.body.style);
+    targets.forEach(root=>{
+      root.setProperty('--emerald',a,'important');
+      root.setProperty('--emerald-d',b2,'important');
+      root.setProperty('--emerald-soft',rgba(a,.14),'important');
+      root.setProperty('--emerald-ring',rgba(a,.40),'important');
+      root.setProperty('--primary',a,'important');
+      root.setProperty('--primary-d',b2,'important');
+    });
+    try{ if(window.__catedraRecolorBase) window.__catedraRecolorBase(a); }catch(e){}
     localStorage.setItem(ACC_KEY,a);
     localStorage.setItem(ACC2_KEY,b||shade(a,.18));
     localStorage.setItem(LEGACY_ACC,JSON.stringify({a:a,b:b||shade(a,.18)}));
@@ -4038,12 +4024,7 @@ function rolloverDay(){
     }catch(e){ if(status)status.textContent='Não consegui extrair esse PDF no navegador. Cole o texto no campo de importação.'; }
   }
 
-  function finalCycle(){
-    const v=$('view-ciclo'); if(!v||$('cycle-howto-card'))return;
-    const card=document.createElement('div'); card.id='cycle-howto-card'; card.className='card cycle-howto-card';
-    card.innerHTML='<div class="card-h"><h3>Como usar o ciclo de estudos</h3><span class="hint">passo a passo</span></div><div class="cycle-step-grid"><div class="cycle-step"><b>1</b><strong>Escolha</strong><span>Comece pelo bloco sugerido ou escolha outro item do dia.</span></div><div class="cycle-step"><b>2</b><strong>Inicie foco</strong><span>Use o cronômetro e vincule tópico, categoria e tempo sugerido.</span></div><div class="cycle-step"><b>3</b><strong>Registre</strong><span>Salve minutos, questões e acertos sem preencher tudo novamente.</span></div><div class="cycle-step"><b>4</b><strong>Recupere</strong><span>Revisão, erro e Anki entram nas abas próprias para manter o ciclo limpo.</span></div></div><div class="cycle-tip-soft"><b>Dica:</b> ler → resolver questões do PDF → transformar o que errou em cartão no Anki. Depois registre a sessão pela barra do cronômetro.</div>';
-    v.insertBefore(card,v.firstChild);
-  }
+  function finalCycle(){}
   function finalStats(){
     const v=$('view-stats'); if(!v||$('stats-anki-template'))return;
     const card=document.createElement('div'); card.id='stats-anki-template'; card.className='card stats-anki-template';
@@ -4063,7 +4044,7 @@ function rolloverDay(){
   function finalColorPanel(){
     const host=$('theme-grid')||q('#view-ajustes .card')||q('#view-personalizacao .card'); if(!host||$('color-sync-panel'))return;
     const panel=document.createElement('div');panel.id='color-sync-panel';panel.className='color-sync-panel';
-    panel.innerHTML='<h4>Cor e modo da plataforma</h4><div class="color-sync-row"><button class="color-choice" data-a="#35c8ff" data-b="#2468ff" style="background:linear-gradient(135deg,#35c8ff,#2468ff)"></button><button class="color-choice" data-a="#0c8a5b" data-b="#0a7049" style="background:linear-gradient(135deg,#0c8a5b,#0a7049)"></button><button class="color-choice" data-a="#8b5cf6" data-b="#5b35d5" style="background:linear-gradient(135deg,#8b5cf6,#5b35d5)"></button><button class="color-choice" data-a="#ff4d9d" data-b="#d63384" style="background:linear-gradient(135deg,#ff4d9d,#d63384)"></button><button class="mode-choice" data-mode="mentor">Azul moderno</button><button class="mode-choice" data-mode="claro">Claro</button></div>';
+    panel.innerHTML='<h4>Cor e modo da plataforma</h4><div class="color-sync-row"><button class="color-choice" data-a="#35c8ff" data-b="#2468ff" style="background:linear-gradient(135deg,var(--emerald,#35c8ff),var(--emerald-d,#2468ff))"></button><button class="color-choice" data-a="#0c8a5b" data-b="#0a7049" style="background:linear-gradient(135deg,#0c8a5b,#0a7049)"></button><button class="color-choice" data-a="#8b5cf6" data-b="#5b35d5" style="background:linear-gradient(135deg,#8b5cf6,#5b35d5)"></button><button class="color-choice" data-a="#ff4d9d" data-b="#d63384" style="background:linear-gradient(135deg,#ff4d9d,#d63384)"></button><button class="mode-choice" data-mode="mentor">Azul moderno</button><button class="mode-choice" data-mode="claro">Claro</button></div>';
     host.appendChild(panel);
     qa('.color-choice',panel).forEach(b=>b.onclick=function(){document.documentElement.style.setProperty('--emerald',b.dataset.a);document.documentElement.style.setProperty('--emerald-d',b.dataset.b);localStorage.setItem('catedraAccent',JSON.stringify({a:b.dataset.a,b:b.dataset.b}));});
     qa('.mode-choice',panel).forEach(b=>b.onclick=function(){document.body.classList.toggle('mentor-video-theme',b.dataset.mode==='mentor');localStorage.setItem('catedraMode',b.dataset.mode);});
@@ -4120,9 +4101,12 @@ function rolloverDay(){
   /* Edital mais operacional */
   #view-edital .ed-product-actions{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    grid-template-columns:repeat(6,minmax(0,1fr));
     gap:10px;
     margin:0 0 16px;
+  }
+  @media (max-width:980px){
+    #view-edital .ed-product-actions{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
   #view-edital .ed-product-actions button,
   #view-edital .ed-product-actions label{
@@ -4141,8 +4125,18 @@ function rolloverDay(){
     text-align:center;
   }
   #view-edital .ed-product-actions button:hover,
-  #view-edital .ed-product-actions label:hover{border-color:#35c8ff;color:#68e2ff;transform:translateY(-1px);}
+  #view-edital .ed-product-actions label:hover{border-color:var(--emerald,#35c8ff);color:var(--emerald,#68e2ff);transform:translateY(-1px);}
   #view-edital .ed-product-actions input[type=file]{display:none;}
+  /* Ações rápidas do edital (menu suspenso) */
+  #ed-quick-wrap{position:relative;margin:0 0 16px;}
+  #ed-quick-toggle{border:1px solid rgba(84,151,255,.30);background:rgba(8,26,67,.72);color:var(--text);border-radius:15px;padding:12px 16px;min-height:52px;display:inline-flex;align-items:center;gap:9px;font-weight:800;cursor:pointer;}
+  #ed-quick-toggle:hover{border-color:var(--emerald,#35c8ff);color:var(--emerald,#68e2ff);}
+  #ed-quick-toggle .caret{transition:transform .18s;font-size:11px;}
+  #ed-quick-wrap.open #ed-quick-toggle .caret{transform:rotate(180deg);}
+  #ed-quick-panel{display:none;position:absolute;top:calc(100% + 8px);left:0;z-index:120;min-width:280px;max-width:min(380px,calc(100vw - 32px));padding:10px;border:1px solid rgba(84,151,255,.30);border-radius:18px;background:var(--surface);box-shadow:0 24px 60px rgba(4,10,30,.45);}
+  #ed-quick-wrap.open #ed-quick-panel{display:block;}
+  #ed-quick-panel .ed-product-actions{display:flex;flex-direction:column;gap:8px;margin:0;}
+  #ed-quick-panel .ed-product-actions button,#ed-quick-panel .ed-product-actions label{min-height:44px;justify-content:flex-start;text-align:left;padding:10px 13px;}
   #view-edital #card-dist{display:block!important;}
   #view-edital .ed-tab-panel .topic{
     display:grid!important;
@@ -4156,7 +4150,7 @@ function rolloverDay(){
     background:rgba(8,26,67,.52)!important;
   }
   #view-edital .ed-tab-panel .topic:hover{border-color:rgba(53,200,255,.55)!important;background:rgba(13,38,96,.68)!important;}
-  #view-edital .ed-tab-panel .topic.dragging{opacity:.55;outline:2px dashed #35c8ff;outline-offset:3px;}
+  #view-edital .ed-tab-panel .topic.dragging{opacity:.55;outline:2px dashed var(--emerald,#35c8ff);outline-offset:3px;}
   #view-edital .ed-drag-handle{
     width:30px;height:30px;border:1px solid rgba(84,151,255,.28);border-radius:10px;
     display:flex;align-items:center;justify-content:center;color:#8ea9d6;background:rgba(7,22,57,.62);
@@ -4191,7 +4185,7 @@ function rolloverDay(){
     border:1px solid rgba(84,151,255,.30);background:rgba(8,26,67,.72);
     border-radius:16px;padding:15px;min-height:118px;
   }
-  .cycle-step b{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:10px;background:#35c8ff;color:#061431;font-size:13px;margin-bottom:10px;}
+  .cycle-step b{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:10px;background:var(--emerald,#35c8ff);color:#061431;font-size:13px;margin-bottom:10px;}
   .cycle-step strong{display:block;color:var(--text);font-size:15px;margin-bottom:5px;}
   .cycle-step span{display:block;color:var(--text-2);font-size:12.5px;line-height:1.45;}
   .cycle-tip-soft{margin-top:12px;border:1px solid rgba(53,200,255,.34);border-radius:16px;padding:15px 16px;background:rgba(53,200,255,.10);color:var(--text-2);line-height:1.55;}
@@ -4207,7 +4201,7 @@ function rolloverDay(){
   }
   .errors-lab-hero h2{font-size:28px;margin:4px 0;color:var(--text);}
   .errors-lab-hero p{color:var(--text-2);font-size:13.5px;line-height:1.55;max-width:760px;}
-  .errors-lab-score{width:132px;height:132px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#35c8ff calc(var(--p,0)*1%),rgba(84,151,255,.18) 0);position:relative;}
+  .errors-lab-score{width:132px;height:132px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--emerald,#35c8ff) calc(var(--p,0)*1%),rgba(84,151,255,.18) 0);position:relative;}
   .errors-lab-score:after{content:"";position:absolute;inset:13px;border-radius:50%;background:#081a43;}
   .errors-lab-score div{position:relative;z-index:1;text-align:center;}
   .errors-lab-score b{display:block;font-size:30px;color:var(--text);}
@@ -4221,7 +4215,7 @@ function rolloverDay(){
   .errors-lab-item p{color:var(--text-3);font-size:12px;line-height:1.4;margin:0;}
   .errors-lab-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;}
   .errors-lab-actions button{border:1px solid rgba(84,151,255,.28);background:rgba(7,22,57,.56);color:var(--text-2);border-radius:10px;padding:8px 10px;font-size:12px;}
-  .errors-lab-actions button:hover{border-color:#35c8ff;color:#68e2ff;}
+  .errors-lab-actions button:hover{border-color:var(--emerald,#35c8ff);color:var(--emerald,#68e2ff);}
 
   /* Domínio e risco mais escaneável */
   #view-dominio .dom-hero{border-radius:22px!important;background:radial-gradient(circle at 90% 0%,rgba(53,200,255,.18),transparent 24%),linear-gradient(135deg,#071430,#10245a)!important;}
@@ -4253,7 +4247,7 @@ function rolloverDay(){
   .color-choice{width:36px;height:36px;border-radius:12px;border:2px solid rgba(255,255,255,.28);cursor:pointer;}
   .color-choice.active{outline:3px solid rgba(53,200,255,.32);outline-offset:2px;}
   .mode-choice{border:1px solid rgba(84,151,255,.28);background:rgba(7,22,57,.50);color:var(--text-2);border-radius:12px;padding:9px 12px;font-size:12.5px;font-weight:800;}
-  .mode-choice.active{background:linear-gradient(135deg,#35c8ff,#2468ff);color:#fff;border-color:transparent;}
+  .mode-choice.active{background:linear-gradient(135deg,var(--emerald,#35c8ff),var(--emerald-d,#2468ff));color:#fff;border-color:transparent;}
 
   /* Estatísticas: template Anki */
   .stats-anki-template{margin-bottom:16px;}
@@ -4413,12 +4407,7 @@ function rolloverDay(){
     dragSyncEdital();
   }
 
-  function enhanceCycle(){
-    const v=$('view-ciclo'); if(!v||$('cycle-howto-card'))return;
-    const card=document.createElement('div'); card.id='cycle-howto-card'; card.className='card cycle-howto-card';
-    card.innerHTML='<div class="card-h"><h3>Como usar o ciclo de estudos</h3><span class="hint">passo a passo</span></div><div class="cycle-step-grid"><div class="cycle-step"><b>1</b><strong>Escolha o bloco</strong><span>Comece pelo primeiro item sugerido ou selecione outro bloco do dia.</span></div><div class="cycle-step"><b>2</b><strong>Estude com foco</strong><span>Use o cronômetro, vincule disciplina/tópico e mantenha a tarefa pequena.</span></div><div class="cycle-step"><b>3</b><strong>Registre a sessão</strong><span>Salve minutos, questões, acertos e observações para alimentar estatísticas.</span></div><div class="cycle-step"><b>4</b><strong>Recupere memória</strong><span>Revisões, erros e Anki entram nas abas próprias sem poluir o ciclo.</span></div></div><div class="cycle-tip-soft"><b>Dica:</b> ler → resolver questões do PDF → transformar erro em cartão no Anki. Depois registre a sessão para o painel agendar revisões.</div>';
-    v.insertBefore(card,v.firstChild);
-  }
+  function enhanceCycle(){}
 
   function enhanceCalendarChecks(){
     const root=$('calendario-grid'); if(!root)return;
@@ -4562,7 +4551,7 @@ function rolloverDay(){
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    background:linear-gradient(135deg,#35c8ff,#2468ff);
+    background:linear-gradient(135deg,var(--emerald,#35c8ff),var(--emerald-d,#2468ff));
     color:#fff;
     box-shadow:0 0 24px rgba(53,200,255,.35);
     flex:0 0 auto;
@@ -4644,7 +4633,7 @@ function rolloverDay(){
     border-radius:999px;
     background:rgba(84,151,255,.18);
   }
-  .rev-lab-orbit i.on{background:#35c8ff;box-shadow:0 0 18px rgba(53,200,255,.35);}
+  .rev-lab-orbit i.on{background:var(--emerald,#35c8ff);box-shadow:0 0 18px rgba(53,200,255,.35);}
   .rev-lab-focus{
     display:grid;
     grid-template-columns:minmax(0,1fr) auto;
@@ -4660,7 +4649,7 @@ function rolloverDay(){
     display:flex;
     align-items:center;
     gap:8px;
-    color:#68e2ff;
+    color:var(--emerald,#68e2ff);
     font-size:11px;
     font-weight:850;
     letter-spacing:.09em;
@@ -4671,7 +4660,7 @@ function rolloverDay(){
     width:8px;
     height:8px;
     border-radius:50%;
-    background:#35c8ff;
+    background:var(--emerald,#35c8ff);
     box-shadow:0 0 0 rgba(53,200,255,.45);
     animation:revPulse 1.8s infinite;
   }
@@ -4732,7 +4721,7 @@ function rolloverDay(){
     font-size:12.5px;
   }
   .rev-filter-chip.active{
-    background:linear-gradient(135deg,#35c8ff,#2468ff);
+    background:linear-gradient(135deg,var(--emerald,#35c8ff),var(--emerald-d,#2468ff));
     color:#fff;
     border-color:transparent;
     box-shadow:0 10px 24px rgba(36,104,255,.25);
@@ -4751,7 +4740,7 @@ function rolloverDay(){
   }
   .rev-lab-search:focus{
     outline:none;
-    border-color:#35c8ff;
+    border-color:var(--emerald,#35c8ff);
     box-shadow:0 0 0 3px rgba(53,200,255,.15);
   }
   .rev-lab-list{
@@ -4776,7 +4765,7 @@ function rolloverDay(){
     background:rgba(13,38,96,.86);
   }
   .rev-lab-row.is-current{
-    border-color:#35c8ff;
+    border-color:var(--emerald,#35c8ff);
     box-shadow:0 0 0 3px rgba(53,200,255,.12);
   }
   .rev-row-index{
@@ -4787,7 +4776,7 @@ function rolloverDay(){
     align-items:center;
     justify-content:center;
     background:rgba(53,200,255,.13);
-    color:#68e2ff;
+    color:var(--emerald,#68e2ff);
     font-size:12px;
     font-weight:900;
     font-variant-numeric:tabular-nums;
@@ -4819,7 +4808,7 @@ function rolloverDay(){
     text-transform:uppercase;
   }
   .rev-row-status.late{background:rgba(255,122,182,.14);color:#ff9cca;}
-  .rev-row-status.today{background:rgba(53,200,255,.14);color:#68e2ff;}
+  .rev-row-status.today{background:rgba(53,200,255,.14);color:var(--emerald,#68e2ff);}
   .rev-row-status.future{background:rgba(148,163,184,.13);color:#b8c7e4;}
   .rev-row-actions{
     display:flex;
@@ -4837,7 +4826,7 @@ function rolloverDay(){
     align-items:center;
     justify-content:center;
   }
-  .rev-icon-action:hover{border-color:#35c8ff;color:#68e2ff;}
+  .rev-icon-action:hover{border-color:var(--emerald,#35c8ff);color:var(--emerald,#68e2ff);}
   .rev-icon-action svg{width:16px;height:16px;stroke-width:2.2;}
   .rev-lab-empty{
     padding:34px 18px;
@@ -4852,7 +4841,7 @@ function rolloverDay(){
     z-index:260;
     right:24px;
     bottom:88px;
-    background:linear-gradient(135deg,#35c8ff,#2468ff);
+    background:linear-gradient(135deg,var(--emerald,#35c8ff),var(--emerald-d,#2468ff));
     color:#fff;
     border-radius:16px;
     padding:12px 14px;
@@ -4910,7 +4899,7 @@ function rolloverDay(){
   body.mentor-video-theme .dash-btn-pri,
   body.mentor-video-theme button[data-open-session],
   body.mentor-video-theme .brand-mark{
-    background:linear-gradient(135deg,#35c8ff,#2468ff)!important;
+    background:linear-gradient(135deg,var(--emerald,#35c8ff),var(--emerald-d,#2468ff))!important;
     color:#fff!important;
     box-shadow:0 10px 28px rgba(33,116,255,.32)!important;
   }
@@ -4920,9 +4909,9 @@ function rolloverDay(){
     background:rgba(18,42,101,.86)!important;color:#c9dfff!important;border-color:rgba(84,151,255,.32)!important;
   }
   body.mentor-video-theme .nav-item.active,
-  body.mentor-video-theme .nav-item:hover{background:rgba(45,108,255,.20)!important;color:#68e2ff!important;}
+  body.mentor-video-theme .nav-item:hover{background:color-mix(in srgb,var(--emerald-d,#2468ff) 20%,transparent)!important;color:var(--emerald,#68e2ff)!important;}
   body.mentor-video-theme .nav-item.active::before,
-  body.mentor-video-theme .nav-badge{background:#35c8ff!important;}
+  body.mentor-video-theme .nav-badge{background:var(--emerald,#35c8ff)!important;}
 </style>
 <script>
 (function(){
@@ -5364,13 +5353,10 @@ function rolloverDay(){
 
   if(q('logout-btn')){
     q('logout-btn').onclick = async () => {
-      if(localMode()){
-        localStorage.removeItem(AUTH_MODE_KEY);
-        showAuth();
-        q('logout-btn').style.display = 'none';
-      }else{
-        await supabase.auth.signOut();
-      }
+      localStorage.removeItem(AUTH_MODE_KEY);
+      try{ await supabase.auth.signOut({ scope: 'local' }); }catch(_e){}
+      try{ localStorage.removeItem('sb-ektyeblyllhnonvafcev-auth-token'); }catch(_e){}
+      location.reload();
     };
   }
   setMode(false);
@@ -6323,12 +6309,11 @@ if(a){s.setProperty('--emerald',a,'important');s.setProperty('--emerald-d',shade
   function cycleProgress(){try{var ids=blockIds(state.dia),c=dc(state.dia);return {done:ids.filter(function(i){return c[i];}).length,total:ids.length};}catch(e){return {done:0,total:0};}}
   function ensureViewIntros(){
     var map=viewTitleMap(); Object.keys(map).forEach(function(k){var v=by('view-'+k); if(!v||q('.ux4-view-intro',v))return; var m=map[k]; var sc=readinessScore();
-      var box=document.createElement('div'); box.className='ux4-view-intro'; box.innerHTML='<div><div class="eyebrow">'+esc(m[2])+'</div><h2>'+esc(m[0])+'</h2><p>'+esc(m[1])+'</p></div><div class="ux4-mini-score"><b>'+sc+'%</b><span>prontidão geral</span></div>';
+      var box=document.createElement('div'); box.className='ux4-view-intro'; box.innerHTML='<div><div class="eyebrow">'+esc(m[2])+'</div><h2>'+esc(m[0])+'</h2></div><div class="ux4-mini-score"><b>'+sc+'%</b><span>prontidão geral</span></div>';
       v.insertBefore(box,v.firstElementChild);
     });
   }
   function ensureSectionNotes(){
-    var cycle=by('view-ciclo'); if(cycle&&!by('ux4-cycle-flow')){var d=document.createElement('div');d.id='ux4-cycle-flow';d.className='ux4-flow-strip';d.innerHTML='<div class="ux4-flow-step"><small>1</small><b>Escolha</b><span>O sistema sugere o próximo bloco, mas o ciclo completo continua visível.</span></div><div class="ux4-flow-step"><small>2</small><b>Inicie foco</b><span>O botão no bloco vincula tópico, categoria e tempo sugerido.</span></div><div class="ux4-flow-step"><small>3</small><b>Registre</b><span>Ao terminar, salve minutos, questões e acertos sem preencher tudo de novo.</span></div><div class="ux4-flow-step"><small>4</small><b>Recupere</b><span>Teoria e lei seca geram revisão; erro vira ação de recuperação.</span></div>'; var ref=cycle.querySelector('.card'); cycle.insertBefore(d,ref);}
     var rev=by('view-revisoes'); if(rev&&!by('ux4-rev-note')){var n=document.createElement('div');n.id='ux4-rev-note';n.className='ux4-section-note';n.innerHTML='<div class="mark">R</div><div><b>Regra de uso</b><p>Antes de abrir conteúdo novo, zere revisões vencidas. Se houver muitas, faça blocos curtos de 20 a 30 minutos para reduzir dívida sem travar o dia.</p></div>'; rev.insertBefore(n,rev.querySelector('.card'));}
   }
   function renderRegularFocusContext(){
@@ -6483,7 +6468,7 @@ if(a){s.setProperty('--emerald',a,'important');s.setProperty('--emerald-d',shade
   function getPath(o,p){return p.split('.').reduce(function(a,k){return a&&a[k];},o);} 
   function setPath(o,p,v){var a=p.split('.'),x=o; for(var i=0;i<a.length-1;i++){x[a[i]]=x[a[i]]||{}; x=x[a[i]];} x[a[a.length-1]]=v;}
   function nval(el){return parseInt(el.value,10)||0;}
-  function labelMap(v){return ({iniciante:'Iniciante',intermediario:'Intermediário',avancado:'Avançado',leve:'Leve',equilibrado:'Equilibrado',rigido:'Rígido',procuradoria:'Estudo estratégico',reta_final:'Reta final',erros:'Recuperação de pontos fracos',simulados:'Simulados e correção',ciclo:'Ciclo por blocos',cebraspe:'CEBRASPE',fgv:'FGV',fcc:'FCC',vunesp:'Vunesp',cesgranrio:'Cesgranrio',outra:'Outra',professor:'Modo professor',tecnico:'Direto e técnico',motivacional:'Motivacional',cobranca:'Cobrança de prova'}[v]||v||'—');}
+  function labelMap(v){return ({iniciante:'Iniciante',intermediario:'Intermediário',avancado:'Avançado',leve:'Leve',equilibrado:'Equilibrado',rigido:'Rígido',estrategico:'Estudo estratégico',reta_final:'Reta final',erros:'Recuperação de pontos fracos',simulados:'Simulados e correção',ciclo:'Ciclo por blocos',cebraspe:'CEBRASPE',fgv:'FGV',fcc:'FCC',vunesp:'Vunesp',cesgranrio:'Cesgranrio',outra:'Outra',professor:'Modo professor',tecnico:'Direto e técnico',motivacional:'Motivacional',cobranca:'Cobrança de prova'}[v]||v||'—');}
   function openUx5View(){qsa('.nav-item').forEach(function(x){x.classList.remove('active');});qsa('.view').forEach(function(x){x.classList.remove('active');});var btn=qs('.nav-item[data-view="personalizacao"]');var view=$('view-personalizacao');if(btn)btn.classList.add('active');if(view)view.classList.add('active');var nav=$('nav'),foot=$('side-foot');if(nav)nav.classList.remove('open');if(foot)foot.classList.remove('open');renderSettings();renderUx5AdviceEverywhere();applyFocusPrefs();safe(function(){if(window.__catedraRefreshAll){window.__catedraRefreshAll('personalizacao-save');}});}
   function ensureUx5Nav(){
     var nav=$('nav'); if(!nav)return;
@@ -6512,7 +6497,7 @@ if(a){s.setProperty('--emerald',a,'important');s.setProperty('--emerald-d',shade
     '<div class="card ux5-savebar"><p>Edite livremente as preferências abaixo. Nada muda no restante da plataforma até você salvar e aplicar.</p><button class="btn" id="ux5-save-all" type="button">Salvar e aplicar</button></div>'+
     '<div class="ux5-grid">'+
       '<div class="card ux5-card"><div class="card-h"><h3>Perfil de estudo</h3><span class="hint">base dos conselhos</span></div><div class="ux5-field-row"><div class="ux5-field"><label>Nível atual</label><select id="ux5-level"><option value="iniciante">Iniciante</option><option value="intermediario">Intermediário</option><option value="avancado">Avançado</option></select></div><div class="ux5-field"><label>Tempo médio por dia (min)</label><input id="ux5-daily" type="number" min="0"></div><div class="ux5-field"><label>Melhor turno</label><select id="ux5-shift"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option><option value="madrugada">Madrugada</option><option value="variavel">Variável</option></select></div><div class="ux5-field"><label>Energia padrão</label><select id="ux5-energy"><option value="baixa">Baixa</option><option value="normal">Normal</option><option value="alta">Alta</option></select></div></div><div class="ux5-field"><label>Dias disponíveis</label><input id="ux5-days" placeholder="seg,ter,qua,qui,sex,sab"></div><div class="ux5-field"><label>Plano por energia mental</label><div class="ux5-energy"><label><input type="radio" name="ux5-energy-pick" value="baixa">Baixa energia<br><span class="ux5-small">revisão leve e manutenção</span></label><label><input type="radio" name="ux5-energy-pick" value="normal">Energia normal<br><span class="ux5-small">ciclo padrão</span></label><label><input type="radio" name="ux5-energy-pick" value="alta">Alta energia<br><span class="ux5-small">tarefas densas</span></label></div></div></div>'+
-      '<div class="card ux5-card purple"><div class="card-h"><h3>Cobrança e estratégia</h3><span class="hint">tom e foco</span></div><div class="ux5-field-row"><div class="ux5-field"><label>Estilo de cobrança</label><select id="ux5-charge"><option value="leve">Leve</option><option value="equilibrado">Equilibrado</option><option value="rigido">Rígido</option></select></div><div class="ux5-field"><label>Estratégia principal</label><select id="ux5-strategy"><option value="procuradoria">Estudo estratégico</option><option value="ciclo">Ciclo por blocos</option><option value="reta_final">Reta final</option><option value="simulados">Simulados e correção</option><option value="erros">Recuperação de pontos fracos</option></select></div><div class="ux5-field"><label>Banca principal</label><select id="ux5-bank"><option value="cebraspe">CEBRASPE</option><option value="fgv">FGV</option><option value="fcc">FCC</option><option value="vunesp">Vunesp</option><option value="cesgranrio">Cesgranrio</option><option value="outra">Outra</option></select></div><div class="ux5-field"><label>Linguagem dos conselhos</label><select id="ux5-language"><option value="professor">Modo professor</option><option value="tecnico">Direto e técnico</option><option value="motivacional">Motivacional</option><option value="cobranca">Cobrança de prova</option></select></div></div><label class="ux5-check"><input id="ux5-fazenda" type="checkbox"> Ativar foco estratégico: priorizar tarefas com maior peso, urgência, dificuldade e proximidade da prova.</label></div>'+
+      '<div class="card ux5-card purple"><div class="card-h"><h3>Cobrança e estratégia</h3><span class="hint">tom e foco</span></div><div class="ux5-field-row"><div class="ux5-field"><label>Estilo de cobrança</label><select id="ux5-charge"><option value="leve">Leve</option><option value="equilibrado">Equilibrado</option><option value="rigido">Rígido</option></select></div><div class="ux5-field"><label>Estratégia principal</label><select id="ux5-strategy"><option value="estrategico">Estudo estratégico</option><option value="ciclo">Ciclo por blocos</option><option value="reta_final">Reta final</option><option value="simulados">Simulados e correção</option><option value="erros">Recuperação de pontos fracos</option></select></div><div class="ux5-field"><label>Banca principal</label><select id="ux5-bank"><option value="cebraspe">CEBRASPE</option><option value="fgv">FGV</option><option value="fcc">FCC</option><option value="vunesp">Vunesp</option><option value="cesgranrio">Cesgranrio</option><option value="outra">Outra</option></select></div><div class="ux5-field"><label>Linguagem dos conselhos</label><select id="ux5-language"><option value="professor">Modo professor</option><option value="tecnico">Direto e técnico</option><option value="motivacional">Motivacional</option><option value="cobranca">Cobrança de prova</option></select></div></div><label class="ux5-check"><input id="ux5-fazenda" type="checkbox"> Ativar foco estratégico: priorizar tarefas com maior peso, urgência, dificuldade e proximidade da prova.</label></div>'+
       '<div class="card ux5-card amber"><div class="card-h"><h3>Ajustes de foco</h3><span class="hint">execução diária</span></div><div class="ux5-field-row"><div class="ux5-field"><label>Bloco padrão (min)</label><input id="ux5-focus-default" type="number" min="5" max="180"></div><div class="ux5-field"><label>Pausa padrão (min)</label><input id="ux5-break-default" type="number" min="1" max="60"></div><div class="ux5-field"><label>Modo padrão</label><select id="ux5-focus-mode"><option value="livre">Livre</option><option value="pomo">Pomodoro</option></select></div><div class="ux5-field"><label>Ao abrir a plataforma</label><select id="ux5-open"><option value="focus">Mostrar foco do dia</option><option value="pendencias">Mostrar pendências</option><option value="revisoes">Mostrar revisões</option><option value="direto_foco">Abrir modo foco</option></select></div></div><div class="ux5-checks"><label class="ux5-check"><input id="ux5-focus-dark" type="checkbox"> Usar tela escura no modo foco.</label><label class="ux5-check"><input id="ux5-auto-register" type="checkbox"> Abrir registro ao finalizar foco.</label><label class="ux5-check"><input id="ux5-auto-done" type="checkbox"> Marcar bloco como concluído após registrar.</label><label class="ux5-check"><input id="ux5-ask-questions" type="checkbox"> Perguntar questões/acertos no fechamento.</label><label class="ux5-check"><input id="ux5-auto-review" type="checkbox"> Criar revisões automaticamente em teoria/lei seca.</label></div></div>'+
       '<div class="card ux5-card red"><div class="card-h"><h3>Alertas inteligentes</h3><span class="hint">controle de ruído</span></div><div class="ux5-checks"><label class="ux5-check"><input id="ux5-alert-reviews" type="checkbox"> Revisões vencidas</label><label class="ux5-check"><input id="ux5-alert-anki" type="checkbox"> Queda de retenção no Anki</label><label class="ux5-check"><input id="ux5-alert-accuracy" type="checkbox"> Baixo acerto em questões</label><label class="ux5-check"><input id="ux5-alert-errors" type="checkbox"> Muitos erros pendentes</label><label class="ux5-check"><input id="ux5-alert-weekly" type="checkbox"> Meta semanal em risco</label><label class="ux5-check"><input id="ux5-alert-exam" type="checkbox"> Prova próxima</label><label class="ux5-check"><input id="ux5-alert-simulados" type="checkbox"> Simulado atrasado</label><label class="ux5-check"><input id="ux5-alert-neglected" type="checkbox"> Disciplina negligenciada</label></div></div>'+
       '<div class="card ux5-card"><div class="card-h"><h3>Critérios de prioridade</h3><span class="hint">peso do Foco do dia</span></div><div id="ux5-priority-ranges"></div><p class="ux5-small">Quanto maior o peso, mais esse critério influencia a próxima ação sugerida no início, relatório e estatísticas.</p></div>'+
@@ -6542,7 +6527,7 @@ if(a){s.setProperty('--emerald',a,'important');s.setProperty('--emerald-d',shade
     if(p.alerts.reviews&&s.rev>0){lines.push(['bad','Revisões vencidas','Há '+s.rev+' revisão(ões) vencida(s). '+(tone==='rigido'?'Suspenda matéria nova até reduzir a dívida.':'Antes de avançar, faça uma rodada curta de revisão.')]);}
     if(p.alerts.errors&&s.err>0){lines.push(['warn','Caderno de erros ativo','Resolva '+Math.min(s.err,3)+' erro(s) antes do próximo simulado. A plataforma deve medir recuperação, não só acúmulo.']);}
     if(p.alerts.anki&&s.ret&&s.ret<p.anki.alertBelow){lines.push(['bad','Anki abaixo do limite','Retenção em '+s.ret+'%. Reduza cartões novos para até '+p.anki.newCardsLimit+' e revise temas errados.']);}
-    if(p.strategy==='procuradoria'){lines.push(['info','Estudo estratégico','Priorize tarefas com maior peso, revisões vencidas, pontos fracos e prática de validação.']);}
+    if(p.strategy==='estrategico'){lines.push(['info','Estudo estratégico','Priorize tarefas com maior peso, revisões vencidas, pontos fracos e prática de validação.']);}
     if(p.bank==='cebraspe'){lines.push(['info','Ajuste para CEBRASPE','Inclua certo/errado, literalidade, exceções e pegadinhas conceituais na correção.']);}
     if(p.bank==='fgv'){lines.push(['info','Ajuste para FGV','Treine casos práticos, enunciados longos e distinção entre institutos semelhantes.']);}
     if(p.final.enabled&&daysToExam()<=p.final.days){lines.push(['bad','Reta final ativada','Reduza teoria nova. Priorize lei seca, jurisprudência, revisão, simulados e erros recorrentes.']);}
@@ -6937,7 +6922,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
     qa('.nav-label',nav).forEach(function(label){label.remove();});
 
-    var desempenho=['inicio','ciclo','revisoes','edital','calendario','simulados','dominio','conquistas','desempenho','stats','relatorio'];
+    var desempenho=['inicio','stats','ciclo','revisoes','edital','calendario','simulados','dominio','conquistas','desempenho','relatorio'];
     var sistema=['historico','personalizacao','ajustes'];
 
     var frag=document.createDocumentFragment();
@@ -7888,6 +7873,24 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   .central-actions-row button{border-radius:14px;padding:11px 12px;font-weight:800;border:1px solid var(--border);background:var(--surface);color:var(--text-2);}
   .central-actions-row button.primary{background:#ff4d9d;color:#fff;border-color:#ff4d9d;}
 
+  /* Central do dia: trilha do ciclo */
+  .central-cycle-card{border:1px solid var(--border);border-radius:18px;background:color-mix(in srgb,var(--surface) 88%,transparent);padding:12px 13px 9px;margin:0 0 12px;}
+  .central-cycle-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;}
+  .central-cycle-head h4{font-size:13.5px;font-weight:800;color:var(--text);}
+  .central-cycle-head .pct{font-size:11px;font-weight:800;color:var(--emerald-d);background:var(--emerald-soft);border-radius:999px;padding:4px 10px;white-space:nowrap;}
+  .central-cycle-trail{display:flex;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:thin;}
+  .central-cycle-step{position:relative;flex:0 0 116px;min-width:116px;padding:0 8px;text-align:center;cursor:pointer;background:none;border:none;color:inherit;font:inherit;}
+  .central-cycle-step::before{content:'';position:absolute;top:13px;left:-50%;width:100%;height:2px;background:var(--border);}
+  .central-cycle-step:first-child::before{display:none;}
+  .central-cycle-step.done::before{background:var(--emerald);}
+  .central-cycle-step .node{position:relative;z-index:1;width:26px;height:26px;margin:0 auto;border-radius:50%;border:2px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--text-3);}
+  .central-cycle-step.done .node{background:var(--emerald);border-color:var(--emerald);color:#fff;}
+  .central-cycle-step.now .node{border-color:var(--emerald);color:var(--emerald-d);box-shadow:0 0 0 5px var(--emerald-soft);}
+  .central-cycle-step .tag{display:block;margin-top:7px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .central-cycle-step .ttl{margin-top:2px;font-size:11.5px;font-weight:700;color:var(--text-2);line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .central-cycle-step.now .ttl{color:var(--text);}
+  .central-cycle-step .now-chip{display:inline-block;margin-top:5px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#fff;background:var(--emerald);border-radius:999px;padding:3px 8px;}
+
   /* Notificações: visualizar/descartar */
   .public-alert-panel.final-alerts{width:min(480px,calc(100vw - 24px));border-radius:24px;padding:15px;}
   .public-alert-panel.final-alerts .public-alert-head{align-items:flex-start;border-bottom:1px solid var(--border);padding-bottom:12px;}
@@ -8124,30 +8127,41 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     q.push({view:'historico',title:'Registrar sessão',desc:'Atualize tempo, questões e acertos'});
     return q.slice(0,4);
   }
+  function cycleTrail(){
+    try{
+      var k=state.dia, dia=DIAS.find(function(d){return d.k===k;});
+      var list=(dia&&dia.special)?getSpecial(k):visibleActivities(k).concat(getRotList(k));
+      var c=dc(k);
+      return (list||[]).map(function(b){ return {id:b.id, tag:b.tag||'', t:b.t||'', done:!!c[b.id]}; });
+    }catch(e){ return []; }
+  }
+  function cycleTrailHtml(){
+    var tr=cycleTrail(); if(!tr.length) return '';
+    var done=tr.filter(function(b){return b.done;}).length;
+    var pctTrail=Math.round(done/tr.length*100);
+    var nowIdx=-1; for(var i=0;i<tr.length;i++){ if(!tr[i].done){ nowIdx=i; break; } }
+    return '<div class="central-cycle-card"><div class="central-cycle-head"><h4>Ciclo do dia</h4><span class="pct">'+done+'/'+tr.length+' · '+pctTrail+'%</span></div><div class="central-cycle-trail" id="central-cycle-trail">'
+      + tr.map(function(b,i){ return '<button type="button" class="central-cycle-step'+(b.done?' done':'')+(i===nowIdx?' now':'')+'" data-cycle-step="1"><span class="node">'+(b.done?'✓':(i+1))+'</span><span class="tag">'+esc(b.tag)+'</span><span class="ttl">'+esc(b.t)+'</span>'+(i===nowIdx?'<span class="now-chip">próximo</span>':'')+'</button>'; }).join('')
+      + '</div></div>';
+  }
   function renderCentralFinal(open){
     ensurePanels(); var p=by('public-center-panel'); if(!p) return; var q=queue(), rev=pendingReviews().length, errs=openErrors().length, min=todayMinutes(), goal=dailyGoalMin(), pct=cyclePct();
     p.className = 'public-center-panel final-central open';
     p.innerHTML = '<div class="public-center-hero"><div><h3>Central do dia</h3><p>Prioridades, atalhos e pendências em uma visão compacta.</p></div><button class="central-close-x" id="central-close-final" type="button">×</button></div>'
       + '<div class="central-summary-grid"><div class="central-summary-card"><b>'+fmtMin(min)+'</b><span>estudado hoje</span></div><div class="central-summary-card"><b>'+(goal?fmtMin(Math.max(0,goal-min)):'—')+'</b><span>faltam na meta</span></div><div class="central-summary-card"><b>'+pct+'%</b><span>ciclo</span></div></div>'
+      + cycleTrailHtml()
       + '<div class="public-central-nav">'
       + navButton('inicio','Hoje','M3 12 12 3l9 9M5 10v10h14V10')
       + navButton('ciclo','Ciclo','M4 4h16v4H4zM4 10h16v4H4zM4 16h16v4H4z')
       + navButton('revisoes','Revisões','M21 12a9 9 0 1 1-3-6.7M21 4v4h-4')
       + navButton('erros','Erros','M6 2h12v20l-6-3-6 3zM12 7v4M12 14h.01')
       + navButton('relatorio','Relatório','M6 2h9l5 5v15H6zM14 2v6h6M9 17v-4M12 17v-6M15 17v-2')
-      + '</div><div class="central-work-grid"><div class="public-mini-card"><h4>Próximas ações <span class="mini-hint">ordem sugerida</span></h4>'
-      + q.map(function(item,i){ return '<div class="central-priority"><span class="num">'+(i+1)+'</span><div><strong>'+esc(item.title)+'</strong><span>'+esc(item.desc)+'</span></div><button type="button" data-final-open="'+item.view+'">Abrir</button></div>'; }).join('')
-      + '<div class="central-actions-row"><button class="primary" id="central-start-final" type="button">Iniciar próxima</button><button id="central-alerts-final" type="button">Ver alertas</button></div></div>'
-      + '<div class="public-mini-card"><h4>Sinais rápidos <span class="mini-hint">diagnóstico</span></h4><ul class="public-advice-list">'
-      + '<li class="'+(rev?'bad':'good')+'"><strong>Revisões</strong><br>'+(rev?rev+' pendente(s).':'Sem revisão crítica.')+'</li>'
-      + '<li class="'+(errs?'warn':'good')+'"><strong>Erros</strong><br>'+(errs?errs+' item(ns) em aberto.':'Caderno sem pendência crítica.')+'</li>'
-      + '<li class="'+((goal&&min<goal)?'warn':'good')+'"><strong>Meta diária</strong><br>'+((goal&&min<goal)?'Ainda falta tempo de estudo.':'Meta diária controlada.')+'</li>'
-      + '</ul></div></div>';
+      + '</div>';
     by('central-close-final').onclick=function(){ p.classList.remove('open'); };
     qa('[data-final-view]',p).forEach(function(b){ b.onclick=function(){ openView(b.dataset.finalView); p.classList.remove('open'); }; });
     qa('[data-final-open]',p).forEach(function(b){ b.onclick=function(){ openView(b.dataset.finalOpen); p.classList.remove('open'); }; });
-    by('central-start-final').onclick=function(){ openView(q[0] && q[0].view || 'ciclo'); p.classList.remove('open'); };
-    by('central-alerts-final').onclick=function(){ renderAlertsFinal(true); p.classList.remove('open'); };
+    qa('[data-cycle-step]',p).forEach(function(b){ b.onclick=function(){ openView('ciclo'); p.classList.remove('open'); }; });
+    var trail=by('central-cycle-trail'); if(trail){ var nowEl=trail.querySelector('.central-cycle-step.now'); if(nowEl) trail.scrollLeft=Math.max(0,nowEl.offsetLeft-trail.clientWidth/2+nowEl.clientWidth/2); }
     if(open === false) p.classList.remove('open');
   }
   function renderAlertsFinal(open){
@@ -8314,8 +8328,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     var seen={};
     qa('.nav-item[data-view]',nav).forEach(function(item){ var v=item.dataset.view; if(seen[v]){ item.dataset.catedraDuplicate='1'; item.remove(); } else { seen[v]=item; item.title=(item.textContent||'').trim(); } });
     qa('.nav-label',nav).forEach(function(label,idx){ var next=label.nextElementSibling; if(next && next.classList && next.classList.contains('nav-label')) label.remove(); if(idx>0 && label.textContent.trim()===qa('.nav-label',nav)[idx-1]?.textContent.trim()) label.remove(); });
-    var order=['inicio','ciclo','revisoes','edital','dominio','calendario','biblioteca','simulados','desempenho','stats','relatorio','conquistas','anki','erros','historico','personalizacao','ajustes'];
-    var groups=[['Estudo',['inicio','ciclo','revisoes','edital','dominio','calendario','biblioteca']],['Desempenho',['simulados','desempenho','stats','relatorio','conquistas','anki','erros']],['Sistema',['historico','personalizacao','ajustes']]];
+    var order=['inicio','stats','ciclo','revisoes','edital','dominio','calendario','biblioteca','simulados','desempenho','relatorio','conquistas','anki','erros','flashcards','historico','personalizacao','ajustes'];
+    var groups=[['Estudo',['inicio','stats','ciclo','revisoes','edital','dominio','calendario','biblioteca']],['Desempenho',['simulados','desempenho','relatorio','conquistas','anki','erros','flashcards']],['Sistema',['historico','personalizacao','ajustes']]];
     var frag=document.createDocumentFragment();
     groups.forEach(function(g){ var lab=document.createElement('div'); lab.className='nav-label'; lab.textContent=g[0]; frag.appendChild(lab); g[1].forEach(function(v){ var el=seen[v]||q('.nav-item[data-view="'+v+'"]',nav); if(el){ el.style.display=''; frag.appendChild(el); } }); });
     order.forEach(function(v){ var el=seen[v]||q('.nav-item[data-view="'+v+'"]',nav); if(el && !frag.contains(el)) frag.appendChild(el); });
@@ -8422,7 +8436,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   #view-inicio .cd-days{font-family:'Inter Tight',serif;font-size:52px;font-weight:600;line-height:1;color:var(--emerald-d);}
   #view-inicio .cd-lbl{font-size:13px;color:var(--text-2);max-width:130px;line-height:1.3;}
   @media(max-width:560px){#view-inicio .dash-countdown{padding:16px;}#view-inicio .cd-days{font-size:42px;}}
-  #view-inicio .dash-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+  #view-inicio .dash-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
   #view-inicio .dash-kpi{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:15px 17px;box-shadow:var(--sh-sm,0 1px 2px rgba(0,0,0,.04));min-width:0;}
   #view-inicio .dash-kpi .k-l{font-size:12px;color:var(--text-3);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   #view-inicio .dash-kpi .k-v{font-family:'Inter Tight',serif;font-size:29px;font-weight:600;color:var(--text);line-height:1.05;margin-top:4px;}
@@ -9999,7 +10013,7 @@ h1,h2,h3,h4,.blk-t{letter-spacing:-.015em;}
   'use strict';
   var PKEY='catedra_user_personalization';
   var XKEY='catedra_user_presets';
-  var FIELDS=[{"k":"nome","label":"Nome de exibição","type":"text","ph":"Como você quer ser chamado"},{"k":"objetivo","label":"Objetivo principal","type":"text","ph":"Ex.: Passar na Procuradoria Municipal"},{"k":"cargo","label":"Cargo-alvo","type":"text","ph":"Ex.: Procurador Municipal"},{"k":"banca","label":"Banca provável","type":"select","opts":["","CEBRASPE/CESPE","FGV","FCC","VUNESP","Outra"]},{"k":"nivel","label":"Nível atual","type":"select","opts":["Iniciante","Intermediário","Avançado"]},{"k":"fase","label":"Fase da preparação","type":"select","opts":["Base/Teoria","Intermediária","Reta final"]},{"k":"perfil","label":"Perfil de estudo","type":"select","opts":["Equilibrado","Teórico","Por questões","Lei seca intensiva","Jurisprudência intensiva"]},{"k":"tempo","label":"Tempo disponível por dia","type":"select","opts":["Baixo (até 2h)","Médio (2-4h)","Alto (4h+)"]},{"k":"dias","label":"Dias disponíveis na semana","type":"select","opts":["1","2","3","4","5","6","7"]},{"k":"energia","label":"Energia média","type":"select","opts":["Baixa","Média","Alta"]},{"k":"dificuldade","label":"Maior dificuldade","type":"text","ph":"Ex.: manter constância / interpretação"},{"k":"revisao","label":"Forma preferida de revisão","type":"select","opts":["Flashcards","Resumos","Questões","Mapa mental","Releitura"]},{"k":"cobranca","label":"Tipo de cobrança","type":"select","opts":["Lei seca","Jurisprudência","Questões/casos","Misto"]},{"k":"prioridadeSemana","label":"Prioridade da semana","type":"text","ph":"Ex.: Direito Administrativo"},{"k":"metaPrincipal","label":"Meta principal atual","type":"text","ph":"Ex.: 500 questões nesta semana"},{"k":"observacoes","label":"Observações pessoais","type":"textarea","ph":"Notas livres..."}];
+  var FIELDS=[{"k":"nome","label":"Nome de exibição","type":"text","ph":"Como você quer ser chamado"},{"k":"objetivo","label":"Objetivo principal","type":"text","ph":"Ex.: Aprovação no concurso-alvo"},{"k":"cargo","label":"Cargo-alvo","type":"text","ph":"Ex.: Analista Judiciário"},{"k":"banca","label":"Banca provável","type":"select","opts":["","CEBRASPE/CESPE","FGV","FCC","VUNESP","Outra"]},{"k":"nivel","label":"Nível atual","type":"select","opts":["Iniciante","Intermediário","Avançado"]},{"k":"fase","label":"Fase da preparação","type":"select","opts":["Base/Teoria","Intermediária","Reta final"]},{"k":"perfil","label":"Perfil de estudo","type":"select","opts":["Equilibrado","Teórico","Por questões","Lei seca intensiva","Jurisprudência intensiva"]},{"k":"tempo","label":"Tempo disponível por dia","type":"select","opts":["Baixo (até 2h)","Médio (2-4h)","Alto (4h+)"]},{"k":"dias","label":"Dias disponíveis na semana","type":"select","opts":["1","2","3","4","5","6","7"]},{"k":"energia","label":"Energia média","type":"select","opts":["Baixa","Média","Alta"]},{"k":"dificuldade","label":"Maior dificuldade","type":"text","ph":"Ex.: manter constância / interpretação"},{"k":"revisao","label":"Forma preferida de revisão","type":"select","opts":["Flashcards","Resumos","Questões","Mapa mental","Releitura"]},{"k":"cobranca","label":"Tipo de cobrança","type":"select","opts":["Lei seca","Jurisprudência","Questões/casos","Misto"]},{"k":"prioridadeSemana","label":"Prioridade da semana","type":"text","ph":"Ex.: Direito Administrativo"},{"k":"metaPrincipal","label":"Meta principal atual","type":"text","ph":"Ex.: 500 questões nesta semana"},{"k":"observacoes","label":"Observações pessoais","type":"textarea","ph":"Notas livres..."}];
   function lsGet(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}}
   function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
   function el(id){return document.getElementById(id);}
@@ -10098,12 +10112,7 @@ h1,h2,h3,h4,.blk-t{letter-spacing:-.015em;}
       messages.push('Energia baixa: revisão leve, lei seca, flashcards e questões curtas priorizados.'); }
     else if(energia.indexOf('alta')>=0){ w.simulados+=0.6; w.questoes+=0.6; w.cadernoErros+=0.5;
       messages.push('Energia alta: simulados, questões difíceis e correção de erros priorizados.'); }
-    var disc=(lc(p.cargo)+' '+lc(p.objetivo));
     var focoDisc=[];
-    if(disc.indexOf('procurad')>=0||disc.indexOf('municip')>=0){
-      focoDisc=['Direito Administrativo','Direito Constitucional','Direito Tributário','Direito Financeiro','Processo Civil','Direito Ambiental','Direito Empresarial'];
-      messages.push('Procuradoria Municipal detectada: Administrativo, Constitucional, Tributário, Financeiro, Processo Civil, Ambiental e Empresarial aplicado à Fazenda Pública foram priorizados.');
-    }
     Object.keys(w).forEach(function(k){ if(w[k]<0.2)w[k]=0.2; w[k]=Math.round(w[k]*100)/100; });
     var pr=[]; priorities.forEach(function(x){if(pr.indexOf(x)<0)pr.push(x);});
     return {weights:w, priorities:pr, focusDisciplines:focoDisc, dailyLoad:dailyLoad, messages:messages, appliedAt:Date.now(), source:p};
@@ -10633,5 +10642,750 @@ h1,h2,h3,h4,.blk-t{letter-spacing:-.015em;}
       try{ if(v==='relatorio'&&typeof window.renderRelatorio==='function') window.renderRelatorio(); }catch(e){}
     },60);
   });
+})();
+</script>
+
+<!-- ===== CAMADA ESTRATEGICA FINAL: CSS unificado, acessibilidade, Anki, reteste, reta final e edital ponderado ===== -->
+<style id="catedra-strategy-layer-css">
+  /* tokens */
+  :root{
+    --ct-primary:var(--accent,var(--emerald,#14b889));
+    --ct-primary-2:var(--accent-2,#36d399);
+    --ct-ink:var(--text,#12202a);
+    --ct-muted:var(--text-2,#62717d);
+    --ct-soft:var(--surface-2,#f4f7f6);
+    --ct-line:var(--border,#dce5e2);
+    --ct-radius:16px;
+    --ct-radius-sm:10px;
+    --ct-shadow:0 18px 50px rgba(2,18,28,.12);
+    --ct-gap:14px;
+  }
+
+  /* layout */
+  .ct-grid-2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:var(--ct-gap);align-items:start;}
+  .ct-grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ct-gap);}
+  .ct-stack{display:flex;flex-direction:column;gap:var(--ct-gap);}
+  @media(max-width:900px){.ct-grid-2,.ct-grid-3{grid-template-columns:1fr;}}
+
+  /* componentes */
+  .ct-card{background:var(--surface,#fff);border:1px solid var(--ct-line);border-radius:var(--ct-radius);box-shadow:var(--shadow,none);padding:18px;}
+  .ct-card h3,.ct-card h4{margin:0;color:var(--ct-ink);}
+  .ct-card p{margin:6px 0 0;color:var(--ct-muted);line-height:1.55;}
+  .ct-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px;}
+  .ct-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;background:color-mix(in srgb,var(--ct-primary) 13%,transparent);color:var(--ct-primary);}
+  .ct-mini{font-size:12px;color:var(--text-3,#8a99a5);}
+  .ct-action{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--ct-line);background:var(--surface,#fff);color:var(--ct-ink);border-radius:11px;padding:9px 12px;font-weight:800;cursor:pointer;}
+  .ct-action:hover{border-color:var(--ct-primary);color:var(--ct-primary);transform:translateY(-1px);}
+  .ct-action.primary{border-color:transparent;background:linear-gradient(135deg,var(--ct-primary),var(--ct-primary-2));color:#fff;}
+  .ct-meter{height:9px;border-radius:999px;background:var(--ct-soft);overflow:hidden;}
+  .ct-meter i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--ct-primary),var(--ct-primary-2));}
+  .ct-list{display:flex;flex-direction:column;gap:10px;}
+  .ct-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;border:1px solid var(--ct-line);border-radius:13px;padding:12px;background:color-mix(in srgb,var(--surface,#fff) 86%,var(--ct-primary) 4%);}
+  .ct-row b{display:block;font-size:13.5px;color:var(--ct-ink);}
+  .ct-row span{display:block;font-size:12px;color:var(--ct-muted);line-height:1.45;}
+  .ct-danger{--ct-primary:#d84b4b;--ct-primary-2:#ff8a70;}
+  .ct-warn{--ct-primary:#c28219;--ct-primary-2:#f4bd45;}
+  .ct-good{--ct-primary:#0fa06f;--ct-primary-2:#46d99f;}
+
+  /* paginas */
+  #anki-action-panel .anki-rec{font-size:15px;font-weight:850;color:var(--ct-ink);}
+  #anki-connect-status{min-height:18px;}
+  .error-retest-queue .ct-row{grid-template-columns:minmax(0,1fr) auto;}
+  .error-retest-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;}
+  .error-retest-actions button{font-size:12px;padding:7px 9px;border-radius:9px;}
+  .reta-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,color-mix(in srgb,var(--ct-primary) 16%,var(--surface,#fff)),var(--surface,#fff));}
+  .reta-hero:before{content:"";position:absolute;inset:auto -20% -55% 40%;height:220px;background:radial-gradient(circle,color-mix(in srgb,var(--ct-primary) 18%,transparent),transparent 66%);pointer-events:none;}
+  .reta-command{min-height:170px;display:flex;flex-direction:column;justify-content:space-between;}
+  .reta-command .ct-action{width:100%;margin-top:14px;}
+  .ed-incidence-board{margin:16px 0;}
+  .ed-incidence-row{display:grid;grid-template-columns:38px minmax(0,1fr) 74px auto;gap:10px;align-items:center;}
+  .ed-incidence-row .rank{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--ct-primary) 14%,transparent);color:var(--ct-primary);font-weight:900;}
+  .quick-register-fab{position:fixed;right:22px;bottom:116px;z-index:180;width:58px;height:58px;border-radius:20px;border:1px solid color-mix(in srgb,var(--ct-primary) 55%,transparent);background:linear-gradient(135deg,var(--ct-primary),var(--ct-primary-2));color:#fff;box-shadow:var(--ct-shadow);font-weight:950;cursor:pointer;}
+  .quick-register-panel{position:fixed;right:22px;bottom:184px;z-index:181;width:min(360px,calc(100vw - 32px));display:none;}
+  .quick-register-panel.open{display:block;}
+  .quick-register-panel .form-grid{grid-template-columns:1fr 1fr;}
+  .quick-register-panel .field:first-child,.quick-register-panel .field:nth-child(2){grid-column:1/-1;}
+  .ct-modal-focus{outline:2px solid color-mix(in srgb,var(--ct-primary) 80%,transparent);outline-offset:3px;}
+  .nav-item[data-force-active="1"]{background:var(--nav-active-bg,rgba(20,184,137,.14))!important;color:var(--nav-active-text,var(--ct-primary))!important;border-color:color-mix(in srgb,var(--ct-primary) 42%,transparent)!important;}
+  @media(max-width:560px){.quick-register-fab{right:16px;bottom:100px}.quick-register-panel{right:16px;bottom:164px}.ed-incidence-row{grid-template-columns:32px minmax(0,1fr);}.ed-incidence-row .ct-meter,.ed-incidence-row .ct-action{grid-column:2;}}
+</style>
+<script id="catedra-strategy-layer-js">
+(function(){
+  if(window.__catedraStrategyLayer)return; window.__catedraStrategyLayer=true;
+  var $=function(id){return document.getElementById(id);};
+  var q=function(sel,root){return (root||document).querySelector(sel);};
+  var qa=function(sel,root){return Array.prototype.slice.call((root||document).querySelectorAll(sel));};
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+  var today=function(){try{return todayStr();}catch(e){return new Date().toISOString().slice(0,10);}};
+  var plus=function(d,n){try{return addDays(d,n);}catch(e){var x=new Date(d+'T00:00:00');x.setDate(x.getDate()+n);return x.toISOString().slice(0,10);}};
+  var saveAll=function(){try{save();}catch(e){} try{if(window.recalcularTudo)window.recalcularTudo('strategy-layer');}catch(e){}};
+  var say=function(t){try{toast(t,3200);}catch(e){console.log(t);}};
+  function data(){window.state=window.state||{};return window.state;}
+  function discs(){return (window.DISCIPLINAS&&DISCIPLINAS.length?DISCIPLINAS:(data().discs||[]));}
+  function firstCycleBlock(){
+    var s=data(), acts=(s.cycle&&Array.isArray(s.cycle.activities)&&s.cycle.activities)||[];
+    return acts.find(function(b){return b&&!b.feat;})||acts[0]||null;
+  }
+  function guessTopicText(b){return (b&&(b.topic||b.t||b.title||b.tag))||'';}
+  function guessDiscFromBlock(b){
+    var txt=String((b&&(b.disc||b.tag||b.t))||'').toLowerCase();
+    return discs().find(function(d){var x=d.toLowerCase();return txt.indexOf(x)>=0||x.indexOf(txt)>=0;})||(b&&b.tag)||discs()[0]||'';
+  }
+
+  function enhanceAccessibility(){
+    var selectors=['#session-modal','.modal-overlay','#catedra-auth','#calendario-modal-evento','.public-center-panel','.public-alert-panel','.quick-register-panel'];
+    selectors.forEach(function(sel){qa(sel).forEach(function(el){
+      if(!el.hasAttribute('role'))el.setAttribute('role','dialog');
+      if(!el.hasAttribute('aria-modal'))el.setAttribute('aria-modal','true');
+      if(!el.hasAttribute('tabindex'))el.setAttribute('tabindex','-1');
+      var title=q('h1,h2,h3,h4',el);
+      if(title&&!title.id){title.id='dlg-title-'+Math.random().toString(36).slice(2);}
+      if(title&&!el.getAttribute('aria-labelledby'))el.setAttribute('aria-labelledby',title.id);
+    });});
+  }
+  var lastFocus=null;
+  document.addEventListener('mousedown',function(e){lastFocus=e.target;},true);
+  function isOpenDialog(el){
+    if(!el)return false;
+    var cs=getComputedStyle(el);
+    return cs.display!=='none'&&cs.visibility!=='hidden'&&(el.classList.contains('open')||el.classList.contains('on')||el.id==='catedra-auth'||el.classList.contains('quick-register-panel'));
+  }
+  function closeDialog(el){
+    if(!el)return;
+    var close=q('[aria-label="Fechar"],#session-close,.modal-close,.auth-close,.close',el);
+    if(close){close.click();}
+    else{el.classList.remove('open','on');}
+    setTimeout(function(){try{if(lastFocus&&lastFocus.focus)lastFocus.focus();}catch(e){}},30);
+  }
+  document.addEventListener('keydown',function(e){
+    var dialogs=qa('#session-modal,.modal-overlay,#catedra-auth,#calendario-modal-evento,.public-center-panel,.public-alert-panel,.quick-register-panel').filter(isOpenDialog);
+    var dlg=dialogs[dialogs.length-1]; if(!dlg)return;
+    if(e.key==='Escape'){e.preventDefault();closeDialog(dlg);return;}
+    if(e.key==='Tab'){
+      var fs=qa('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',dlg).filter(function(x){return getComputedStyle(x).display!=='none'&&getComputedStyle(x).visibility!=='hidden';});
+      if(!fs.length)return;
+      var first=fs[0],last=fs[fs.length-1];
+      if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+      else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+    }
+  });
+  document.addEventListener('click',function(e){
+    setTimeout(function(){
+      enhanceAccessibility();
+      var dlg=qa('#session-modal,.modal-overlay,#catedra-auth,#calendario-modal-evento,.public-center-panel,.public-alert-panel,.quick-register-panel').filter(isOpenDialog).pop();
+      if(dlg&&!dlg.contains(document.activeElement)){var f=q('button,input,select,textarea,a[href]',dlg);try{(f||dlg).focus();dlg.classList.add('ct-modal-focus');setTimeout(function(){dlg.classList.remove('ct-modal-focus');},700);}catch(x){}}
+    },60);
+  },true);
+
+  function ankiAdvice(ret){
+    if(!ret)return {tone:'ct-warn',text:'Sem retenção registrada. Conecte o Anki ou registre a retenção verdadeira para o sistema decidir volume.'};
+    if(ret<80)return {tone:'ct-danger',text:'Retenção abaixo de 80%: reduza cartões novos, revise erros recentes e faça questões do tema antes de aumentar volume.'};
+    if(ret>=85&&ret<=90)return {tone:'ct-good',text:'Retenção entre 85% e 90%: mantenha o volume atual. Essa é a zona de trabalho eficiente.'};
+    if(ret>92)return {tone:'ct-warn',text:'Retenção acima de 92%: aumente levemente questões ou cartões novos, se a fila vencida estiver controlada.'};
+    return {tone:'ct-warn',text:'Retenção em zona de ajuste: mantenha novos cartões baixos até estabilizar acima de 85%.'};
+  }
+  function latestRet(){
+    var arr=(data().anki||[]).filter(function(x){return +x.ret>0;}).sort(function(a,b){return String(a.date).localeCompare(String(b.date));});
+    return arr.length?+arr[arr.length-1].ret:0;
+  }
+  function ensureAnkiActionPanel(){
+    var view=$('view-anki'); if(!view||$('anki-action-panel'))return;
+    var host=document.createElement('div'); host.id='anki-action-panel'; host.className='ct-card';
+    host.innerHTML='<div class="ct-head"><div><span class="ct-pill">Anki inteligente</span><h3>Recomendação automática</h3><p>O volume do Anki deve responder à retenção, lapses e cartões vencidos.</p></div><button class="ct-action primary" id="anki-connect-btn" type="button">Sincronizar Anki</button></div><div id="anki-rec-box" class="ct-row"><div><b class="anki-rec">Calculando...</b><span>Use AnkiConnect em localhost:8765 para leitura real.</span></div><span class="ct-pill">retenção</span></div><div id="anki-connect-status" class="ct-mini" style="margin-top:10px"></div>';
+    var ref=q('.tip',view)||view.firstElementChild; view.insertBefore(host,ref?ref.nextSibling:view.firstChild);
+    $('anki-connect-btn').onclick=syncAnkiConnect;
+  }
+  function renderAnkiActionPanel(){
+    ensureAnkiActionPanel(); var box=$('anki-rec-box'); if(!box)return;
+    var ret=latestRet(), adv=ankiAdvice(ret), snap=data().ankiConnect||{};
+    box.className='ct-row '+adv.tone;
+    box.innerHTML='<div><b class="anki-rec">'+esc(adv.text)+'</b><span>'+(ret?('Ultima retenção: '+ret+'%. '):'')+(snap.syncedAt?('AnkiConnect sincronizado em '+snap.syncedAt+'.'):'A sincronização real depende do Anki aberto com AnkiConnect ativo.')+'</span></div><span class="ct-pill">'+(ret?ret+'%':'sem dado')+'</span>';
+  }
+  async function syncAnkiConnect(){
+    var st=$('anki-connect-status'); if(st)st.textContent='Conectando ao AnkiConnect...';
+    try{
+      var call=async function(action,params){var r=await fetch('http://127.0.0.1:8765',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:action,version:6,params:params||{}})});return r.json();};
+      await call('version',{});
+      var dn=await call('deckNames',{}); var decks=(dn.result||[]).slice(0,30);
+      var ds=await call('getDeckStats',{decks:decks});
+      var stats=ds.result||{}, totals={reviews:0,newCards:0,learning:0,due:0};
+      Object.keys(stats).forEach(function(k){var v=stats[k]||{};totals.reviews+=+v.review_count||0;totals.newCards+=+v.new_count||0;totals.learning+=+v.learn_count||0;totals.due+=((+v.review_count||0)+(+v.learn_count||0));});
+      data().ankiConnect={syncedAt:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),decks:decks.length,totals:totals};
+      if(!Array.isArray(data().anki))data().anki=[];
+      var date=today(), existing=data().anki.find(function(x){return x.date===date;});
+      if(existing){existing.reviews=existing.reviews||totals.reviews;existing.note=(existing.note||'')+' AnkiConnect: '+totals.due+' vencidos.';}
+      else data().anki.push({id:Date.now(),date:date,reviews:totals.reviews,min:0,ret:latestRet()||0,note:'AnkiConnect: '+totals.due+' vencidos, '+totals.newCards+' novos.'});
+      saveAll(); try{if(window.renderAnki)window.renderAnki();}catch(e){} renderAnkiActionPanel();
+      if(st)st.textContent='Anki sincronizado: '+decks.length+' baralho(s), '+totals.due+' cartão(ões) vencidos.';
+    }catch(e){
+      if(st)st.textContent='Não consegui ler o Anki. Abra o Anki, ative o AnkiConnect e mantenha localhost:8765 disponível.';
+    }
+  }
+
+  function ensureRetestMeta(){
+    var s=data(); s.errors=s.errors||[]; s.revisions=s.revisions||[];
+    s.errors.forEach(function(er){
+      if(!er.id)er.id=Date.now()+Math.floor(Math.random()*1000);
+      if((er.status||'pendente')==='resolvido')return;
+      er.retest=er.retest||{step:0,due:today(),history:[]};
+      var exists=s.revisions.some(function(r){return String(r.sourceErrorId)===String(er.id)&&!r.done;});
+      if(!exists)s.revisions.push({id:'erret'+er.id+'_'+Date.now(),sourceErrorId:er.id,disc:er.disc||'',topic:er.topic||er.note||'Erro',label:'reteste 1·7·30',due:er.retest.due||today(),done:false});
+    });
+  }
+  function retestDueText(er){
+    var r=er.retest||{}, due=r.due||today();
+    return (due<=today()?'vence hoje':'vence em '+due)+' · etapa '+((+r.step||0)+1)+'/3';
+  }
+  function ensureRetestQueue(){
+    var view=$('view-erros'); if(!view)return;
+    ensureRetestMeta();
+    var board=$('error-retest-board');
+    if(!board){board=document.createElement('div');board.id='error-retest-board';board.className='ct-card error-retest-queue';var ref=q('#errors-lab-board',view)||q('.error-registered-card',view)||view.firstElementChild;view.insertBefore(board,ref?ref.nextSibling:null);}
+    var open=(data().errors||[]).filter(function(e){return (e.status||'pendente')!=='resolvido';}).sort(function(a,b){return String((a.retest||{}).due||today()).localeCompare(String((b.retest||{}).due||today()));});
+    board.innerHTML='<div class="ct-head"><div><span class="ct-pill">Fila de reteste</span><h3>Caderno de erros vira prova de recuperação</h3><p>O erro só sai daqui depois de acerto no reteste. Enquanto falhar, volta para 1·7·30.</p></div><span class="ct-pill">'+open.length+' aberto(s)</span></div><div class="ct-list">'+(open.length?open.slice(0,8).map(function(er){return '<div class="ct-row" data-retest-id="'+esc(er.id)+'"><div><b>'+esc(er.topic||er.note||'Erro sem tópico')+'</b><span>'+esc(er.disc||'Sem disciplina')+' · '+esc(retestDueText(er))+'</span></div><div class="error-retest-actions"><button class="ct-action" data-er-retest="fail">Errei</button><button class="ct-action primary" data-er-retest="ok">Acertei</button></div></div>';}).join(''):'<div class="ct-row ct-good"><div><b>Nenhum reteste aberto</b><span>Quando um erro for cadastrado, ele entra automaticamente aqui.</span></div><span class="ct-pill">ok</span></div>')+'</div>';
+    qa('[data-er-retest]',board).forEach(function(btn){btn.onclick=function(){
+      var id=this.closest('[data-retest-id]').dataset.retestId, er=(data().errors||[]).find(function(x){return String(x.id)===String(id);}); if(!er)return;
+      er.retest=er.retest||{step:0,due:today(),history:[]}; er.retest.history.push({date:today(),result:this.dataset.erRetest});
+      if(this.dataset.erRetest==='ok'){er.status='resolvido';er.resolvedAt=today();er.retestOk=true;say('erro fechado por acerto no reteste');}
+      else{var seq=[1,7,30];er.status='revisar';er.retest.step=Math.min(2,(+er.retest.step||0)+1);er.retest.due=plus(today(),seq[er.retest.step]||30);say('erro voltou para reteste em '+(seq[er.retest.step]||30)+' dia(s)');}
+      saveAll(); try{if(window.renderErros)window.renderErros();}catch(e){} ensureRetestQueue();
+    };});
+  }
+
+  function topicRows(){
+    var s=data(), ed=s.edital||[], plan=s.plano||{}, errs=s.errors||[], rev=s.revisions||[];
+    return ed.map(function(t){
+      var p=plan[t.disc]||{}, inc=t.inc==='alta'?5:(t.inc==='media'?3:(t.inc==='baixa'?1:2));
+      var peso=(+p.peso||1)+((+p.qtd||0)/20);
+      var banca=0;
+      var er=errs.filter(function(e){return (e.status||'pendente')!=='resolvido'&&String(e.disc||'')===String(t.disc||'')&&String(e.topic||'').toLowerCase().indexOf(String(t.t||'').toLowerCase().slice(0,18))>=0;}).length;
+      var rv=rev.filter(function(r){return !r.done&&String(r.disc||'')===String(t.disc||'')&&String(r.due||'')<=today();}).length;
+      var score=Math.round(inc*12+peso*7+banca*10+er*9+rv*5-(t.done?16:0));
+      return {topic:t,score:Math.max(1,score),inc:inc,er:er,rv:rv};
+    }).sort(function(a,b){return b.score-a.score;});
+  }
+  function ensureEditalIncidence(){
+    var view=$('view-edital'); if(!view)return;
+    var board=$('ed-incidence-board');
+    if(!board){
+      board=document.createElement('div');board.id='ed-incidence-board';board.className='ct-card ed-incidence-board';
+      var ref=$('edital-list')||view.firstElementChild;
+      if(ref&&ref.parentNode===view)view.insertBefore(board,ref);
+      else view.appendChild(board);
+    }
+    var rows=topicRows().slice(0,8);
+    board.innerHTML='<div class="ct-head"><div><span class="ct-pill">Edital ponderado por incidência</span><h3>Prioridade pela banca, não pela ordem do edital</h3><p>O ciclo pode puxar o que mais cai, com peso do edital, erros abertos e revisões vencidas.</p></div><button class="ct-action primary" id="ed-incidence-cycle" type="button">Gerar ciclo</button></div><div class="ct-list">'+(rows.length?rows.map(function(r,i){return '<div class="ct-row ed-incidence-row"><span class="rank">'+(i+1)+'</span><div><b>'+esc(r.topic.disc)+' · '+esc(r.topic.t)+'</b><span>incidência '+(r.topic.inc||'não informada')+' · '+r.er+' erro(s) · '+r.rv+' revisão(ões)</span></div><div class="ct-meter"><i style="width:'+Math.min(100,r.score)+'%"></i></div><span class="ct-pill">'+r.score+'</span></div>';}).join(''):'<div class="ct-row"><div><b>Cadastre o edital para calcular prioridade.</b><span>Inclua tópicos, peso e quantidade de questões.</span></div></div>')+'</div>';
+    var b=$('ed-incidence-cycle'); if(b)b.onclick=function(){
+      var top=topicRows().filter(function(r){return !r.topic.done;}).slice(0,7); if(!top.length){say('cadastre tópicos pendentes primeiro');return;}
+      data().cycle=data().cycle||{}; data().cycle.mode='incidencia';
+      data().cycle.activities=[{id:'cy_rev',tag:'Revisão',t:'Revisão espaçada do dia',d:'Zerar revisões antes de avançar.',feat:true}].concat(top.map(function(r,i){return {id:'inc_'+(r.topic.id||i),tag:r.topic.disc,t:r.topic.t,d:'Priorizado por incidência, banca, peso e risco.',rot:true};}));
+      saveAll(); try{if(window.renderCycle)window.renderCycle();}catch(e){} say('ciclo reorganizado por incidência da banca');
+    };
+  }
+
+  function ensureRetaFinal(){
+    if(!$('view-reta-final')){
+      var content=q('.content')||document.body, view=document.createElement('div'); view.className='view'; view.id='view-reta-final';
+      view.innerHTML='<div class="ct-card reta-hero"><div class="ct-head"><div><span class="ct-pill">Reta final</span><h3>Três comandos para pontuar mais</h3><p>Quando a prova se aproxima, o sistema reduz ruído e concentra lei seca, jurisprudência/súmulas e questões erradas.</p></div><span class="ct-pill" id="reta-days">-- dias</span></div></div><div class="ct-grid-3" id="reta-commands" style="margin-top:16px"></div>';
+      var before=$('view-ajustes');
+      if(before&&before.parentNode===content)content.insertBefore(view,before);
+      else content.appendChild(view);
+    }
+    if(!q('.nav-item[data-view="reta-final"]')){
+      var nav=q('.nav'); if(nav){var btn=document.createElement('button');btn.className='nav-item';btn.dataset.view='reta-final';btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2 4 14h7l-1 8 10-13h-7l0-7Z" stroke-linejoin="round"/></svg>Reta Final<span class="nav-badge" id="nav-reta-final" style="display:none">!</span>';var before=q('.nav-item[data-view="simulados"]')||q('.nav-item[data-view="stats"]');nav.insertBefore(btn,before||null);btn.onclick=function(){activateView('reta-final');};}
+    }
+    renderRetaFinal();
+  }
+  function ensureAnkiNav(){
+    if(q('.nav-item[data-view="anki"]'))return;
+    var nav=q('.nav'); if(!nav)return;
+    var btn=document.createElement('button');btn.className='nav-item';btn.dataset.view='anki';
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4Zm12 5h2a2 2 0 0 1 2 2v9h-4" stroke-linejoin="round"/></svg>Anki';
+    var before=q('.nav-item[data-view="erros"]')||q('.nav-item[data-view="historico"]');
+    nav.insertBefore(btn,before||null);
+    btn.onclick=function(e){if(e)e.preventDefault();activateView('anki');renderAnkiActionPanel();};
+  }
+  function activateView(v){
+    qa('.nav-item').forEach(function(x){x.classList.toggle('active',x.dataset.view===v);});
+    qa('.view').forEach(function(x){x.classList.toggle('active',x.id==='view-'+v);});
+    try{if($('nav'))$('nav').classList.remove('open');if($('side-foot'))$('side-foot').classList.remove('open');}catch(e){}
+    if(v==='reta-final')renderRetaFinal();
+    if(v==='anki')renderAnkiActionPanel();
+    if(v==='edital')ensureEditalIncidence();
+    if(v==='erros')ensureRetestQueue();
+  }
+  function renderRetaFinal(){
+    var s=data(), d=s.exam&&s.exam.date, days='sem data';
+    if(d){var diff=Math.ceil((new Date(d+'T00:00:00')-new Date(today()+'T00:00:00'))/86400000);days=diff>=0?diff+' dias':'prova passada';}
+    if($('reta-days'))$('reta-days').textContent=days;
+    var cmds=[['Lei seca','Separar dispositivos dos tópicos de maior incidência e marcar artigos que geram erro.','lei seca'],['Jurisprudência/súmulas','Rodada curta com súmulas, teses repetitivas e informativos ligados à banca.','jurisprudência'],['Questões erradas','Retestar o caderno de erros até acerto, sem encerrar por clique manual.','erros']];
+    var host=$('reta-commands'); if(host)host.innerHTML=cmds.map(function(c){return '<div class="ct-card reta-command"><div><span class="ct-pill">'+esc(c[2])+'</span><h3>'+esc(c[0])+'</h3><p>'+esc(c[1])+'</p></div><button class="ct-action primary" data-reta-command="'+esc(c[2])+'" type="button">Criar bloco</button></div>';}).join('');
+    qa('[data-reta-command]').forEach(function(b){b.onclick=function(){
+      var mode=this.dataset.retaCommand, topic=mode==='erros'?'Questões erradas do caderno':(mode==='lei seca'?'Lei seca de alta incidência':'Jurisprudência e súmulas');
+      data().cycle=data().cycle||{}; var acts=data().cycle.activities||[]; acts.unshift({id:'reta_'+mode+'_'+Date.now(),tag:'Reta final',t:topic,d:'Bloco criado pelo modo Reta Final.',rot:true}); data().cycle.activities=acts; data().cycle.mode='reta-final'; saveAll(); say('bloco de '+mode+' adicionado ao ciclo');
+    };});
+    qa('.nav-item[data-view]').forEach(function(b){if(b.dataset.view==='reta-final')b.setAttribute('data-force-active','1');else b.removeAttribute('data-force-active');});
+  }
+
+  function ensureQuickRegister(){
+    if(!$('quick-register-fab')){
+      var fab=document.createElement('button');fab.id='quick-register-fab';fab.className='quick-register-fab';fab.type='button';fab.setAttribute('aria-label','Registro rápido');fab.textContent='10s';document.body.appendChild(fab);
+      var panel=document.createElement('div');panel.id='quick-register-panel';panel.className='quick-register-panel ct-card';panel.innerHTML='<div class="ct-head"><div><span class="ct-pill">Registro em 10 segundos</span><h3>Sessão rápida</h3><p>Sugerido pelo bloco atual do ciclo.</p></div><button class="ct-action" id="qr-close" type="button" aria-label="Fechar">x</button></div><div class="form-grid"><div class="field"><label>Disciplina</label><input id="qr-disc"></div><div class="field"><label>Tópico</label><input id="qr-topic"></div><div class="field"><label>Minutos</label><input id="qr-min" type="number" min="0"></div><div class="field"><label>Questões</label><input id="qr-q" type="number" min="0"></div><div class="field"><label>Acertos</label><input id="qr-c" type="number" min="0"></div><div class="field"><label>Erros para caderno</label><input id="qr-e" type="number" min="0" value="0"></div></div><button class="ct-action primary" id="qr-save" type="button" style="width:100%;margin-top:12px">Registrar</button>';document.body.appendChild(panel);
+      fab.onclick=function(){prefillQuick();panel.classList.toggle('open');enhanceAccessibility();};
+      $('qr-close').onclick=function(){panel.classList.remove('open');};
+      $('qr-save').onclick=saveQuickRegister;
+    }
+  }
+  function prefillQuick(){
+    var b=firstCycleBlock();
+    if($('qr-disc'))$('qr-disc').value=guessDiscFromBlock(b)||'';
+    if($('qr-topic'))$('qr-topic').value=guessTopicText(b)||'';
+    if($('qr-min'))$('qr-min').value=(b&&(b.min||b.prev||b.minutes))||50;
+    if($('qr-q'))$('qr-q').value=20;
+    if($('qr-c'))$('qr-c').value='';
+  }
+  function saveQuickRegister(){
+    var s=data(); s.sessions=s.sessions||[]; s.errors=s.errors||[];
+    var disc=($('qr-disc')||{}).value||'', topic=($('qr-topic')||{}).value||'', min=+$('qr-min').value||0, qn=+$('qr-q').value||0, ac=+$('qr-c').value||0, er=+$('qr-e').value||0;
+    if(!min&&!qn){say('informe minutos ou questões');return;}
+    s.sessions.push({id:Date.now(),date:today(),disc:disc,topic:topic,min:min,q:qn,c:ac});
+    for(var i=0;i<er;i++)s.errors.push({id:Date.now()+i,date:today(),disc:disc,topic:topic,note:'Erro registrado no lançamento rápido',cause:'Questões',fix:'Refazer e explicar a alternativa correta',action:'Retestar em 1·7·30',status:'revisar',retest:{step:0,due:today(),history:[]}});
+    if(!Array.isArray(s.studyDays))s.studyDays=[]; if(s.studyDays.indexOf(today())<0)s.studyDays.push(today());
+    saveAll(); $('quick-register-panel').classList.remove('open'); try{if(window.renderHome)window.renderHome();if(window.renderErros)window.renderErros();if(window.renderStats)window.renderStats();}catch(e){} say('sessão registrada em 10 segundos');
+  }
+
+  function wrap(name,after){
+    var fn=window[name]; if(typeof fn==='function'&&!fn.__strategyLayer){window[name]=function(){var r=fn.apply(this,arguments);setTimeout(after,80);return r;};window[name].__strategyLayer=true;}
+  }
+  function boot(){
+    enhanceAccessibility();
+    ensureAnkiActionPanel(); renderAnkiActionPanel();
+    ensureRetestQueue();
+    ensureEditalIncidence();
+    ensureRetaFinal();
+    ensureAnkiNav();
+    ensureQuickRegister();
+  }
+  wrap('renderAnki',renderAnkiActionPanel);
+  wrap('renderErros',ensureRetestQueue);
+  wrap('renderEdital',ensureEditalIncidence);
+  wrap('renderCycle',function(){});
+  document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.nav-item[data-view]');if(b&&b.dataset.view==='reta-final')setTimeout(renderRetaFinal,70);});
+  document.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('.nav-item[data-view]'); if(!b)return;
+    if(b.dataset.view==='reta-final'||b.dataset.view==='anki'){
+      e.preventDefault();e.stopPropagation();
+      activateView(b.dataset.view);
+      setTimeout(function(){qa('.nav-item[data-view]').forEach(function(x){x.classList.toggle('active',x.dataset.view===b.dataset.view);});},80);
+      return;
+    }
+    setTimeout(function(){
+      var v=b.dataset.view, view=$('view-'+v); if(!view)return;
+      qa('.nav-item[data-view]').forEach(function(x){x.classList.toggle('active',x===b);});
+      qa('.view').forEach(function(x){x.classList.toggle('active',x===view);});
+      try{if(v==='reta-final')renderRetaFinal();}catch(e){}
+      try{if(v==='edital')ensureEditalIncidence();}catch(e){}
+      try{if(v==='anki')renderAnkiActionPanel();}catch(e){}
+      try{if(v==='erros')ensureRetestQueue();}catch(e){}
+    },120);
+  },true);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+  setInterval(function(){
+    var v=q('.view.active'); if(!v||!v.id||v.id.indexOf('view-')!==0)return;
+    var key=v.id.replace(/^view-/,'');
+    qa('.nav-item[data-view]').forEach(function(b){b.classList.toggle('active',b.dataset.view===key);});
+  },900);
+  setInterval(function(){try{boot();}catch(e){}},2500);
+})();
+</script>
+<script id="catedra-base-recolor">
+/* ===== Recoloração completa da base =====
+   Reescreve os azuis fixos (fundos, bordas, sombras, gradientes) de todas as
+   folhas de estilo com o matiz da cor escolhida, preservando saturação e
+   luminosidade. Com o azul padrão (#35c8ff), restaura o CSS original. */
+(function(){
+  'use strict';
+  var orig=new Map(), lastKey=null, lastCount=0;
+  function clamp(x,a,b){return Math.min(b,Math.max(a,x));}
+  function rgbToHsl(r,g,b){
+    r/=255;g/=255;b/=255;
+    var mx=Math.max(r,g,b),mn=Math.min(r,g,b),h=0,s=0,l=(mx+mn)/2,d=mx-mn;
+    if(d){
+      s=l>0.5?d/(2-mx-mn):d/(mx+mn);
+      if(mx===r)h=(g-b)/d+(g<b?6:0);else if(mx===g)h=(b-r)/d+2;else h=(r-g)/d+4;
+      h*=60;
+    }
+    return [h,s,l];
+  }
+  function hslToRgb(h,s,l){
+    h=((h%360)+360)%360;h/=360;
+    function f(p,q,t){if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;}
+    var r,g,b;
+    if(!s){r=g=b=l;}
+    else{var q=l<0.5?l*(1+s):l+s-l*s,p=2*l-q;r=f(p,q,h+1/3);g=f(p,q,h);b=f(p,q,h-1/3);}
+    return [Math.round(clamp(r*255,0,255)),Math.round(clamp(g*255,0,255)),Math.round(clamp(b*255,0,255))];
+  }
+  /* faixa dos azuis do design (ciano ~197 até azul ~246) com saturação mínima */
+  function isBlue(h,s){return h>=193&&h<=246&&s>=0.18;}
+  function hexParse(hx){
+    if(hx.length===3)hx=hx.split('').map(function(c){return c+c;}).join('');
+    var n=parseInt(hx,16);return [(n>>16)&255,(n>>8)&255,n&255];
+  }
+  function hex2(n){return ('0'+n.toString(16)).slice(-2);}
+  function shift(h,s,l,H,gray){
+    if(gray)return hslToRgb(0,s*0.10,l);
+    return hslToRgb(H,s,l);
+  }
+  function recolorText(text,H,gray){
+    text=text.replace(/#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b/g,function(m,hx){
+      var c=hexParse(hx),hsl=rgbToHsl(c[0],c[1],c[2]);
+      if(!isBlue(hsl[0],hsl[1]))return m;
+      var o=shift(hsl[0],hsl[1],hsl[2],H,gray);
+      return '#'+hex2(o[0])+hex2(o[1])+hex2(o[2]);
+    });
+    text=text.replace(/rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*([0-9.]+)\s*)?\)/g,function(m,r,g,b,a){
+      var hsl=rgbToHsl(+r,+g,+b);
+      if(!isBlue(hsl[0],hsl[1]))return m;
+      var o=shift(hsl[0],hsl[1],hsl[2],H,gray);
+      return a===undefined?('rgb('+o[0]+','+o[1]+','+o[2]+')'):('rgba('+o[0]+','+o[1]+','+o[2]+','+a+')');
+    });
+    return text;
+  }
+  window.__catedraRecolorBase=function(accent){
+    var key=String(accent||'').toLowerCase();
+    var styles=document.querySelectorAll('style');
+    if(key===lastKey&&styles.length===lastCount)return;
+    var def=!key||key==='#35c8ff';
+    var H=0,gray=false;
+    if(!def){
+      try{
+        var c=hexParse(key.replace('#',''));
+        var hsl=rgbToHsl(c[0],c[1],c[2]);
+        H=hsl[0]; gray=hsl[1]<0.12;
+      }catch(e){def=true;}
+    }
+    styles.forEach(function(st){
+      if(st.id==='catedra-base-recolor')return;
+      if(!orig.has(st))orig.set(st,st.textContent);
+      var base=orig.get(st);
+      var out=def?base:recolorText(base,H,gray);
+      if(st.textContent!==out)st.textContent=out;
+    });
+    lastKey=key; lastCount=styles.length;
+  };
+  function boot(){
+    try{
+      var a=localStorage.getItem('catedra:accent');
+      if(!a){try{var old=JSON.parse(localStorage.getItem('catedraAccent')||'null');if(old)a=old.a;}catch(e){}}
+      if(a)window.__catedraRecolorBase(a);
+    }catch(e){}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
+</script>
+<script id="catedra-ankiconnect">
+/* ===== Integração AnkiConnect (Anki desktop · add-on 2055492159) ===== */
+(function(){
+  'use strict';
+  function ankiConnectInvoke(action, version, params={}) {
+      return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.addEventListener('error', () => reject('failed to connect to AnkiConnect'));
+          xhr.addEventListener('load', () => {
+              try {
+                  const response = JSON.parse(xhr.responseText);
+                  if (response.error) {
+                      throw response.error;
+                  } else {
+                      if (response.hasOwnProperty('result')) {
+                          resolve(response.result);
+                      } else {
+                          reject('failed to get results from AnkiConnect');
+                      }
+                  }
+              } catch (e) {
+                  reject(e);
+              }
+          });
+          xhr.open('POST', 'http://127.0.0.1:8765');
+          xhr.send(JSON.stringify({action, version, params}));
+      });
+  }
+  window.ankiConnectInvoke = ankiConnectInvoke;
+
+  var lastSync = null; /* {reviews, ret} da última conexão */
+
+  function el(id){return document.getElementById(id);}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function setStatus(msg, ok){
+    var s=el('ankiconnect-status'); if(!s)return;
+    s.textContent=msg;
+    s.style.color=ok===true?'var(--green,#27c08d)':(ok===false?'var(--red,#e2574c)':'');
+  }
+
+  async function connect(){
+    setStatus('conectando…');
+    var list=el('ankiconnect-decks'); if(list)list.innerHTML='';
+    var sum=el('ankiconnect-summary'); if(sum)sum.textContent='';
+    var syncBtn=el('ankiconnect-sync'); if(syncBtn)syncBtn.style.display='none';
+    try{
+      const allDecks = await ankiConnectInvoke('deckNames', 6);
+      const hid=hiddenDecks();
+      const decks = allDecks.filter(function(d){return !isHidden(d,hid);});
+      setStatus('conectado · '+decks.length+' deck(s)'+(allDecks.length>decks.length?(' ('+(allDecks.length-decks.length)+' oculto(s))'):''), true);
+      let stats=null;
+      try{ stats = await ankiConnectInvoke('getDeckStats', 6, {decks:decks}); }catch(e){}
+      const byName={};
+      if(stats)Object.keys(stats).forEach(function(k){var d=stats[k];if(d&&d.name)byName[d.name]=d;});
+      if(list){
+        list.innerHTML=decks.map(function(d){
+          var s=byName[d];
+          var info=s?('novos '+(+s.new_count||0)+' · aprendendo '+(+s.learn_count||0)+' · a revisar '+(+s.review_count||0)):'';
+          var delBtn='<button class="ct-action" type="button" data-deck-del="'+esc(d)+'" title="Remove o baralho apenas da plataforma — no Anki ele continua intacto" style="padding:7px 10px;font-size:12px">Excluir do Cátedra</button>';
+          return '<div class="ct-row" style="grid-template-columns:minmax(0,1fr) auto"><div><b>'+esc(d)+'</b><span>'+esc(info)+'</span></div>'+delBtn+'</div>';
+        }).join('');
+        if(allDecks.length>decks.length){
+          list.innerHTML+='<div class="ct-row" style="grid-template-columns:minmax(0,1fr) auto;opacity:.75"><div><b>'+(allDecks.length-decks.length)+' baralho(s) oculto(s) na plataforma</b><span>Continuam intactos no Anki.</span></div><button class="ct-action" type="button" id="ankiconnect-restore" style="padding:7px 10px;font-size:12px">Restaurar todos</button></div>';
+        }
+        Array.prototype.slice.call(list.querySelectorAll('[data-deck-del]')).forEach(function(b){
+          b.onclick=function(){hideDeck(this.dataset.deckDel);};
+        });
+        var rst=el('ankiconnect-restore');
+        if(rst)rst.onclick=function(){
+          try{localStorage.removeItem(HID_KEY);}catch(e){}
+          try{if(typeof toast==='function')toast('baralhos restaurados');}catch(e){}
+          connect();
+        };
+      }
+      /* estatísticas de hoje */
+      let reviews=0, ret=0;
+      try{ reviews = (await ankiConnectInvoke('getNumCardsReviewedToday', 6)) || 0; }catch(e){}
+      try{
+        const rated = await ankiConnectInvoke('findCards', 6, {query:'rated:1'});
+        const again = await ankiConnectInvoke('findCards', 6, {query:'rated:1:1'});
+        if(rated&&rated.length)ret=Math.max(0,Math.round((1-(again?again.length:0)/rated.length)*100));
+      }catch(e){}
+      lastSync={reviews:reviews,ret:ret};
+      if(sum)sum.textContent=reviews?('Hoje no Anki: '+reviews+' revisão(ões)'+(ret?(' · retenção ~'+ret+'%'):'')):'Nenhuma revisão feita hoje no Anki.';
+      if(syncBtn&&reviews>0)syncBtn.style.display='';
+    }catch(e){
+      lastSync=null;
+      setStatus('falha na conexão', false);
+      if(list)list.innerHTML='<div class="ct-row"><div><b>Não foi possível conectar ao AnkiConnect.</b><span>1) O Anki precisa estar aberto neste computador, com o add-on AnkiConnect (código 2055492159) instalado. 2) Se esta página estiver aberta como arquivo local, vá em Anki → Ferramentas → Complementos → AnkiConnect → Configuração, inclua "null" na lista webCorsOriginList e reinicie o Anki. Detalhe técnico: '+esc(e)+'</span></div></div>';
+    }
+  }
+
+  /* exclusão apenas na plataforma: o Anki não é tocado */
+  var HID_KEY='catedra:ankiconnect:hidden';
+  function hiddenDecks(){try{return JSON.parse(localStorage.getItem(HID_KEY)||'[]')||[];}catch(e){return [];}}
+  function isHidden(name,list){
+    list=list||hiddenDecks();
+    return list.some(function(h){return name===h||String(name).indexOf(h+'::')===0;});
+  }
+  function hideDeck(name){
+    if(!name)return;
+    var list=hiddenDecks();
+    if(list.indexOf(name)<0)list.push(name);
+    try{localStorage.setItem(HID_KEY,JSON.stringify(list));}catch(e){}
+    try{if(typeof toast==='function')toast('removido do Cátedra · intacto no Anki');}catch(e){}
+    connect(); /* recarrega a lista */
+  }
+
+  function registerToday(){
+    if(!lastSync||!lastSync.reviews)return;
+    try{
+      if(!window.state)return;
+      state.anki=state.anki||[];
+      var d=(typeof todayStr==='function')?todayStr():new Date().toISOString().slice(0,10);
+      state.anki=state.anki.filter(function(e){return e.date!==d;});
+      state.anki.push({id:Date.now(),date:d,reviews:+lastSync.reviews||0,min:0,ret:+lastSync.ret||0,novos:0,maduros:0,note:'sincronizado via AnkiConnect'});
+      if(typeof save==='function')save();
+      try{if(typeof renderAnki==='function')renderAnki();}catch(e){}
+      try{if(typeof toast==='function')toast('Anki de hoje registrado ✓');}catch(e){}
+    }catch(e){}
+  }
+
+  function ensureCard(){
+    var v=el('view-anki'); if(!v||el('ankiconnect-card'))return;
+    var card=document.createElement('div');
+    card.id='ankiconnect-card'; card.className='ct-card'; card.style.marginTop='16px';
+    card.innerHTML='<div class="ct-head"><div><span class="ct-pill">AnkiConnect</span><h3>Sincronizar com o Anki do computador</h3><p>Lê seus decks e as revisões de hoje direto do Anki desktop, sem exportar arquivo. Requer o Anki aberto com o add-on AnkiConnect.</p></div><button class="ct-action primary" id="ankiconnect-btn" type="button">Conectar</button></div>'
+      +'<div class="ct-mini" id="ankiconnect-status">desconectado</div>'
+      +'<div class="ct-mini" id="ankiconnect-summary" style="margin-top:4px"></div>'
+      +'<div class="ct-list" id="ankiconnect-decks" style="margin-top:10px"></div>'
+      +'<button class="ct-action" id="ankiconnect-sync" type="button" style="display:none;margin-top:10px">Registrar revisões de hoje na plataforma</button>';
+    var anchor=el('anki-action-panel');
+    if(anchor&&anchor.parentNode===v)v.insertBefore(card,anchor.nextSibling);
+    else v.appendChild(card);
+    el('ankiconnect-btn').onclick=connect;
+    el('ankiconnect-sync').onclick=registerToday;
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensureCard);else ensureCard();
+  setInterval(ensureCard,1500);
+})();
+</script>
+<style id="catedra-flashcards-css">
+  #view-flashcards .flash-wrap{max-width:780px;margin:0 auto;}
+  .flash-eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);font-weight:800;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .flash-count{margin-left:auto;background:color-mix(in srgb,var(--emerald,#35c8ff) 16%,transparent);color:var(--emerald,#68e2ff);border-radius:999px;padding:4px 10px;font-weight:800;font-size:11.5px;letter-spacing:0;text-transform:none;}
+  .flash-q{font-size:clamp(19px,2.6vw,25px);line-height:1.45;color:var(--text);font-weight:750;margin:12px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;}
+  .flash-hint{font-size:13px;color:var(--text-3);margin-top:10px;}
+  .flash-flip{width:100%;margin-top:18px;padding:15px;font-size:15px;}
+  .flash-back{border-top:1px dashed var(--border);margin-top:18px;padding-top:16px;display:flex;flex-direction:column;gap:12px;}
+  .flash-back .lbl{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);font-weight:800;display:block;margin-bottom:3px;}
+  .flash-back p{font-size:15.5px;line-height:1.6;color:var(--text);margin:0;overflow-wrap:anywhere;}
+  .flash-grades{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px;}
+  .flash-grade{border-radius:14px;padding:14px 10px;font-weight:800;font-size:14px;cursor:pointer;border:1px solid transparent;display:flex;flex-direction:column;gap:3px;align-items:center;}
+  .flash-grade small{font-weight:600;font-size:11px;opacity:.78;}
+  .flash-grade.errei{background:rgba(226,87,76,.16);border-color:rgba(226,87,76,.45);color:#ff9d90;}
+  .flash-grade.quase{background:rgba(244,189,69,.14);border-color:rgba(244,189,69,.40);color:#ffd47e;}
+  .flash-grade.acertei{background:rgba(39,192,141,.16);border-color:rgba(39,192,141,.45);color:#5fe0b0;}
+  .flash-grade:hover{transform:translateY(-1px);}
+  .flash-empty{text-align:center;padding:26px 16px;}
+  .flash-empty b{font-size:16px;display:block;color:var(--text);}
+  .flash-empty span{display:block;margin-top:8px;font-size:13.5px;color:var(--text-2);line-height:1.55;max-width:520px;margin-left:auto;margin-right:auto;}
+  #view-flashcards .ct-card h3{font-size:17px;}
+  #view-flashcards .ct-card>.ct-head p{font-size:13.5px;line-height:1.55;}
+  #flash-list .ct-row b{font-size:14px;}
+  #flash-list .ct-row span{font-size:13px;line-height:1.5;white-space:normal;}
+  @media(max-width:640px){.flash-grades{grid-template-columns:1fr;}}
+</style>
+<script id="catedra-error-flashcards">
+/* ===== Flashcards automáticos do Caderno de Erros =====
+   Cada erro registrado vira um flashcard (frente = erro; verso = correção).
+   Aba própria com repetição espaçada 1·3·7·15·30. Erros resolvidos saem da fila. */
+(function(){
+  'use strict';
+  var IV=[1,3,7,15,30];
+  var queue=[], idx=0, showingBack=false;
+
+  function el(id){return document.getElementById(id);}
+  function q(s,r){return (r||document).querySelector(s);}
+  function qa(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function T(){return (typeof todayStr==='function')?todayStr():new Date().toISOString().slice(0,10);}
+  function addD(d,n){if(typeof addDays==='function')return addDays(d,n);var x=new Date(d+'T00:00:00');x.setDate(x.getDate()+n);return x.toISOString().slice(0,10);}
+  function saveAll(){try{if(typeof save==='function')save();}catch(e){}}
+  function say(m){try{if(typeof toast==='function')toast(m);}catch(e){}}
+
+  function errors(){return (window.state&&Array.isArray(state.errors))?state.errors:[];}
+  function srs(){if(!window.state)return {};state.flashSRS=state.flashSRS||{};return state.flashSRS;}
+  function cardSrs(id){return srs()[String(id)]||null;}
+  function activeErrors(){return errors().filter(function(e){return e&&(e.status||'pendente')!=='resolvido';});}
+  function dueList(){
+    var t=T();
+    return activeErrors().filter(function(e){var s=cardSrs(e.id);return !s||String(s.due||t)<=t;});
+  }
+
+  function grade(g){
+    var c=queue[idx]; if(!c)return;
+    var store=srs(), k=String(c.id);
+    var cur=store[k]||{step:0,due:T(),history:[]};
+    if(g==='errei'){cur.step=0;cur.due=addD(T(),1);}
+    else if(g==='quase'){cur.due=addD(T(),Math.max(1,Math.round(IV[Math.min(cur.step,IV.length-1)]/2)));}
+    else {cur.step=Math.min(IV.length-1,(+cur.step||0)+1);cur.due=addD(T(),IV[cur.step]);}
+    cur.history=cur.history||[];cur.history.push({date:T(),g:g});
+    store[k]=cur; saveAll();
+    idx++; showingBack=false; renderStudy(); renderListAndBadge();
+  }
+
+  function renderStudy(){
+    var host=el('flash-study'); if(!host)return;
+    if(!queue.length||idx>=queue.length){
+      var due=dueList().length;
+      host.innerHTML='<div class="ct-card flash-wrap" style="margin:0 auto"><div class="flash-empty"><b>'
+        +(queue.length?'Sessão concluída ✓':(due?due+' cartão(ões) esperando':'Nenhum cartão para agora'))+'</b><span>'
+        +(due?'Clique em “Estudar agora” para começar a rodada.':'Os flashcards nascem do Caderno de Erros: registre um erro lá e o cartão aparece aqui na hora. Erros resolvidos saem da fila sozinhos.')
+        +'</span></div></div>';
+      return;
+    }
+    var c=queue[idx];
+    var head='<div class="flash-eyebrow"><span>'+esc(c.disc||'sem disciplina')+(c.topic?(' · '+esc(c.topic)):'')+'</span><span class="flash-count">'+(idx+1)+' de '+queue.length+'</span></div>'
+      +'<div class="flash-q">'+esc(c.note||c.topic||'Erro sem descrição')+'</div>';
+    if(!showingBack){
+      host.innerHTML='<div class="ct-card flash-wrap" style="margin:0 auto">'+head
+        +'<div class="flash-hint">Responda mentalmente: qual é o ponto correto? Depois vire o cartão.</div>'
+        +'<button class="ct-action primary flash-flip" id="flash-flip" type="button">Mostrar resposta</button></div>';
+      el('flash-flip').onclick=function(){showingBack=true;renderStudy();};
+    }else{
+      var back='';
+      if(c.fix)back+='<div><span class="lbl">Correção</span><p>'+esc(c.fix)+'</p></div>';
+      if(c.cause)back+='<div><span class="lbl">Causa do erro</span><p>'+esc(c.cause)+'</p></div>';
+      if(c.action)back+='<div><span class="lbl">Ação combinada</span><p>'+esc(c.action)+'</p></div>';
+      if(!back)back='<div><span class="lbl">Sem correção registrada</span><p>Abra o Caderno de Erros e preencha “como corrigir” para enriquecer este cartão.</p></div>';
+      host.innerHTML='<div class="ct-card flash-wrap" style="margin:0 auto">'+head
+        +'<div class="flash-back">'+back+'</div>'
+        +'<div class="flash-grades">'
+        +'<button class="flash-grade errei" data-g="errei" type="button">Errei<small>volta em 1 dia</small></button>'
+        +'<button class="flash-grade quase" data-g="quase" type="button">Quase<small>meio intervalo</small></button>'
+        +'<button class="flash-grade acertei" data-g="acertei" type="button">Acertei<small>avança 1·3·7·15·30</small></button>'
+        +'</div></div>';
+      qa('[data-g]',host).forEach(function(b){b.onclick=function(){grade(this.dataset.g);};});
+    }
+  }
+
+  function renderListAndBadge(){
+    var t=T(), due=dueList().length;
+    var badge=el('nav-flash');
+    if(badge){badge.textContent=due;badge.style.display=due?'':'none';}
+    var list=el('flash-list'); if(!list)return;
+    var all=errors();
+    if(!all.length){list.innerHTML='<div class="ct-row"><div><b>Caderno de erros vazio.</b><span>Registre erros na aba Erros e os cartões aparecem aqui automaticamente.</span></div></div>';return;}
+    var rows=all.slice().sort(function(a,b){
+      var sa=cardSrs(a.id),sb=cardSrs(b.id);
+      return String((sa&&sa.due)||'0000').localeCompare(String((sb&&sb.due)||'0000'));
+    }).slice(0,80).map(function(e){
+      var s=cardSrs(e.id), resolved=(e.status||'')==='resolvido';
+      var chip=resolved?'resolvido':((!s||String(s.due||t)<=t)?'vence hoje':('agendado '+s.due));
+      return '<div class="ct-row" style="'+(resolved?'opacity:.55':'')+'"><div><b>'+esc(e.disc||'—')+(e.topic?(' · '+esc(e.topic)):'')+'</b><span>'+esc((e.note||'').slice(0,140))+'</span></div><span class="ct-pill">'+esc(chip)+'</span></div>';
+    }).join('');
+    list.innerHTML=rows+(all.length>80?'<div class="ct-mini" style="margin-top:8px">… e mais '+(all.length-80)+' cartão(ões).</div>':'');
+  }
+
+  function startSession(){
+    queue=dueList(); idx=0; showingBack=false;
+    if(!queue.length){say('nenhum cartão vencido agora');}
+    renderStudy();
+  }
+
+  function ensureView(){
+    if(el('view-flashcards'))return;
+    var content=q('.content')||document.body;
+    var view=document.createElement('div'); view.className='view'; view.id='view-flashcards';
+    view.innerHTML='<div class="ct-card"><div class="ct-head"><div><span class="ct-pill">Automático</span><h3>Flashcards do Caderno de Erros</h3><p>Cada erro registrado vira um cartão: frente mostra o erro, verso mostra a correção. Repetição espaçada 1·3·7·15·30 dias. Erros resolvidos saem da fila automaticamente.</p></div><button class="ct-action primary" id="flash-start" type="button">Estudar agora</button></div>'
+      +'<div id="flash-study" style="margin-top:12px"></div></div>'
+      +'<div class="ct-card" style="margin-top:16px"><div class="ct-head"><div><h3>Todos os cartões</h3><p>Gerados do caderno de erros, ordenados pelo vencimento.</p></div></div><div class="ct-list" id="flash-list"></div></div>';
+    var before=el('view-ajustes');
+    if(before&&before.parentNode===content)content.insertBefore(view,before);
+    else content.appendChild(view);
+    el('flash-start').onclick=startSession;
+  }
+  function ensureNavBtn(){
+    if(q('.nav-item[data-view="flashcards"]'))return;
+    var nav=q('.nav'); if(!nav)return;
+    var btn=document.createElement('button'); btn.className='nav-item'; btn.dataset.view='flashcards';
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h12a2 2 0 0 1 2 2v10H6a2 2 0 0 1-2-2V7Zm4-3h12a2 2 0 0 1 2 2v10" stroke-linejoin="round"/><path d="M8 12h6M8 15h4" stroke-linecap="round"/></svg>Flashcards<span class="nav-badge" id="nav-flash" style="display:none">0</span>';
+    var ref=q('.nav-item[data-view="historico"]')||q('.nav-item[data-view="personalizacao"]');
+    ref?nav.insertBefore(btn,ref):nav.appendChild(btn);
+    btn.onclick=function(e){
+      if(e)e.preventDefault();
+      qa('.nav-item').forEach(function(x){x.classList.toggle('active',x===btn);});
+      qa('.view').forEach(function(x){x.classList.toggle('active',x.id==='view-flashcards');});
+      try{q('.nav')&&q('.nav').classList.remove('open');}catch(err){}
+      startSessionIfEmpty();
+      renderListAndBadge();
+    };
+  }
+  function startSessionIfEmpty(){
+    if(!queue.length||idx>=queue.length){queue=[];idx=0;showingBack=false;}
+    renderStudy();
+  }
+  function boot(){
+    if(!window.state)return;
+    ensureView(); ensureNavBtn(); renderListAndBadge();
+    if(!el('flash-study').innerHTML)renderStudy();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+  setInterval(boot,1800);
 })();
 </script>
