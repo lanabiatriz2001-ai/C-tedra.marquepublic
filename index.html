@@ -1593,8 +1593,8 @@ const Store={
     try{localStorage.removeItem(k);}catch(e){}
   }
 };
-const SUPA_URL  = 'https://glzgqlxfvsfivyydfsbz.supabase.co';
-const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdsemdxbHhmdnNmaXZ5eWRmc2J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0OTU0OTMsImV4cCI6MjA5NjA3MTQ5M30.BZx5_kjbDZfNSccZOmkr46UwuRjyYpj_8OpUGmP43Yg';
+const SUPA_URL  = 'https://ektyeblyllhnonvafcev.supabase.co';
+const SUPA_ANON = 'sb_publishable_800_ocFKRInx3zcPLFcd4g_c7bzbnju';
 let cloudLoaded = false;
 let _cloudPushTimer = null;
 let _cloudErrorShown = false;
@@ -3772,13 +3772,13 @@ function rolloverDay(){
 <script type="module">
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
   const supabase = createClient(
-    'https://glzgqlxfvsfivyydfsbz.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdsemdxbHhmdnNmaXZ5eWRmc2J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0OTU0OTMsImV4cCI6MjA5NjA3MTQ5M30.BZx5_kjbDZfNSccZOmkr46UwuRjyYpj_8OpUGmP43Yg',
+    'https://ektyeblyllhnonvafcev.supabase.co',
+    'sb_publishable_800_ocFKRInx3zcPLFcd4g_c7bzbnju',
     {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
-        storageKey: 'sb-glzgqlxfvsfivyydfsbz-auth-token',
+        storageKey: 'sb-ektyeblyllhnonvafcev-auth-token',
         lock: async (_name, _acquireTimeout, fn) => await fn()
       }
     }
