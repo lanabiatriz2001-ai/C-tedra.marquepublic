@@ -6543,21 +6543,35 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
 </script>
 <!-- ===== fim PATCH EDITAL ===== -->
 
-<!-- Edital V2b: ordem (KPIs > seletor de disciplinas > dados da disciplina), layout largura total, sessao com dados opcionais de Anki, subtopicos persistentes, distribuicao removida, peso em estatisticas, form mesclado em ajustes -->
+<!-- Edital V2c: seletor dropdown de disciplina (por cor), dados da disciplina sincronizados e movidos para Ajustes, Edital so com a tabela de topicos, largura total, sessao com Anki, subtopicos persistentes, peso em estatisticas, form mesclado em ajustes -->
 <style id="edital-v2-css">
 #edital-disc-picker{margin:4px 0 22px 0}#edital-disc-picker .edrg-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 14px 2px;gap:12px}#edital-disc-picker .edrg-label{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text-2,#8a8f98);display:flex;align-items:center;gap:8px}#edital-disc-picker .edrg-label svg{width:14px;height:14px;opacity:.55}#edital-disc-picker .edrg-count{font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--text-2,#9aa0ab)}#edital-disc-picker .ed-tabs{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;background:transparent;border:0;overflow:visible}#edital-disc-picker .ed-tab{position:relative;display:inline-flex;align-items:center;gap:9px;padding:9px 15px;border-radius:12px;border:1px solid var(--border,rgba(130,140,160,.14));background:var(--surface,#fff);color:var(--text,#1e2430);font-size:13px;font-weight:600;letter-spacing:-.01em;cursor:pointer;transition:transform .18s cubic-bezier(.4,0,.2,1),box-shadow .18s,border-color .18s,background .18s;box-shadow:0 1px 2px rgba(20,25,40,.03)}#edital-disc-picker .ed-tab:hover{border-color:var(--border,rgba(130,140,160,.3));background:var(--surface-2,#fafaf8);transform:translateY(-1.5px);box-shadow:0 6px 16px rgba(20,25,40,.07)}#edital-disc-picker .ed-tab.active{background:var(--emerald,#0c8a5b);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(12,138,91,.30);transform:none}#edital-disc-picker .ed-tab.active:hover{transform:translateY(-1.5px)}#edital-disc-picker .ed-tab.active .ed-tab-count{background:rgba(255,255,255,.2);color:#fff}#edital-disc-picker .ed-tab.active .ed-tab-dot{box-shadow:0 0 0 3px rgba(255,255,255,.35)}#edital-disc-picker .ed-tab-dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto;transition:box-shadow .18s}#edital-disc-picker .ed-tab-t{white-space:nowrap;line-height:1.2}#edital-disc-picker .ed-tab-count{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--chip,rgba(130,140,160,.1));color:var(--text-2,#7a808b);line-height:1.5;letter-spacing:.01em}@media (max-width:640px){#edital-disc-picker .ed-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:thin}#edital-disc-picker .ed-tab{flex:0 0 auto}}.v2-dist-hidden{display:none !important}.v2-merged-form{margin-top:16px;padding-top:16px;border-top:1px dashed var(--border,rgba(130,140,160,.22))}.v2-merged-form .v2-mf-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2,#8a8f98);margin:0 0 10px}#stats-peso-card .v2-peso-grid{display:grid;grid-template-columns:1fr auto;gap:8px 14px;align-items:center;max-height:340px;overflow:auto;padding-right:4px}#stats-peso-card .v2-peso-name{font-size:13.5px;font-weight:600;color:var(--text,#1e2430);display:flex;align-items:center;gap:9px}#stats-peso-card .v2-peso-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}#stats-peso-card .v2-peso-input{width:78px;padding:7px 10px;border-radius:9px;border:1px solid var(--border,rgba(130,140,160,.2));background:var(--surface,#fff);color:var(--text,#1e2430);font-size:13.5px;font-weight:600;text-align:center}#stats-peso-card .v2-peso-input:focus{outline:none;border-color:var(--emerald,#0c8a5b);box-shadow:0 0 0 3px rgba(12,138,91,.12)}#stats-peso-card .v2-peso-hd{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2,#8a8f98)}
 
 /* V2b: full-width layout */
-.content{max-width:1600px !important;}
-@media(min-width:1700px){.content{max-width:90% !important;}}
+.content{max-width:none !important;}
+
 /* V2b: anki optional fields */
 #anki-extra .field label{font-size:11px;color:#8a8f98;}
 #anki-extra .v2-anki-title{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:#8a8f98;margin:6px 0 8px;font-weight:600;}
+
+/* V2c: dropdown selector + hide chips */
+#edital-list .ed-tabs, .ed-tabs.v2-chips-hidden, #edital-disc-picker .ed-tabs{display:none !important;}
+#edital-disc-picker{margin:2px 0 18px;}
+#edital-disc-picker .edp-head{display:flex;align-items:center;gap:8px;margin:0 0 8px;}
+#edital-disc-picker .edp-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8a8f98;font-weight:600;}
+#edital-disc-picker .edp-count{font-size:11px;letter-spacing:.02em;color:#9aa0ab;}
+#edital-disc-picker .edp-select-wrap{position:relative;display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid #e6e8ec;border-radius:12px;padding:11px 14px;min-width:300px;max-width:520px;box-shadow:0 1px 2px rgba(16,24,40,.04);transition:border-color .15s,box-shadow .15s;}
+#edital-disc-picker .edp-select-wrap:hover{border-color:#cfd3da;}
+#edital-disc-picker .edp-select-wrap:focus-within{border-color:#0c8a5b;box-shadow:0 0 0 3px rgba(12,138,91,.12);}
+#edital-disc-picker .edp-dot{width:11px;height:11px;border-radius:50%;flex:0 0 auto;box-shadow:0 0 0 2px rgba(0,0,0,.05);}
+#edital-disc-picker .edp-select{appearance:none;-webkit-appearance:none;border:0;outline:0;background:transparent;font-size:15px;font-weight:600;color:#1e2430;cursor:pointer;flex:1;padding-right:4px;letter-spacing:-.01em;}
+#edital-disc-picker .edp-caret{color:#9aa0ab;font-size:12px;pointer-events:none;flex:0 0 auto;}
 </style>
 <script>
 (function(){
   if(window.__editalV2Reorg)return; window.__editalV2Reorg=true;
-  var subOpen={};
+  
+var subOpen={};
   function curDisc(){ return window.editalActiveDisc||'__'; }
   function setFor(){ var d=curDisc(); if(!subOpen[d])subOpen[d]={}; return subOpen[d]; }
   var reapplying=false;
@@ -6569,7 +6583,8 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
     var sp=topic.querySelector('.sub-panel');
     setTimeout(function(){ var open=sp&&getComputedStyle(sp).display!=='none'; var s=setFor(); if(open)s[title]=1; else delete s[title]; },0);
   },true);
-  function reapplySubs(){
+  
+function reapplySubs(){
     var s=setFor(); if(!s)return; reapplying=true;
     try{ document.querySelectorAll('#edital-list .topic').forEach(function(t){
       var title=t.getAttribute('data-title'); if(!title)return;
@@ -6578,39 +6593,62 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
       if(s[title]&&!isOpen){ tog.click(); }
     }); }catch(e){} reapplying=false;
   }
-  window.__edReapplySubs=reapplySubs;
-  function ensurePicker(){
-    var view=document.getElementById('view-edital'); if(!view)return null;
-    var host=document.getElementById('edital-disc-picker');
-    if(!host){
-      host=document.createElement('div'); host.id='edital-disc-picker';
-      var head=document.createElement('div'); head.className='edrg-head';
-      var label=document.createElement('div'); label.className='edrg-label';
-      label.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Disciplinas</span>';
-      var cnt=document.createElement('div'); cnt.className='edrg-count'; cnt.id='edrg-count';
-      head.appendChild(label); head.appendChild(cnt); host.appendChild(head);
-      view.appendChild(host);
-    }
-    return host;
-  }
-  function relocate(){
-    var view=document.getElementById('view-edital'); if(!view)return;
-    var intro=view.querySelector('.ux4-view-intro');
-    var kpis=document.getElementById('edital-kpis');
-    var meta=document.getElementById('edital-meta-wrap');
-    var host=ensurePicker();
-    var fresh=document.querySelector('#edital-list .ed-tabs');
-    if(fresh){ var olds=host.querySelectorAll('.ed-tabs'); for(var i=0;i<olds.length;i++){olds[i].parentNode.removeChild(olds[i]);} host.appendChild(fresh); }
-    var t=host.querySelectorAll('.ed-tabs'); for(var j=0;j<t.length-1;j++){t[j].parentNode.removeChild(t[j]);}
-    var cnt=document.getElementById('edrg-count'); var tabs=host.querySelector('.ed-tabs');
-    if(cnt&&tabs){ var n=tabs.querySelectorAll('.ed-tab').length; cnt.textContent=n+(n===1?' matéria':' matérias'); }
-    if(intro&&kpis&&kpis.parentElement===view){ if(intro.nextSibling!==kpis) view.insertBefore(kpis,intro.nextSibling); }
-    if(kpis&&host&&host.parentElement===view){ if(kpis.nextSibling!==host) view.insertBefore(host,kpis.nextSibling); }
-    if(host&&meta&&meta.parentElement===view){ if(host.nextSibling!==meta) view.insertBefore(meta,host.nextSibling); }
-    Array.from(view.children).forEach(function(c){ if(c.classList&&c.classList.contains('card') && /Distribuição de pesos e tempo/.test(c.textContent)){ c.classList.add('v2-dist-hidden'); } });
-  }
-  window.__editalV2Relocate=relocate;
-  function mergeForm(){
+function ensurePicker(){
+var view=document.getElementById('view-edital'); if(!view) return null;
+var host=document.getElementById('edital-disc-picker');
+if(!host){ host=document.createElement('div'); host.id='edital-disc-picker'; }
+if(!document.getElementById('edp-wrap')){
+var head=document.createElement('div'); head.className='edp-head';
+head.innerHTML='<span class="edp-label">Disciplina</span><span class="edp-count" id="edp-count"></span>';
+var wrap=document.createElement('div'); wrap.id='edp-wrap'; wrap.className='edp-select-wrap';
+wrap.innerHTML='<span class="edp-dot" id="edp-dot"></span><select id="edp-select" class="edp-select"></select><span class="edp-caret">\u25BE</span>';
+host.innerHTML=''; host.appendChild(head); host.appendChild(wrap);
+}
+if(host.parentElement!==view) view.appendChild(host);
+return host;
+}
+
+function buildDropdown(){ try{
+var host=ensurePicker(); if(!host) return;
+var sel=document.getElementById('edp-select'); if(!sel) return;
+var st=(window.state||{}); var colors=st.discColors||{};
+var names=Array.from(document.querySelectorAll('#edital-list .ed-tabs .ed-tab .ed-tab-t')).map(function(e){return e.textContent.trim();});
+if(!names.length){ names=discListArr(); }
+var cur=window.editalActiveDisc||names[0];
+var html=''; for(var i=0;i<names.length;i++){ var n=names[i]; html+='<option value="'+n.replace(/"/g,'&quot;')+'"'+(n===cur?' selected':'')+'>'+n+'</option>'; }
+if(sel.__html!==html){ sel.innerHTML=html; sel.__html=html; }
+if(cur) sel.value=cur;
+var dot=document.getElementById('edp-dot'); if(dot) dot.style.background=colors[cur]||'#9aa0ab';
+var cnt=document.getElementById('edp-count'); if(cnt) cnt.textContent=names.length+(names.length===1?' matéria':' matérias');
+if(!sel.__wired){ sel.addEventListener('change', function(){
+window.editalActiveDisc=this.value;
+var d2=document.getElementById('edp-dot'); if(d2) d2.style.background=(((window.state||{}).discColors||{})[this.value]||'#9aa0ab');
+try{ if(typeof window.renderEdital==='function') window.renderEdital(); }catch(e){}
+try{ if(typeof window.__catedraRenderEdital==='function') window.__catedraRenderEdital(); }catch(e){}
+}); sel.__wired=true; }
+}catch(e){} }
+
+function relocate(){
+var view=document.getElementById('view-edital'); if(!view) return;
+var intro=view.querySelector('.ux4-view-intro');
+var kpis=document.getElementById('edital-kpis');
+var meta=document.getElementById('edital-meta-wrap');
+var host=ensurePicker();
+buildDropdown();
+Array.from(document.querySelectorAll('.ed-tabs')).forEach(function(ch){ ch.classList.add('v2-chips-hidden'); });
+var A=function(a,b){ if(a&&b&&b.parentElement===view&&a.nextSibling!==b) view.insertBefore(b,a.nextSibling); };
+A(intro,kpis); A(kpis,host);
+if(meta){
+var dl=document.getElementById('disc-list'); var discCard=dl?dl.closest('.card'):null;
+var target=discCard||document.querySelector('#view-ajustes')||document.querySelector('#view-personalizacao');
+if(discCard){ if(meta.previousElementSibling!==discCard || meta.parentNode!==discCard.parentNode){ discCard.parentNode.insertBefore(meta, discCard.nextSibling); } }
+else if(target && meta.parentNode!==target){ target.appendChild(meta); }
+meta.classList.add('v2-meta-moved');
+}
+Array.from(view.children).forEach(function(c){ if(c.classList&&c.classList.contains('card')&&/Distribui..o de pesos e tempo/.test(c.textContent)){ c.classList.add('v2-dist-hidden'); } });
+}
+
+function mergeForm(){
     var ed=document.getElementById('view-edital'); var aj=document.getElementById('view-ajustes'); if(!ed||!aj)return;
     var addCard=Array.from(ed.children).find(function(k){return k.classList&&k.classList.contains('card')&&/Adicionar tópicos do edital/.test(k.textContent);});
     if(!addCard) return;
@@ -6625,12 +6663,11 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
     discCard.appendChild(wrap);
     addCard.parentNode.removeChild(addCard);
   }
-  function discListArr(){ try{ return (window.state&&window.state.discs)?window.state.discs.slice():[]; }catch(e){ return []; } }
-  function discColor(name){ try{ var c=window.state&&window.state.discColors; return (c&&c[name])||'#7c4dff'; }catch(e){ return '#7c4dff'; } }
-  function getPeso(name){ try{ var p=window.state&&window.state.plano&&window.state.plano[name]; return (p&&p.peso!=null)?p.peso:1; }catch(e){ return 1; } }
-  function setPeso(name,val){ try{ if(!window.state.plano)window.state.plano={}; var o=window.state.plano[name]||{}; o.peso=parseFloat(val); if(isNaN(o.peso)||o.peso<0)o.peso=0; window.state.plano[name]=o; if(typeof window.save==='function')window.save(); if(typeof window.recomputeDist==='function'){try{window.recomputeDist();}catch(e){}} if(typeof window.__catedraRefreshAll==='function'){try{window.__catedraRefreshAll();}catch(e){}} }catch(e){} }
-  window.__v2SetPeso=setPeso;
-  function ensurePesoCard(){
+function discListArr(){ try{ return (window.state&&window.state.discs)?window.state.discs.slice():[]; }catch(e){ return []; } }
+function discColor(name){ try{ var c=window.state&&window.state.discColors; return (c&&c[name])||'#7c4dff'; }catch(e){ return '#7c4dff'; } }
+function getPeso(name){ try{ var p=window.state&&window.state.plano&&window.state.plano[name]; return (p&&p.peso!=null)?p.peso:1; }catch(e){ return 1; } }
+function setPeso(name,val){ try{ if(!window.state.plano)window.state.plano={}; var o=window.state.plano[name]||{}; o.peso=parseFloat(val); if(isNaN(o.peso)||o.peso<0)o.peso=0; window.state.plano[name]=o; if(typeof window.save==='function')window.save(); if(typeof window.recomputeDist==='function'){try{window.recomputeDist();}catch(e){}} if(typeof window.__catedraRefreshAll==='function'){try{window.__catedraRefreshAll();}catch(e){}} }catch(e){} }
+function ensurePesoCard(){
     var st=document.getElementById('view-stats'); if(!st)return null;
     var card=document.getElementById('stats-peso-card');
     if(!card){
@@ -6641,7 +6678,7 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
     }
     return card;
   }
-  function renderPeso(){
+function renderPeso(){
     var card=ensurePesoCard(); if(!card)return;
     var grid=document.getElementById('stats-peso-grid'); if(!grid)return;
     var ds=discListArr(); var esc=window.escapeHtml||function(x){return x;};
@@ -6654,12 +6691,7 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
     grid.innerHTML=html;
     grid.querySelectorAll('.v2-peso-input').forEach(function(inp){ inp.addEventListener('change',function(){ setPeso(inp.getAttribute('data-disc'), inp.value); }); });
   }
-  window.__v2RenderPeso=renderPeso;
-  function hookRender(){
-    if(typeof window.renderEdital==='function' && !window.renderEdital.__v2){ var o=window.renderEdital; window.renderEdital=function(){var r=o.apply(this,arguments);try{relocate();}catch(e){} try{reapplySubs();}catch(e){} return r;}; window.renderEdital.__v2=true; }
-    if(typeof window.renderStats==='function' && !window.renderStats.__v2){ var o2=window.renderStats; window.renderStats=function(){var r=o2.apply(this,arguments);try{renderPeso();}catch(e){}return r;}; window.renderStats.__v2=true; }
-  }
-  function ankiModule(){ try{
+function ankiModule(){ try{
 var modal=document.getElementById('session-modal'); if(!modal) return;
 var grid=modal.querySelector('.form-grid'); var cat=document.getElementById('f-cat'); if(!grid||!cat) return;
 var hasOpt=false; for(var i=0;i<cat.options.length;i++){ if(cat.options[i].value==='anki') hasOpt=true; }
@@ -6700,7 +6732,16 @@ try{ if(typeof window.__catedraRefreshAll==='function') window.__catedraRefreshA
 btn.__v2anki=true;
 }
 }catch(e){} }
-function tick(){ hookRender(); try{relocate();}catch(e){} try{mergeForm();}catch(e){} try{renderPeso();}catch(e){} try{ankiModule();}catch(e){} }
+function hookRender(){
+if(typeof window.renderEdital==='function' && !window.renderEdital.__v2c){
+var o=window.renderEdital; window.renderEdital=function(){ var r=o.apply(this,arguments); try{relocate();}catch(e){} try{buildDropdown();}catch(e){} try{reapplySubs();}catch(e){} return r; }; window.renderEdital.__v2c=true; }
+if(typeof window.renderStats==='function' && !window.renderStats.__v2c){
+var o2=window.renderStats; window.renderStats=function(){ var r=o2.apply(this,arguments); try{renderPeso();}catch(e){} return r; }; window.renderStats.__v2c=true; }
+}
+
+function tick(){ hookRender(); try{relocate();}catch(e){} try{buildDropdown();}catch(e){} try{mergeForm();}catch(e){} try{renderPeso();}catch(e){} try{ankiModule();}catch(e){} }
+
+
   hookRender();
   var n=0; var iv=setInterval(function(){ tick(); if(++n>25)clearInterval(iv); },400);
   document.addEventListener('DOMContentLoaded',tick);
