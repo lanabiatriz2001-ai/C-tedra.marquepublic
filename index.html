@@ -1595,6 +1595,8 @@ const Store={
 };
 const SUPA_URL  = 'https://gbwzkejabubpdbavfoyg.supabase.co';
 const SUPA_ANON = 'sb_publishable_bdK48TgNIwuiU9Vbl1NiTA_MePE9Ncv';
+const CLOUD_META_KEY = 'catedra:state-updated-at';
+const CLOUD_PROVIDER_KEY = 'catedra:sync-provider';
 let cloudLoaded = false;
 let _cloudPushTimer = null;
 let _cloudErrorShown = false;
@@ -1648,17 +1650,25 @@ async function cloudFetch(url, opts, auth){
   }
   return r;
 }
+function cloudProvider(){try{return localStorage.getItem(CLOUD_PROVIDER_KEY)||'supabase';}catch(e){return 'supabase';}}
+function localUpdatedAt(){try{return localStorage.getItem(CLOUD_META_KEY)||'';}catch(e){return '';}}
+function markLocalUpdated(iso){try{localStorage.setItem(CLOUD_META_KEY,iso||new Date().toISOString());}catch(e){}}
+function stateHasContent(st){
+  try{return !!(st&&((st.sessions&&st.sessions.length)||(st.edital&&st.edital.length)||(st.revisions&&st.revisions.length)||(st.errors&&st.errors.length)||(st.studyDays&&st.studyDays.length)));}
+  catch(e){return false;}
+}
 async function loadState(){try{const v=localStorage.getItem(KEY);if(v)return JSON.parse(v);}catch(e){}return defaultState();}
-async function save(){const j=JSON.stringify(state);try{localStorage.setItem(KEY,j);}catch(e){}pushStateToCloud();}
+async function save(){const j=JSON.stringify(state);try{localStorage.setItem(KEY,j);markLocalUpdated();}catch(e){}pushStateToCloud();}
 function pushStateToCloud(){
   clearTimeout(_cloudPushTimer);
   _cloudPushTimer = setTimeout(_pushStateNow, 800);
 }
 async function _pushStateNow(){
+  if(cloudProvider()!=='supabase') return;
   const a = await getCloudAuth();
   if(!a) return;
-  if(!cloudLoaded){ await catedraLoadFromCloud(); }
   try{
+    const stamp = localUpdatedAt() || new Date().toISOString();
     const r = await cloudFetch(SUPA_URL + '/rest/v1/app_state?on_conflict=user_id', {
       method: 'POST',
       headers: {
@@ -1667,7 +1677,7 @@ async function _pushStateNow(){
         'Content-Type': 'application/json',
         'Prefer': 'resolution=merge-duplicates,return=minimal'
       },
-      body: JSON.stringify({ user_id: a.uid, state: state, atualizado_em: new Date().toISOString() })
+      body: JSON.stringify({ user_id: a.uid, state: state, atualizado_em: stamp })
     }, a);
     if(!r.ok){
       const t = await r.text().catch(()=> '');
@@ -1677,11 +1687,12 @@ async function _pushStateNow(){
     }
   }catch(e){ cloudWarn('pushStateToCloud: ' + (e && e.message || e)); }
 }
-async function catedraLoadFromCloud(){
+async function catedraLoadFromCloud(force){
   try{
+    if(cloudProvider()!=='supabase'){ cloudLoaded = true; return; }
     const a = await getCloudAuth();
     if(!a) return;
-    const r = await cloudFetch(SUPA_URL + '/rest/v1/app_state?user_id=eq.' + a.uid + '&select=state', {
+    const r = await cloudFetch(SUPA_URL + '/rest/v1/app_state?user_id=eq.' + a.uid + '&select=state,atualizado_em', {
       headers: { 'apikey': SUPA_ANON, 'Authorization': 'Bearer ' + a.token }
     }, a);
     if(!r.ok){
@@ -1691,6 +1702,15 @@ async function catedraLoadFromCloud(){
     }
     const rows = await r.json();
     if(Array.isArray(rows) && rows[0] && rows[0].state){
+      const remoteAt = rows[0].atualizado_em || '';
+      const localAt = localUpdatedAt();
+      const remoteMs = remoteAt ? Date.parse(remoteAt) : 0;
+      const localMs = localAt ? Date.parse(localAt) : 0;
+      if(!force && localMs && remoteMs && localMs > remoteMs && stateHasContent(state)){
+        cloudLoaded = true;
+        pushStateToCloud();
+        return;
+      }
       const incoming = JSON.stringify(rows[0].state);
       let current = '';
       try{ current = JSON.stringify(state); }catch(e){}
@@ -1699,8 +1719,12 @@ async function catedraLoadFromCloud(){
       if(incoming !== current){
         state = rows[0].state;
         localStorage.setItem('catedra:state', incoming);
+        if(remoteAt) markLocalUpdated(remoteAt);
         if(typeof initAll === 'function') initAll();
       }
+    } else if(stateHasContent(state)){
+      cloudLoaded = true;
+      pushStateToCloud();
     }
   }catch(e){ cloudWarn('catedraLoadFromCloud: ' + (e && e.message || e)); }
   finally{ cloudLoaded = true; }
@@ -5319,6 +5343,8 @@ function rolloverDay(){
         const json = JSON.parse(String(reader.result || '{}'));
         const incoming = json.state || json;
         localStorage.setItem(STATE_KEY, JSON.stringify(incoming));
+        localStorage.setItem('catedra:state-updated-at', new Date().toISOString());
+        if(typeof window.pushStateToCloud === 'function') window.pushStateToCloud();
         msg('Backup importado. Recarregando a plataforma...', true);
         setTimeout(() => location.reload(), 600);
       }catch(_e){ msg('Arquivo inválido. Importe um JSON exportado pelo Cátedra.'); }
