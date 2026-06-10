@@ -6543,7 +6543,7 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
 </script>
 <!-- ===== fim PATCH EDITAL ===== -->
 
-<!-- Edital V2c: seletor dropdown de disciplina (por cor), dados da disciplina sincronizados e movidos para Ajustes, Edital so com a tabela de topicos, largura total, sessao com Anki, subtopicos persistentes, peso em estatisticas, form mesclado em ajustes -->
+<!-- Edital V2d: dropdown disciplina (cor) + sincronizacao; Dados da disciplina em Ajustes (Pesos, questoes e disciplinas); tabela informativa opcional em Estatisticas; largura total -->
 <style id="edital-v2-css">
 #edital-disc-picker{margin:4px 0 22px 0}#edital-disc-picker .edrg-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 14px 2px;gap:12px}#edital-disc-picker .edrg-label{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text-2,#8a8f98);display:flex;align-items:center;gap:8px}#edital-disc-picker .edrg-label svg{width:14px;height:14px;opacity:.55}#edital-disc-picker .edrg-count{font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--text-2,#9aa0ab)}#edital-disc-picker .ed-tabs{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;background:transparent;border:0;overflow:visible}#edital-disc-picker .ed-tab{position:relative;display:inline-flex;align-items:center;gap:9px;padding:9px 15px;border-radius:12px;border:1px solid var(--border,rgba(130,140,160,.14));background:var(--surface,#fff);color:var(--text,#1e2430);font-size:13px;font-weight:600;letter-spacing:-.01em;cursor:pointer;transition:transform .18s cubic-bezier(.4,0,.2,1),box-shadow .18s,border-color .18s,background .18s;box-shadow:0 1px 2px rgba(20,25,40,.03)}#edital-disc-picker .ed-tab:hover{border-color:var(--border,rgba(130,140,160,.3));background:var(--surface-2,#fafaf8);transform:translateY(-1.5px);box-shadow:0 6px 16px rgba(20,25,40,.07)}#edital-disc-picker .ed-tab.active{background:var(--emerald,#0c8a5b);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(12,138,91,.30);transform:none}#edital-disc-picker .ed-tab.active:hover{transform:translateY(-1.5px)}#edital-disc-picker .ed-tab.active .ed-tab-count{background:rgba(255,255,255,.2);color:#fff}#edital-disc-picker .ed-tab.active .ed-tab-dot{box-shadow:0 0 0 3px rgba(255,255,255,.35)}#edital-disc-picker .ed-tab-dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto;transition:box-shadow .18s}#edital-disc-picker .ed-tab-t{white-space:nowrap;line-height:1.2}#edital-disc-picker .ed-tab-count{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--chip,rgba(130,140,160,.1));color:var(--text-2,#7a808b);line-height:1.5;letter-spacing:.01em}@media (max-width:640px){#edital-disc-picker .ed-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:thin}#edital-disc-picker .ed-tab{flex:0 0 auto}}.v2-dist-hidden{display:none !important}.v2-merged-form{margin-top:16px;padding-top:16px;border-top:1px dashed var(--border,rgba(130,140,160,.22))}.v2-merged-form .v2-mf-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2,#8a8f98);margin:0 0 10px}#stats-peso-card .v2-peso-grid{display:grid;grid-template-columns:1fr auto;gap:8px 14px;align-items:center;max-height:340px;overflow:auto;padding-right:4px}#stats-peso-card .v2-peso-name{font-size:13.5px;font-weight:600;color:var(--text,#1e2430);display:flex;align-items:center;gap:9px}#stats-peso-card .v2-peso-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}#stats-peso-card .v2-peso-input{width:78px;padding:7px 10px;border-radius:9px;border:1px solid var(--border,rgba(130,140,160,.2));background:var(--surface,#fff);color:var(--text,#1e2430);font-size:13.5px;font-weight:600;text-align:center}#stats-peso-card .v2-peso-input:focus{outline:none;border-color:var(--emerald,#0c8a5b);box-shadow:0 0 0 3px rgba(12,138,91,.12)}#stats-peso-card .v2-peso-hd{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2,#8a8f98)}
 
@@ -6566,7 +6566,25 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
 #edital-disc-picker .edp-dot{width:11px;height:11px;border-radius:50%;flex:0 0 auto;box-shadow:0 0 0 2px rgba(0,0,0,.05);}
 #edital-disc-picker .edp-select{appearance:none;-webkit-appearance:none;border:0;outline:0;background:transparent;font-size:15px;font-weight:600;color:#1e2430;cursor:pointer;flex:1;padding-right:4px;letter-spacing:-.01em;}
 #edital-disc-picker .edp-caret{color:#9aa0ab;font-size:12px;pointer-events:none;flex:0 0 auto;}
-</style>
+
+/* V2d: largura total reforco */
+.main{width:100%;min-width:0;}
+.content{width:100%;max-width:none;}
+#view-edital,#view-stats,#view-ajustes{width:100%;}
+/* V2d: tabela informativa de edital em Estatisticas */
+.v2-stats-info-card .v2si-pick{display:flex;align-items:center;gap:12px;margin:4px 0 14px;flex-wrap:wrap;}
+.v2-stats-info-card .v2si-lbl{font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;}
+.v2-stats-info-card .v2si-selwrap{position:relative;display:inline-flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:8px 12px;min-width:260px;}
+.v2-stats-info-card .v2si-dot{width:11px;height:11px;border-radius:50%;background:#94a3b8;flex:0 0 auto;}
+.v2-stats-info-card .v2si-select{border:0;background:transparent;font-size:14px;font-weight:600;color:#0f172a;outline:none;cursor:pointer;flex:1;}
+.v2-stats-info-card .v2si-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;}
+.v2-stats-info-card .v2si-row{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border:1px solid #eef2f7;border-radius:12px;padding:12px 14px;}
+.v2-stats-info-card .v2si-k{font-size:13px;color:#64748b;}
+.v2-stats-info-card .v2si-v{font-size:15px;font-weight:700;color:#0f172a;}
+.v2-stats-info-card .v2si-empty{padding:16px;color:#94a3b8;font-size:14px;background:#f8fafc;border:1px dashed #e2e8f0;border-radius:12px;text-align:center;}
+.v2-stats-info-card .v2si-risk-hi{color:#dc2626;}
+.v2-stats-info-card .v2si-risk-md{color:#d97706;}
+.v2-stats-info-card .v2si-risk-lo{color:#16a34a;}</style>
 <script>
 (function(){
   if(window.__editalV2Reorg)return; window.__editalV2Reorg=true;
@@ -6739,7 +6757,100 @@ if(typeof window.renderStats==='function' && !window.renderStats.__v2c){
 var o2=window.renderStats; window.renderStats=function(){ var r=o2.apply(this,arguments); try{renderPeso();}catch(e){} return r; }; window.renderStats.__v2c=true; }
 }
 
-function tick(){ hookRender(); try{relocate();}catch(e){} try{buildDropdown();}catch(e){} try{mergeForm();}catch(e){} try{renderPeso();}catch(e){} try{ankiModule();}catch(e){} }
+
+function relabelAjustes(){
+  try{
+    var dl=document.getElementById('disc-list');
+    if(!dl)return;
+    var card=dl.closest('.card');
+    if(!card)return;
+    var h=card.querySelector('.card-h h3');
+    if(h && !h.getAttribute('data-v2relabel')){
+      var ico=h.querySelector('.ico');
+      h.setAttribute('data-v2relabel','1');
+      var txt=document.createTextNode('Pesos, questões e disciplinas');
+      h.innerHTML='';
+      if(ico)h.appendChild(ico);
+      h.appendChild(txt);
+    }
+  }catch(e){}
+}
+function v2GetState(){ try{ return JSON.parse(localStorage.getItem('catedra:state'))||{}; }catch(e){ return {}; } }
+function v2DiscList(){ var s=v2GetState(); return (s.discs&&s.discs.length)?s.discs.slice():discListArr(); }
+function v2Metrics(d){
+  var s=v2GetState();
+  var p=(s.plano&&s.plano[d])?s.plano[d]:{};
+  var ed=(s.edital||[]).filter(function(t){return t.disc===d;});
+  var done=ed.filter(function(t){return t.done;}).length;
+  var prog=ed.length?Math.round(done*100/ed.length):null;
+  var inc='';
+  if(p.incidencia)inc=p.incidencia;
+  else if(ed.length){ var ca={alta:0,media:0,baixa:0}; ed.forEach(function(t){ var k=(t.inc||'').toLowerCase(); if(ca[k]!=null)ca[k]++; }); var top=Object.keys(ca).sort(function(a,b){return ca[b]-ca[a];})[0]; if(ca[top]>0)inc=top; }
+  var sess=(s.sessions||[]).filter(function(x){return x.disc===d;});
+  var sq=0,sc=0,smin=0; sess.forEach(function(x){ sq+=(+x.q||0); sc+=(+x.c||0); smin+=(+x.min||0); });
+  var acerto=sq>0?Math.round(sc*100/sq):null;
+  var peso=(p.peso!=null&&p.peso!=='')?p.peso:null;
+  var qtd=(p.qtd!=null&&p.qtd!=='')?p.qtd:((p.quantidadeQuestoes!=null)?p.quantidadeQuestoes:null);
+  var dom=p.nivel||p.dominio||'';
+  var prio=p.prioridade||'';
+  var hasEdital=ed.length>0;
+  var hasCadastro=(peso!=null)||(qtd!=null)||hasEdital;
+  var risco='';
+  if(prog!=null){ var base=100-prog; var w=(peso!=null?(+peso||1):1); var rv=base*(0.5+0.5*Math.min(w,5)/5); if(acerto!=null)rv=rv*(1+(100-acerto)/200); risco=rv>=66?'Alto':(rv>=33?'Médio':'Baixo'); }
+  return {peso:peso,qtd:qtd,inc:inc,dom:dom,prio:prio,prog:prog,acerto:acerto,risco:risco,hasCadastro:hasCadastro,sessMin:smin};
+}
+function v2siRender(d){
+  var body=document.getElementById('v2si-body'); if(!body)return;
+  var dot=document.getElementById('v2si-dot');
+  if(dot){ try{ dot.style.background=discColor(d)||'#94a3b8'; }catch(e){ dot.style.background='#94a3b8'; } }
+  if(!d){ body.innerHTML='<div class="v2si-empty">Dados de edital não cadastrados.</div>'; return; }
+  var m=v2Metrics(d);
+  if(!m.hasCadastro){ body.innerHTML='<div class="v2si-empty">Dados de edital não cadastrados.</div>'; return; }
+  function row(lbl,val,cls){ return '<div class="v2si-row"><span class="v2si-k">'+lbl+'</span><span class="v2si-v '+(cls||'')+'">'+val+'</span></div>'; }
+  function dash(v){ return (v==null||v==='')?'—':v; }
+  var domMap={'nao informado':'Não informado','baixo':'Baixo','medio':'Médio','alto':'Alto'};
+  var prioMap={'baixa':'Baixa','media':'Média','alta':'Alta','critica':'Crítica'};
+  var domTxt=m.dom?(domMap[(''+m.dom).toLowerCase()]||m.dom):'—';
+  var prioTxt=m.prio?(prioMap[(''+m.prio).toLowerCase()]||m.prio):'—';
+  var riscoCls=m.risco==='Alto'?'v2si-risk-hi':(m.risco==='Médio'?'v2si-risk-md':(m.risco==='Baixo'?'v2si-risk-lo':''));
+  var html='';
+  html+=row('Peso', dash(m.peso));
+  html+=row('Questões estimadas', dash(m.qtd));
+  html+=row('Incidência', v2CapInc(m.inc));
+  html+=row('Domínio', domTxt);
+  html+=row('Prioridade', prioTxt);
+  html+=row('Progresso', m.prog!=null?(m.prog+'%'):'—');
+  html+=row('% de acerto', m.acerto!=null?(m.acerto+'%'):'—');
+  html+=row('Risco atual', dash(m.risco), riscoCls);
+  body.innerHTML='<div class="v2si-grid">'+html+'</div>';
+}
+function v2Esc(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function v2CapInc(x){ x=(x||'').toLowerCase(); return x==='alta'?'Alta':x==='media'?'Média':x==='baixa'?'Baixa':(x?x:'—'); }
+function statsInfoTable(){
+  try{
+    var sv=document.getElementById('view-stats'); if(!sv)return;
+    var host=document.getElementById('v2-stats-info'); 
+    if(!host){
+      host=document.createElement('div'); host.id='v2-stats-info'; host.className='card v2-stats-info-card';
+      var head='<div class="card-h"><h3>Tabela de edital (opcional)</h3></div>';
+      var picker='<div class="v2si-pick"><label class="v2si-lbl">Disciplina</label><div class="v2si-selwrap"><span class="v2si-dot" id="v2si-dot"></span><select id="v2si-select" class="v2si-select"></select></div></div>';
+      var body='<div id="v2si-body" class="v2si-body"></div>';
+      host.innerHTML=head+picker+body;
+      var panel=[].slice.call(sv.querySelectorAll('.card')).filter(function(c){return /Painel por disciplina/.test(c.textContent);})[0];
+      if(panel&&panel.parentNode){ panel.parentNode.insertBefore(host, panel.nextSibling); } else { sv.appendChild(host); }
+      var sel=host.querySelector('#v2si-select');
+      sel.addEventListener('change',function(){ v2siRender(sel.value); });
+    }
+    var sel=host.querySelector('#v2si-select');
+    var discs=v2DiscList();
+    var cur=sel.value;
+    var opts=discs.map(function(d){ return '<option value="'+v2Esc(d)+'">'+v2Esc(d)+'</option>'; }).join('');
+    if(sel.getAttribute('data-n')!=String(discs.length)){ sel.innerHTML=opts; sel.setAttribute('data-n',String(discs.length)); }
+    if(cur&&discs.indexOf(cur)>=0)sel.value=cur; else sel.value=discs[0]||'';
+    v2siRender(sel.value);
+  }catch(e){}
+}
+function tick(){ try{relabelAjustes();}catch(e){} try{statsInfoTable();}catch(e){} hookRender(); try{relocate();}catch(e){} try{buildDropdown();}catch(e){} try{mergeForm();}catch(e){} try{renderPeso();}catch(e){} try{ankiModule();}catch(e){} }
 
 
   hookRender();
