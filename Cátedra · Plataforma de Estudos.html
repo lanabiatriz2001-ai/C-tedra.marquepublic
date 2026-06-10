@@ -3652,6 +3652,235 @@ function rolloverDay(){
 }
 </script>
 
+<!-- ===== FIX FINAL: Aparência em Ajustes (cor + modo) ===== -->
+<style id="catedra-appearance-fix-css">
+  #color-sync-panel,#cores-row{display:none!important;}
+  #appearance-control-panel{
+    margin-top:16px;
+    padding:16px;
+    border:1px solid rgba(84,151,255,.28);
+    border-radius:18px;
+    background:rgba(8,26,67,.58);
+  }
+  #appearance-control-panel .ap-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  #appearance-control-panel h4{
+    margin:0 0 3px;
+    font-size:14px;
+    color:var(--text);
+  }
+  #appearance-control-panel p{
+    margin:0;
+    color:var(--text-3);
+    font-size:12.5px;
+    line-height:1.45;
+  }
+  .ap-mode-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .ap-mode-btn{
+    border:1px solid rgba(84,151,255,.30);
+    background:rgba(7,22,57,.58);
+    color:var(--text-2);
+    border-radius:14px;
+    padding:11px 12px;
+    min-height:58px;
+    text-align:left;
+    font-weight:800;
+  }
+  .ap-mode-btn span{
+    display:block;
+    margin-top:3px;
+    font-size:11.5px;
+    color:var(--text-3);
+    font-weight:600;
+  }
+  .ap-mode-btn.active{
+    color:#fff;
+    border-color:transparent;
+    background:linear-gradient(135deg,#35c8ff,#2468ff);
+    box-shadow:0 12px 30px rgba(36,104,255,.25);
+  }
+  .ap-mode-btn.active span{color:rgba(255,255,255,.78);}
+  .ap-color-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+    align-items:center;
+  }
+  .ap-color{
+    width:38px;
+    height:38px;
+    border-radius:13px;
+    border:2px solid rgba(255,255,255,.28);
+    cursor:pointer;
+  }
+  .ap-color.active{
+    outline:3px solid rgba(53,200,255,.35);
+    outline-offset:2px;
+  }
+  .ap-custom{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-left:auto;
+    color:var(--text-3);
+    font-size:12px;
+  }
+  .ap-custom input{
+    width:44px;
+    height:34px;
+    border:1px solid rgba(84,151,255,.30);
+    border-radius:10px;
+    background:transparent;
+    padding:2px;
+  }
+  #ap-reset{
+    border:1px solid rgba(84,151,255,.30);
+    background:rgba(7,22,57,.50);
+    color:var(--text-2);
+    border-radius:12px;
+    padding:9px 12px;
+    font-size:12px;
+    font-weight:800;
+  }
+  @media(max-width:680px){
+    .ap-mode-grid{grid-template-columns:1fr;}
+    .ap-custom{width:100%;margin-left:0;}
+  }
+</style>
+<script id="catedra-appearance-fix-js">
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const q=(s,r=document)=>r.querySelector(s);
+  const qa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const MODE_KEY='catedraMode';
+  const ACC_KEY='catedra:accent';
+  const ACC2_KEY='catedra:accent2';
+  const LEGACY_ACC='catedraAccent';
+  const colors=[
+    ['azul','#35c8ff','#2468ff'],
+    ['verde','#0c8a5b','#0a7049'],
+    ['roxo','#8b5cf6','#5b35d5'],
+    ['rosa','#ff4d9d','#d63384'],
+    ['âmbar','#f59e0b','#b45309'],
+    ['turquesa','#06b6d4','#0e7490']
+  ];
+  function safe(fn){try{return fn()}catch(e){}}
+  function hexToRgb(h){
+    h=String(h||'').replace('#','');
+    if(h.length===3)h=h.split('').map(c=>c+c).join('');
+    const n=parseInt(h,16);
+    return [(n>>16)&255,(n>>8)&255,n&255];
+  }
+  function rgba(h,a){const c=hexToRgb(h);return 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')';}
+  function shade(h,p){
+    const c=hexToRgb(h);
+    return '#'+c.map(x=>Math.max(0,Math.min(255,Math.round(x*(1-p)))).toString(16).padStart(2,'0')).join('');
+  }
+  function savedAccent(){
+    let a=localStorage.getItem(ACC_KEY), b=localStorage.getItem(ACC2_KEY);
+    if(!a){
+      safe(()=>{const old=JSON.parse(localStorage.getItem(LEGACY_ACC)||'null'); if(old){a=old.a;b=old.b;}});
+    }
+    return {a:a||'#35c8ff',b:b||'#2468ff'};
+  }
+  function applyAccent(a,b){
+    const root=document.documentElement.style;
+    root.setProperty('--emerald',a,'important');
+    root.setProperty('--emerald-d',b||shade(a,.18),'important');
+    root.setProperty('--emerald-soft',rgba(a,.14),'important');
+    root.setProperty('--emerald-ring',rgba(a,.40),'important');
+    root.setProperty('--primary',a,'important');
+    root.setProperty('--primary-d',b||shade(a,.18),'important');
+    localStorage.setItem(ACC_KEY,a);
+    localStorage.setItem(ACC2_KEY,b||shade(a,.18));
+    localStorage.setItem(LEGACY_ACC,JSON.stringify({a:a,b:b||shade(a,.18)}));
+    const s0=$('ring-s0'),s1=$('ring-s1');
+    if(s0)s0.setAttribute('stop-color',a);
+    if(s1)s1.setAttribute('stop-color',b||shade(a,.18));
+  }
+  function mode(){return localStorage.getItem(MODE_KEY)||'mentor';}
+  function applyMode(m){
+    localStorage.setItem(MODE_KEY,m);
+    if(m==='mentor'){
+      document.body.classList.add('mentor-video-theme');
+    }else{
+      document.body.classList.remove('mentor-video-theme');
+      if(typeof window.applyTheme==='function'){
+        window.applyTheme(m==='escuro'?'noturno':'diurno');
+      }
+      if(window.state){
+        state.theme=m==='escuro'?'noturno':'diurno';
+        safe(()=>save());
+      }
+    }
+    const a=savedAccent(); applyAccent(a.a,a.b);
+    markActive();
+  }
+  function markActive(){
+    const m=mode(), a=savedAccent().a.toLowerCase();
+    qa('.ap-mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));
+    qa('.ap-color').forEach(b=>b.classList.toggle('active',String(b.dataset.a).toLowerCase()===a));
+    const picker=$('ap-custom-color'); if(picker)picker.value=a;
+  }
+  function build(){
+    qa('#color-sync-panel,#cores-row').forEach(n=>n.remove());
+    const grid=$('theme-grid');
+    if(!grid||!grid.parentElement)return;
+    let panel=$('appearance-control-panel');
+    if(!panel){
+      panel=document.createElement('div');
+      panel.id='appearance-control-panel';
+      grid.parentElement.appendChild(panel);
+    }
+    panel.innerHTML='<div class="ap-head"><div><h4>Cor e modo do sistema</h4><p>Escolha o visual da plataforma sem perder o design azul moderno.</p></div><button id="ap-reset" type="button">Restaurar</button></div>'
+      +'<div class="ap-mode-grid">'
+      +'<button class="ap-mode-btn" data-mode="mentor" type="button">Azul moderno<span>visual atual da plataforma</span></button>'
+      +'<button class="ap-mode-btn" data-mode="claro" type="button">Claro<span>fundo claro e neutro</span></button>'
+      +'<button class="ap-mode-btn" data-mode="escuro" type="button">Escuro<span>modo noturno sem azul forçado</span></button>'
+      +'</div>'
+      +'<div class="ap-color-row">'
+      +colors.map(c=>'<button class="ap-color" type="button" title="'+c[0]+'" data-a="'+c[1]+'" data-b="'+c[2]+'" style="background:linear-gradient(135deg,'+c[1]+','+c[2]+')"></button>').join('')
+      +'<label class="ap-custom">Personalizada <input id="ap-custom-color" type="color"></label>'
+      +'</div>';
+    qa('.ap-mode-btn',panel).forEach(b=>b.onclick=()=>applyMode(b.dataset.mode));
+    qa('.ap-color',panel).forEach(b=>b.onclick=()=>{applyAccent(b.dataset.a,b.dataset.b);markActive();});
+    $('ap-custom-color').oninput=e=>{applyAccent(e.target.value,shade(e.target.value,.18));markActive();};
+    $('ap-reset').onclick=()=>{
+      localStorage.removeItem(ACC_KEY);localStorage.removeItem(ACC2_KEY);localStorage.removeItem(LEGACY_ACC);
+      applyMode('mentor');applyAccent('#35c8ff','#2468ff');
+    };
+    markActive();
+  }
+  function applySaved(){
+    qa('#color-sync-panel,#cores-row').forEach(n=>n.remove());
+    const m=mode();
+    if(m==='mentor')document.body.classList.add('mentor-video-theme');
+    if(m==='claro'||m==='escuro')document.body.classList.remove('mentor-video-theme');
+    const a=savedAccent(); applyAccent(a.a,a.b);
+    markActive();
+  }
+  function boot(){build();applySaved();}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+  document.addEventListener('click',e=>{
+    if(e.target.closest&&e.target.closest('.nav-item[data-view="ajustes"],#theme-btn'))setTimeout(boot,120);
+  });
+  const mo=new MutationObserver(()=>{if($('theme-grid')&&!$('appearance-control-panel'))build();});
+  safe(()=>mo.observe(document.body,{childList:true,subtree:true}));
+  setInterval(applySaved,1800);
+})();
+</script>
+
 <!-- ===== ESTABILIZADOR FINAL DA RODADA PRODUTO ===== -->
 <style id="catedra-product-opacity-fix">
   body.mentor-video-theme .view.active{
