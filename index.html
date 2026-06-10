@@ -7472,7 +7472,7 @@ function tick(){ try{simuladoModule();}catch(e){} try{sessionModule();}catch(e){
   var n=0; var iv=setInterval(function(){ tick(); if(++n>25)clearInterval(iv); },400);
   document.addEventListener('DOMContentLoaded',tick);
   setTimeout(tick,800); setTimeout(tick,1600);
-  try{ setInterval(function(){ try{v2gRiskTick();}catch(e){} }, 1200); }catch(e){}
+  try{ setInterval(function(){ try{v2gRiskTick();}catch(e){} try{v2gSimuladoModule();}catch(e){} }, 1200); }catch(e){}
 })();
 </script>
 </body>
