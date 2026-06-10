@@ -1,20 +1,24 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 const SUPABASE_URL = "https://glzgqlxfvsfivyydfsbz.supabase.co";
-
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdsemdxbHhmdnNmaXZ5eWRmc2J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0OTU0OTMsImV4cCI6MjA5NjA3MTQ5M30.BZx5_kjbDZfNSccZOmkr46UwuRjyYpj_8OpUGmP43Yg";
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// torna o cliente acessível globalmente (a plataforma já usa window.sb)
+window.sb = supabase;
 
 // ========= SISTEMA DE TEXTOS EDITÁVEIS =========
 window.TEXTOS = {};
 
 async function carregarTextos() {
   try {
-    const { data, error } = await window.sb.from('site_textos').select('chave,valor');
+    const { data, error } = await window.sb.from('site_textos').select('chave, valor');
     if (error) throw error;
     (data || []).forEach(r => { window.TEXTOS[r.chave] = r.valor; });
-  } catch (e) { console.warn('Falha ao carregar textos, usando padrão:', e); }
+  } catch (e) {
+    console.warn('Falha ao carregar textos, usando padrao:', e);
+  }
   aplicarTextos();
 }
 
@@ -23,6 +27,7 @@ function t(chave, padrao) {
   return (window.TEXTOS[chave] != null && window.TEXTOS[chave] !== '')
     ? window.TEXTOS[chave] : padrao;
 }
+window.t = t;
 
 // substitui qualquer elemento marcado com data-txt="chave"
 function aplicarTextos() {
