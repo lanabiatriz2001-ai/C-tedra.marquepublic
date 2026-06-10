@@ -869,29 +869,6 @@ body{background:var(--canvas);}
 
 </style>
 </head>
-  <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyBu52ews1y9eYay2pr4hLLB_jDxFdSmp_Q",
-    authDomain: "catedra-dec98.firebaseapp.com",
-    projectId: "catedra-dec98",
-    storageBucket: "catedra-dec98.firebasestorage.app",
-    messagingSenderId: "460238828201",
-    appId: "1:460238828201:web:6303038ffc13239375efb8",
-    measurementId: "G-2XCMH716GC"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
 <body>
 
 <aside class="sidebar">
@@ -2814,7 +2791,7 @@ function topicDominio(t){
 }
 function renderEditalBadge(){const st=editalStats();const b=document.getElementById('nav-edital');b.textContent=st.pct+'%';b.style.display=st.total>0?'flex':'none';}
 function renderEditalCard(){
-  const card=document.getElementById('edital-card');const st=editalStats();
+  const card=document.getElementById('edital-card');if(!card)return;const st=editalStats();
   if(st.total===0){
     card.innerHTML='<div class="card-h"><h3><span class="ico">'+ICO_DOC+'</span>Progresso no edital</h3></div><div class="empty">Cadastre os tópicos do seu edital na aba <b>Edital</b> para acompanhar o progresso.</div>';
     renderEditalBadge();return;
@@ -3004,6 +2981,7 @@ bindImportCard();
 
 function fmtHrsMin(min){return fmtHMS((+min||0)*60);}
 function renderResumo(){
+  if(!document.getElementById('resumo'))return;
   const totalMin=state.sessions.reduce((a,s)=>a+s.min,0);
   const totalQ=state.sessions.reduce((a,s)=>a+s.q,0);
   const dias=new Set(state.studyDays).size;
@@ -3016,9 +2994,9 @@ function renderResumo(){
   document.getElementById('resumo').innerHTML=
     tile(fmtHrsMin(totalMin),'Tempo estudado')+tile(totalQ,'Total de questões')+tile(dias,'Dias estudados')+tile(mats,'Matérias estudadas')+
     tile(sims,'Simulados feitos')+tile(topicos,'Tópicos concluídos')+tile(pgs,'Páginas lidas')+tile(aulas,'Aulas assistidas');
-  document.getElementById('today-time').textContent=fmtHrsMin(state.sessions.filter(s=>s.date===todayStr()).reduce((a,s)=>a+s.min,0));
+  const tt=document.getElementById('today-time');if(tt)tt.textContent=fmtHrsMin(state.sessions.filter(s=>s.date===todayStr()).reduce((a,s)=>a+s.min,0));
   const retA=(state.anki||[]).filter(e=>e.ret>0);
-  document.getElementById('anki-ret-home').textContent=retA.length?(Math.round(retA.reduce((a,e)=>a+e.ret,0)/retA.length)+'%'):'—';
+  const arh=document.getElementById('anki-ret-home');if(arh)arh.textContent=retA.length?(Math.round(retA.reduce((a,e)=>a+e.ret,0)/retA.length)+'%'):'—';
 }
 
 /* ===== planejamento: distribuição de pesos ===== */
