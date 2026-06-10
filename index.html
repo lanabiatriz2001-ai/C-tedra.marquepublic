@@ -1593,8 +1593,8 @@ const Store={
     try{localStorage.removeItem(k);}catch(e){}
   }
 };
-const SUPA_URL  = 'https://ektyeblyllhnonvafcev.supabase.co';
-const SUPA_ANON = 'sb_publishable_800_ocFKRInx3zcPLFcd4g_c7bzbnju';
+const SUPA_URL  = 'https://gbwzkejabubpdbavfoyg.supabase.co';
+const SUPA_ANON = 'sb_publishable_bdK48TgNIwuiU9Vbl1NiTA_MePE9Ncv';
 let cloudLoaded = false;
 let _cloudPushTimer = null;
 let _cloudErrorShown = false;
@@ -5224,14 +5224,14 @@ function rolloverDay(){
 <script type="module">
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
   const supabase = createClient(
-    'https://ektyeblyllhnonvafcev.supabase.co',
-    'sb_publishable_800_ocFKRInx3zcPLFcd4g_c7bzbnju',
+    'https://gbwzkejabubpdbavfoyg.supabase.co',
+    'sb_publishable_bdK48TgNIwuiU9Vbl1NiTA_MePE9Ncv',
     {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
         detectSessionInUrl: true,
-        storageKey: 'sb-ektyeblyllhnonvafcev-auth-token',
+        storageKey: 'sb-gbwzkejabubpdbavfoyg-auth-token',
         lock: async (_name, _acquireTimeout, fn) => await fn()
       }
     }
@@ -5380,7 +5380,7 @@ function rolloverDay(){
     q('logout-btn').onclick = async () => {
       localStorage.removeItem(AUTH_MODE_KEY);
       try{ await supabase.auth.signOut({ scope: 'local' }); }catch(_e){}
-      try{ localStorage.removeItem('sb-ektyeblyllhnonvafcev-auth-token'); }catch(_e){}
+      try{ localStorage.removeItem('sb-gbwzkejabubpdbavfoyg-auth-token'); }catch(_e){}
       location.reload();
     };
   }
