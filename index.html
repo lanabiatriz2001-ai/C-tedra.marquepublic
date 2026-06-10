@@ -2869,16 +2869,17 @@ function applyEditalFilter(){
   const c=document.getElementById('ed-filter-count');
   if(c)c.textContent=(shown===total?total+' tópicos':shown+' de '+total);
 }
-document.getElementById('ed-add').onclick=()=>{
+function edAddTopics(){
   const disc=document.getElementById('ed-disc').value;
   const inc=document.getElementById('ed-inc').value;
   const lines=document.getElementById('ed-topics').value.split('\n').map(l=>l.trim()).filter(Boolean);
   if(!lines.length){toast('digite ao menos um tópico');return;}
-  lines.forEach((l,i)=>state.edital.push({id:Date.now()+'_'+i,disc,t:l,inc,done:false}));
+  lines.forEach((l,i)=>state.edital.push({id:Date.now()+'_'+i,disc,t:l,inc,done:false,st:'pendente'}));
   window.editalActiveDisc=disc;
   document.getElementById('ed-topics').value='';
   save();renderEdital();renderEditalCard();toast(lines.length+' tópico(s) adicionado(s) ✓');
-};
+}
+document.getElementById('ed-add').onclick=edAddTopics;
 
 /* ===== FASE 2 · EDITAL VERTICALIZADO ===== */
 const EDITAL_ST={pendente:['Pendente','var(--text-3)','var(--surface-2)'],estudando:['Em estudo','var(--amber)','var(--amber-soft)'],concluido:['Concluído','var(--emerald-d)','var(--emerald-soft)'],revisar:['Revisar','var(--purple)','var(--purple-soft)'],fraco:['Fraco','var(--red)','var(--red-soft)'],dominado:['Dominado','#fff','var(--emerald)']};
@@ -2923,10 +2924,14 @@ function importEdital(){
   window.editalActiveDisc=rows[0].disc;
   save();renderEdital();renderEditalCard();
   toast('importado: '+new Set(rows.map(r=>r.disc)).size+' disciplina(s) · '+nt+' tópico(s)'+(ns?' · '+ns+' subtópico(s)':'')+' ✓',3800);}
-{const b=document.getElementById('ed-import-btn');if(b)b.onclick=importEdital;
+function bindImportCard(){
+ const b=document.getElementById('ed-import-btn');if(b)b.onclick=importEdital;
  const w=document.getElementById('cfg-peso'),qd=document.getElementById('cfg-qtd');
- if(w)w.onchange=()=>{editalCfg().weight=w.checked;save();renderEdital();renderCycle();toast(w.checked?'peso por disciplina ativado — sincronizado em toda a plataforma ✓':'peso por disciplina desativado');};
- if(qd)qd.onchange=()=>{editalCfg().questions=qd.checked;save();renderEdital();renderCycle();toast(qd.checked?'questões por disciplina ativadas — sincronizadas em toda a plataforma ✓':'questões por disciplina desativadas');};}
+ if(w){w.checked=!!(state&&state.editalCfg&&state.editalCfg.weight);
+  w.onchange=()=>{editalCfg().weight=w.checked;save();renderEdital();renderCycle();toast(w.checked?'peso por disciplina ativado — sincronizado em toda a plataforma ✓':'peso por disciplina desativado');};}
+ if(qd){qd.checked=!!(state&&state.editalCfg&&state.editalCfg.questions);
+  qd.onchange=()=>{editalCfg().questions=qd.checked;save();renderEdital();renderCycle();toast(qd.checked?'questões por disciplina ativadas — sincronizadas em toda a plataforma ✓':'questões por disciplina desativadas');};}}
+bindImportCard();
 
 function fmtHrsMin(min){return fmtHMS((+min||0)*60);}
 function renderResumo(){
@@ -8379,15 +8384,35 @@ function fase21Layout(){
      Renomeia o id para o patch antigo (relocate) não conseguir mais sequestrar o painel. */
   var meta=document.getElementById('edital-meta-wrap')||document.getElementById('edital-meta-wrap-f21');
   if(meta){meta.id='edital-meta-wrap-f21';if(aside.firstChild!==meta)aside.insertBefore(meta,aside.firstChild);}
-  /* imagem 6: resgata "Adicionar tópicos" se patch antigo já tiver levado para Ajustes */
-  var add=document.getElementById('card-ed-add');
-  if(!add){var mf=document.querySelector('.v2-merged-form');
-    if(mf){add=document.createElement('div');add.id='card-ed-add';add.className='card';
-      var inner=mf.lastElementChild||mf;while(inner.firstChild)add.appendChild(inner.firstChild);mf.remove();}}
-  /* imagens 4 e 6: Importar + Adicionar na lateral, abaixo de Ações rápidas (move só se necessário, para não roubar o foco) */
+  /* imagens 4 e 6: Importar + Adicionar SEMPRE presentes — se algum patch destruir, reconstrói do zero */
   var imp=document.getElementById('card-importar');
-  if(imp&&imp.parentElement!==aside)aside.appendChild(imp);
-  if(add&&add.parentElement!==aside)aside.appendChild(add);
+  if(!imp){
+    imp=document.createElement('div');imp.id='card-importar';imp.className='card';
+    imp.innerHTML='<div class="card-h"><h3>⬇ Importar edital</h3><span class="hint">conteúdo bruto</span></div>'
+      +'<div class="field"><textarea id="ed-import" rows="4" placeholder="Direito Tributário: Sistema Tributário Nacional. Competência tributária. ...&#10;DIREITO ADMINISTRATIVO&#10;1. Atos administrativos&#10;1.1 Conceito; requisitos"></textarea></div>'
+      +'<button class="btn" id="ed-import-btn" style="margin-top:10px;width:100%;justify-content:center;">Importar edital</button>'
+      +'<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;border-top:1px solid var(--border);padding-top:10px;">'
+      +'<label class="cfg-tgl"><input type="checkbox" id="cfg-peso"> Usar peso por disciplina</label>'
+      +'<label class="cfg-tgl"><input type="checkbox" id="cfg-qtd"> Usar questões por disciplina</label></div>';
+    bindImportCard();
+  }
+  if(imp.parentElement!==aside)aside.appendChild(imp);
+  var add=document.getElementById('card-ed-add');
+  if(!add){
+    var mf=document.querySelector('.v2-merged-form'); /* resgata os nós originais se o patch antigo os levou para Ajustes */
+    add=document.createElement('div');add.id='card-ed-add';add.className='card';
+    if(mf){var inner=mf.lastElementChild||mf;while(inner.firstChild)add.appendChild(inner.firstChild);mf.remove();}
+    else{
+      add.innerHTML='<div class="card-h"><h3>＋ Adicionar tópicos</h3><span class="hint">um por linha</span></div>'
+        +'<div class="field"><label>Disciplina</label><select id="ed-disc"></select></div>'
+        +'<div class="field" style="margin-top:8px;"><label>Incidência</label><select id="ed-inc"><option value="">Sem classificação</option><option value="alta">Alta incidência</option><option value="media">Média incidência</option><option value="baixa">Baixa incidência</option></select></div>'
+        +'<div class="field" style="margin-top:8px;"><label>Tópicos (um por linha)</label><textarea id="ed-topics" rows="4" placeholder="Princípios fundamentais&#10;Direitos e garantias fundamentais"></textarea></div>'
+        +'<button class="btn" id="ed-add" style="margin-top:10px;width:100%;justify-content:center;">Adicionar tópicos</button>';
+      var ds=add.querySelector('#ed-disc');ds.innerHTML=((typeof DISCIPLINAS!=='undefined')?DISCIPLINAS:[]).map(function(d){return '<option>'+escapeHtml(d)+'</option>';}).join('');ds.dataset.filled='1';
+      add.querySelector('#ed-add').onclick=edAddTopics;
+    }
+  }
+  if(add.parentElement!==aside)aside.appendChild(add);
   ensureDiscTools(aside);
 }
 (function(){
