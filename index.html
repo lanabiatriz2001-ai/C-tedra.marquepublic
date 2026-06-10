@@ -7452,14 +7452,16 @@ function v2gRiskTick(){
         var mo=new MutationObserver(function(){
           if(host.__v2gGuard)return;
           var fc=host.firstElementChild;
-          var mine=fc && (fc.classList && (fc.classList.contains('v2g-risk-row') || (fc.classList.contains('empty') && /Registre sess|risco relevante|Sem disciplinas/.test(fc.textContent))));
+          var mine=fc && fc.classList && (fc.classList.contains('v2g-risk-row') || (fc.classList.contains('empty') && /Registre sess|risco relevante|Sem disciplinas/.test(fc.textContent)));
           if(!mine){ host.__v2gGuard=true; try{ v2gRenderRiskMap(); }catch(e){} host.__v2gGuard=false; }
         });
         mo.observe(host,{childList:true});
         host.__v2gMo=mo;
       }catch(e){}
     }
-    host.__v2gGuard=true; try{ v2gRenderRiskMap(); }catch(e){} host.__v2gGuard=false;
+    var fc=host.firstElementChild;
+    var mine=fc && fc.classList && (fc.classList.contains('v2g-risk-row') || (fc.classList.contains('empty') && /Registre sess|risco relevante|Sem disciplinas/.test(fc.textContent)));
+    if(!mine){ host.__v2gGuard=true; try{ v2gRenderRiskMap(); }catch(e){} host.__v2gGuard=false; }
   }catch(e){}
 }
 
@@ -7470,6 +7472,7 @@ function tick(){ try{simuladoModule();}catch(e){} try{sessionModule();}catch(e){
   var n=0; var iv=setInterval(function(){ tick(); if(++n>25)clearInterval(iv); },400);
   document.addEventListener('DOMContentLoaded',tick);
   setTimeout(tick,800); setTimeout(tick,1600);
+  try{ setInterval(function(){ try{v2gRiskTick();}catch(e){} }, 1200); }catch(e){}
 })();
 </script>
 </body>
