@@ -1619,11 +1619,34 @@ function catedraAuth(){
 async function getCloudAuth(){
   try{
     if(window.sb && window.sb.auth){
-      const { data } = await window.sb.auth.getSession();
-      if(data && data.session) return { uid: data.session.user.id, token: data.session.access_token };
+      const { data: { session } } = await window.sb.auth.getSession();
+      if(session){
+        const margem = 60;
+        const agora = Math.floor(Date.now()/1000);
+        if(session.expires_at && (session.expires_at - agora) < margem){
+          const { data, error } = await window.sb.auth.refreshSession();
+          if(!error && data && data.session){ return { uid: data.session.user.id, token: data.session.access_token }; }
+        }
+        return { uid: session.user.id, token: session.access_token };
+      }
     }
   }catch(e){}
   return catedraAuth();
+}
+async function cloudFetch(url, opts, auth){
+  let a = auth;
+  let r = await fetch(url, opts);
+  if(r.status === 401 && window.sb && window.sb.auth){
+    try{
+      const { data, error } = await window.sb.auth.refreshSession();
+      if(!error && data && data.session){
+        a = { uid: data.session.user.id, token: data.session.access_token };
+        opts.headers['Authorization'] = 'Bearer ' + a.token;
+        r = await fetch(url, opts);
+      }
+    }catch(e){}
+  }
+  return r;
 }
 async function loadState(){try{const v=localStorage.getItem(KEY);if(v)return JSON.parse(v);}catch(e){}return defaultState();}
 async function save(){const j=JSON.stringify(state);try{localStorage.setItem(KEY,j);}catch(e){}pushStateToCloud();}
@@ -1636,7 +1659,7 @@ async function _pushStateNow(){
   if(!a) return;
   if(!cloudLoaded){ await catedraLoadFromCloud(); }
   try{
-    const r = await fetch(SUPA_URL + '/rest/v1/app_state?on_conflict=user_id', {
+    const r = await cloudFetch(SUPA_URL + '/rest/v1/app_state?on_conflict=user_id', {
       method: 'POST',
       headers: {
         'apikey': SUPA_ANON,
@@ -1645,7 +1668,7 @@ async function _pushStateNow(){
         'Prefer': 'resolution=merge-duplicates,return=minimal'
       },
       body: JSON.stringify({ user_id: a.uid, state: state, atualizado_em: new Date().toISOString() })
-    });
+    }, a);
     if(!r.ok){
       const t = await r.text().catch(()=> '');
       cloudWarn('Erro ao salvar (HTTP ' + r.status + '): ' + t.slice(0,300));
@@ -1658,9 +1681,9 @@ async function catedraLoadFromCloud(){
   try{
     const a = await getCloudAuth();
     if(!a) return;
-    const r = await fetch(SUPA_URL + '/rest/v1/app_state?user_id=eq.' + a.uid + '&select=state', {
+    const r = await cloudFetch(SUPA_URL + '/rest/v1/app_state?user_id=eq.' + a.uid + '&select=state', {
       headers: { 'apikey': SUPA_ANON, 'Authorization': 'Bearer ' + a.token }
-    });
+    }, a);
     if(!r.ok){
       const t = await r.text().catch(()=> '');
       cloudWarn('Erro ao carregar da nuvem (HTTP ' + r.status + '): ' + t.slice(0,300));
@@ -5206,6 +5229,7 @@ function rolloverDay(){
       auth: {
         persistSession: true,
         autoRefreshToken: true,
+        detectSessionInUrl: true,
         storageKey: 'sb-ektyeblyllhnonvafcev-auth-token',
         lock: async (_name, _acquireTimeout, fn) => await fn()
       }
