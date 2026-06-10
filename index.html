@@ -7292,10 +7292,13 @@ function v2gSubRecalc(){
   var host=document.getElementById('sim-subjects'); if(!host)return;
   Array.from(host.querySelectorAll('.sim-subrow')).forEach(function(r){
     function gn(c){ var e=r.querySelector(c); var v=e?parseInt(e.value):0; return isNaN(v)?0:v; }
-    var t=gn('.ssub-total'), c=gn('.ssub-c'); var pct=t?Math.round(c/t*100):null;
+    var t=gn('.ssub-total'), c=gn('.ssub-c');
+    if(r.querySelector('.ssub-me-total')){
+      var met=gn('.ssub-me-total'),mec=gn('.ssub-me-c'),mew=gn('.ssub-me-w'),cet=gn('.ssub-ce-total'),cec=gn('.ssub-ce-c'),cew=gn('.ssub-ce-w');
+      if((met+cet)>0){ t=met+cet; c=mec+cec; var st=r.querySelector('.ssub-total'),sc=r.querySelector('.ssub-c'),sw=r.querySelector('.ssub-w'); if(st)st.value=met+cet; if(sc)sc.value=mec+cec; if(sw)sw.value=mew+cew; }
+    }
+    var pct=t?Math.round(c/t*100):null;
     var p=r.querySelector('.ssub-pct'); if(p){ if(pct==null){ p.textContent='\u2014'; p.className='ssub-pct'; } else { p.textContent=pct+'%'; p.className='ssub-pct '+(pct>=70?'good':pct>=50?'mid':'bad'); } }
-    if(r.querySelector('.ssub-me-total')){ var met=gn('.ssub-me-total'),mec=gn('.ssub-me-c'),mew=gn('.ssub-me-w'),cet=gn('.ssub-ce-total'),cec=gn('.ssub-ce-c'),cew=gn('.ssub-ce-w');
-      if((met+cet)>0){ var st=r.querySelector('.ssub-total'),sc=r.querySelector('.ssub-c'),sw=r.querySelector('.ssub-w'); if(st&&!st.value)st.value=met+cet; if(sc&&!sc.value)sc.value=mec+cec; if(sw&&!sw.value)sw.value=mew+cew; } }
   });
 }
 
