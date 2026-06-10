@@ -7711,3 +7711,387 @@ function tick(){ try{simuladoModule();}catch(e){} try{sessionModule();}catch(e){
   window.catedraGetPresets=function(){return lsGet(XKEY);};
   window.catedraGetPersonalization=function(){return lsGet(PKEY);};
 })();</script>
+
+
+<style id="v2i-style">
+  .v2i-levelbadge{font-size:.62em;font-weight:700;color:#7c3aed;background:linear-gradient(135deg,#faf5ff,#f3e8ff);padding:3px 10px;border-radius:999px;margin-left:10px;vertical-align:middle;white-space:nowrap;border:1px solid #ead9ff;}
+  .v2i-level-card{padding:16px 18px;border-radius:16px;margin-bottom:16px;background:linear-gradient(135deg,#fdfbff,#f7f2ff);border:1px solid #efe3ff;}
+  .v2i-level-row{display:flex;align-items:center;gap:16px;}
+  .v2i-level-emblem{width:52px;height:52px;flex:0 0 52px;border-radius:14px;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;box-shadow:0 6px 16px rgba(124,58,237,.3);}
+  .v2i-level-main{flex:1;min-width:0;}
+  .v2i-level-name{font-weight:800;font-size:15px;color:#3b0764;margin-bottom:7px;}
+  .v2i-level-bar{height:9px;border-radius:999px;background:#ece3f7;overflow:hidden;}
+  .v2i-level-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#a855f7,#7c3aed);transition:width .5s ease;}
+  .v2i-level-foot{display:flex;justify-content:space-between;align-items:center;margin-top:7px;font-size:12.3px;color:#6b21a8;gap:12px;}
+  .v2i-level-pct{font-weight:800;color:#7c3aed;white-space:nowrap;}
+  .v2i-home-level{margin-top:6px;font-size:12px;color:#8b8f9a;display:inline-flex;align-items:center;gap:7px;}
+  .v2i-home-dot{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:20px;padding:0 6px;border-radius:999px;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;font-size:10.5px;font-weight:800;}
+  .v2i-custom-card{padding:20px;border-radius:16px;margin-top:16px;}
+  .v2i-custom-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:8px;}
+  .v2i-eyebrow{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9aa0ad;font-weight:700;}
+  .v2i-h3{margin:3px 0 5px;font-size:18px;font-weight:800;}
+  .v2i-sub{margin:0;color:#6b7280;font-size:12.8px;max-width:620px;line-height:1.45;}
+  .v2i-btn{cursor:pointer;border:none;border-radius:11px;padding:9px 15px;font-size:13px;font-weight:700;transition:filter .15s,transform .1s;}
+  .v2i-btn:active{transform:translateY(1px);}
+  .v2i-btn-primary{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;}
+  .v2i-btn-primary:hover{filter:brightness(1.06);}
+  .v2i-btn-ghost{background:#f3f4f6;color:#374151;border:1px solid #e3e6ec;}
+  .v2i-form{margin:14px 0;padding:16px;border:1px dashed #e3d4f7;border-radius:14px;background:#fdfbff;}
+  .v2i-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px;}
+  .v2i-field{display:flex;flex-direction:column;gap:5px;}
+  .v2i-field.v2i-full{grid-column:1/-1;}
+  .v2i-field label{font-size:12px;font-weight:700;color:#374151;}
+  .v2i-in{width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #e3e6ec;border-radius:10px;font-size:13px;background:#fff;color:#111827;outline:none;}
+  .v2i-in:focus{border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.13);}
+  .v2i-form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;}
+  .v2i-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:14px;}
+  .v2i-empty{color:#9ca3af;font-size:13px;font-style:italic;padding:18px;text-align:center;grid-column:1/-1;}
+  .v2i-item{border:1px solid #e8e8ee;border-radius:14px;padding:14px;background:#fff;border-left:4px solid #a855f7;display:flex;flex-direction:column;gap:7px;transition:box-shadow .15s;}
+  .v2i-item:hover{box-shadow:0 6px 18px rgba(124,58,237,.1);}
+  .v2i-item.v2i-st-done{border-left-color:#10b981;background:#f6fefb;}
+  .v2i-item.v2i-st-paused{border-left-color:#9ca3af;background:#fafafa;opacity:.92;}
+  .v2i-item-top{display:flex;justify-content:space-between;align-items:center;}
+  .v2i-badge-custom{font-size:9.5px;font-weight:800;letter-spacing:.07em;color:#7c3aed;background:#f3e8ff;border:1px solid #e3d0ff;padding:2px 8px;border-radius:999px;}
+  .v2i-item-status{font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:999px;}
+  .v2i-item-status.v2i-st-active{background:#eff6ff;color:#1d4ed8;}
+  .v2i-item-status.v2i-st-done{background:#ecfdf5;color:#047857;}
+  .v2i-item-status.v2i-st-paused{background:#f3f4f6;color:#6b7280;}
+  .v2i-item-title{font-weight:800;font-size:14.5px;color:#1f2937;line-height:1.25;}
+  .v2i-item-desc{font-size:12.3px;color:#6b7280;line-height:1.4;}
+  .v2i-item-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:11px;}
+  .v2i-cat{background:#f5f3ff;color:#6d28d9;padding:2px 8px;border-radius:6px;font-weight:600;}
+  .v2i-prazo{color:#b45309;}
+  .v2i-concl{color:#047857;font-weight:600;}
+  .v2i-bar{height:7px;border-radius:999px;background:#eceaf3;overflow:hidden;}
+  .v2i-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#a855f7,#7c3aed);transition:width .4s;}
+  .v2i-st-done .v2i-bar-fill{background:linear-gradient(90deg,#34d399,#10b981);}
+  .v2i-item-foot{display:flex;justify-content:space-between;font-size:11.5px;color:#6b7280;}
+  .v2i-pct{font-weight:800;color:#7c3aed;}
+  .v2i-st-done .v2i-pct{color:#10b981;}
+  .v2i-item-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
+  .v2i-mini{cursor:pointer;border:1px solid #e3e6ec;background:#fff;color:#374151;border-radius:8px;padding:5px 10px;font-size:11.5px;font-weight:600;transition:background .12s;}
+  .v2i-mini:hover{background:#f5f3ff;border-color:#d8b4fe;}
+  .v2i-mini-ok{color:#047857;border-color:#a7f3d0;}
+  .v2i-mini-ok:hover{background:#ecfdf5;}
+  .v2i-mini-del{color:#b91c1c;border-color:#fecaca;}
+  .v2i-mini-del:hover{background:#fef2f2;}
+  @media(max-width:640px){.v2i-grid{grid-template-columns:1fr;}}
+</style>
+<!-- Conquistas V2i: metas personalizadas + nivel do usuario -->
+<script>(function(){
+  'use strict';
+  function getState(){ try{ return window.state || JSON.parse(localStorage.getItem('catedra:state')||'{}'); }catch(e){ return {}; } }
+  function persist(){ try{ if(typeof window.save==='function'){ window.save(); return; } }catch(e){} try{ localStorage.setItem('catedra:state', JSON.stringify(window.state||getState())); }catch(e){} }
+  function el(id){ return document.getElementById(id); }
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function todayISO(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function uid(){ return 'cc_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7); }
+
+  function metrics(){
+    var st=getState();
+    var sessions=st.sessions||[], simulados=st.simulados||[], revisions=st.revisions||[], errors=st.errors||[], edital=st.edital||[], studyDays=st.studyDays||[];
+    var horas=sessions.reduce(function(a,s){return a+(s.min||0);},0)/60;
+    var questoes=sessions.reduce(function(a,s){return a+(s.q||0);},0)+simulados.reduce(function(a,s){return a+(s.c||0)+(s.blank||0)+(s.wrong||0);},0);
+    var dias=[].concat(studyDays).filter(function(v,i,a){return a.indexOf(v)===i;});
+    var days=dias.slice().sort(); var streak=0; var cur=todayISO();
+    function addDays(d,n){ var p=d.split('-'); var dt=new Date(+p[0],+p[1]-1,+p[2]); dt.setDate(dt.getDate()+n); return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0'); }
+    if(days.indexOf(cur)<0)cur=addDays(cur,-1);
+    while(days.indexOf(cur)>=0){ streak++; cur=addDays(cur,-1); }
+    var revDone=revisions.filter(function(r){return r.done;}).length;
+    var simDone=simulados.length;
+    var errCorr=errors.filter(function(e){return e.done||e.corrigido||e.fixed||e.status==='corrigido';}).length;
+    var topicos=edital.filter(function(t){return t.done;}).length;
+    return { horas:horas, questoes:questoes, diasConstancia:streak, diasEstudo:dias.length, revisoes:revDone, simulados:simDone, errosCorrigidos:errCorr, topicos:topicos };
+  }
+
+  var LEVELS=[
+    {n:1,nome:'Iniciante'},{n:2,nome:'Em ritmo'},{n:3,nome:'Regular'},{n:4,nome:'Constante'},{n:5,nome:'Avançado'},{n:6,nome:'Reta final'},{n:7,nome:'Alta performance'}
+  ];
+  var THRESH=[0,40,120,280,560,1000,1800];
+  function autoUnlocked(){
+    var m=metrics(); var c=0;
+    function ms(val,arr){ return arr.filter(function(x){return val>=x;}).length; }
+    c+=ms(m.diasConstancia,[3,7,15,30,60,100]);
+    c+=ms(m.diasEstudo,[5,15,30,60,120,250]);
+    c+=ms(m.questoes,[100,500,1000,2500,5000,10000]);
+    c+=ms(m.horas,[10,25,50,100,200,400]);
+    c+=ms(m.revisoes,[5,20,50,120,300]);
+    c+=ms(m.simulados,[1,3,5,10,20]);
+    var edpct=(function(){var st=getState();var e=st.edital||[];return e.length?Math.round(e.filter(function(t){return t.done;}).length/e.length*100):0;})();
+    c+=ms(edpct,[25,50,75,100]);
+    return c;
+  }
+  function customDone(){
+    var st=getState(); var arr=st.customChallenges||[];
+    return arr.filter(function(c){return c.status==='concluída'||c.status==='concluida';}).length;
+  }
+  function levelPoints(){
+    var m=metrics();
+    var pts=0;
+    pts+=autoUnlocked()*15;
+    pts+=customDone()*25;
+    pts+=m.diasConstancia*4;
+    pts+=Math.floor(m.horas)*2;
+    pts+=Math.floor(m.questoes/10);
+    pts+=m.simulados*8;
+    pts+=m.revisoes*3;
+    pts+=m.errosCorrigidos*3;
+    pts+=m.topicos*2;
+    return Math.round(pts);
+  }
+  function levelInfo(){
+    var pts=levelPoints();
+    var lvl=1;
+    for(var i=0;i<THRESH.length;i++){ if(pts>=THRESH[i])lvl=i+1; }
+    if(lvl>7)lvl=7;
+    var L=LEVELS[lvl-1];
+    var cur=THRESH[lvl-1], next=(lvl<7?THRESH[lvl]:THRESH[6]);
+    var pct = lvl<7 ? Math.min(100,Math.max(0,Math.round((pts-cur)/(next-cur)*100))) : 100;
+    var falta = lvl<7 ? Math.max(0,next-pts) : 0;
+    return { pts:pts, level:lvl, nome:L.nome, pct:pct, faltaPts:falta, isMax:lvl>=7 };
+  }
+  function nextStepPhrase(info){
+    if(info.isMax) return 'Nível máximo alcançado — mantenha o ritmo de alta performance!';
+    var faltaPts=info.faltaPts;
+    var opts=[
+      {txt:function(n){return 'Resolva mais '+n+' questões para avançar de nível.';}, per:0.1},
+      {txt:function(n){return 'Estude mais '+n+'h para avançar de nível.';}, per:2},
+      {txt:function(n){return 'Conclua mais '+n+' revisão(ões) para avançar de nível.';}, per:3},
+      {txt:function(n){return 'Realize mais '+n+' simulado(s) para avançar de nível.';}, per:8}
+    ];
+    var best=null;
+    opts.forEach(function(o){ var n=Math.max(1,Math.ceil(faltaPts/o.per)); if(!best||n<best.n)best={n:n,txt:o.txt}; });
+    return best.txt(best.n);
+  }
+
+  var METRIC_TYPES=[
+    {k:'horas', label:'Horas estudadas'},
+    {k:'questoes', label:'Questões resolvidas'},
+    {k:'diasConstancia', label:'Dias de constância'},
+    {k:'revisoes', label:'Revisões concluídas'},
+    {k:'simulados', label:'Simulados realizados'},
+    {k:'errosCorrigidos', label:'Erros corrigidos'},
+    {k:'topicos', label:'Tópicos concluídos'},
+    {k:'livre', label:'Meta livre'}
+  ];
+  var STATUS=['em andamento','concluída','pausada'];
+  function metricLabel(k){ var f=METRIC_TYPES.filter(function(m){return m.k===k;})[0]; return f?f.label:k; }
+
+  function getCustom(){ var st=getState(); if(!st.customChallenges)st.customChallenges=[]; return st.customChallenges; }
+  function saveCustom(arr){ var st=getState(); st.customChallenges=arr; if(window.state)window.state.customChallenges=arr; persist(); }
+
+  function syncCustomProgress(){
+    var arr=getCustom(); var m=metrics(); var changed=false;
+    arr.forEach(function(c){
+      if(c.tipoMetrica && c.tipoMetrica!=='livre' && c.status!=='pausada' && c.status!=='concluída' && c.status!=='concluida'){
+        var v=m[c.tipoMetrica];
+        if(typeof v==='number'){
+          var nv=Math.min(v, c.valorAlvo>0?Math.max(v,0):v);
+          if(nv!==c.progressoAtual){ c.progressoAtual=nv; changed=true; }
+          if(c.valorAlvo>0 && c.progressoAtual>=c.valorAlvo && c.status==='em andamento'){
+            c.status='concluída'; c.dataConclusao=todayISO(); changed=true;
+            try{ if(typeof window.renderHome==='function')window.renderHome(); }catch(e){}
+          }
+        }
+      }
+    });
+    if(changed)saveCustom(arr);
+    return changed;
+  }
+
+  function formHtml(){
+    var mtOpts=METRIC_TYPES.map(function(m){return '<option value="'+m.k+'">'+esc(m.label)+'</option>';}).join('');
+    var stOpts=STATUS.map(function(s){return '<option value="'+s+'">'+esc(s.charAt(0).toUpperCase()+s.slice(1))+'</option>';}).join('');
+    return ''+
+    '<div class="card v2i-custom-card" id="v2i-custom">'+
+      '<div class="v2i-custom-head"><div><div class="v2i-eyebrow">Minhas metas</div><h3 class="v2i-h3">Metas personalizadas</h3><p class="v2i-sub">Crie metas próprias. O progresso de métricas compatíveis é atualizado automaticamente; metas livres você atualiza manualmente.</p></div>'+
+      '<button type="button" class="v2i-btn v2i-btn-primary" id="v2i-new">+ Nova meta</button></div>'+
+      '<form class="v2i-form" id="v2i-form" style="display:none;">'+
+        '<input type="hidden" id="v2i-f-id">'+
+        '<div class="v2i-grid">'+
+          '<div class="v2i-field v2i-full"><label>Título</label><input class="v2i-in" id="v2i-f-titulo" type="text" placeholder="Ex.: Resolver 500 questões"></div>'+
+          '<div class="v2i-field v2i-full"><label>Descrição</label><input class="v2i-in" id="v2i-f-descricao" type="text" placeholder="Opcional"></div>'+
+          '<div class="v2i-field"><label>Categoria</label><input class="v2i-in" id="v2i-f-categoria" type="text" placeholder="Ex.: Questões"></div>'+
+          '<div class="v2i-field"><label>Tipo de métrica</label><select class="v2i-in" id="v2i-f-tipoMetrica">'+mtOpts+'</select></div>'+
+          '<div class="v2i-field"><label>Valor-alvo</label><input class="v2i-in" id="v2i-f-valorAlvo" type="number" min="0" placeholder="Ex.: 500"></div>'+
+          '<div class="v2i-field"><label>Progresso atual</label><input class="v2i-in" id="v2i-f-progressoAtual" type="number" min="0" placeholder="0"></div>'+
+          '<div class="v2i-field"><label>Data-limite (opcional)</label><input class="v2i-in" id="v2i-f-dataLimite" type="date"></div>'+
+          '<div class="v2i-field"><label>Status</label><select class="v2i-in" id="v2i-f-status">'+stOpts+'</select></div>'+
+        '</div>'+
+        '<div class="v2i-form-actions"><button type="button" class="v2i-btn v2i-btn-ghost" id="v2i-cancel">Cancelar</button><button type="button" class="v2i-btn v2i-btn-primary" id="v2i-save">Salvar meta</button></div>'+
+      '</form>'+
+      '<div class="v2i-list" id="v2i-list"></div>'+
+    '</div>';
+  }
+
+  function itemHtml(c){
+    var alvo=c.valorAlvo>0?c.valorAlvo:0;
+    var prog=c.progressoAtual||0;
+    var pct = alvo>0 ? Math.min(100,Math.round(prog/alvo*100)) : (c.status==='concluída'||c.status==='concluida'?100:0);
+    var done=(c.status==='concluída'||c.status==='concluida');
+    var paused=(c.status==='pausada');
+    var statusCls=done?'v2i-st-done':(paused?'v2i-st-paused':'v2i-st-active');
+    var metaTxt = alvo>0 ? (Math.floor(prog)+' / '+alvo+' '+(c.tipoMetrica==='livre'?'':esc(metricLabel(c.tipoMetrica).toLowerCase()))) : esc(metricLabel(c.tipoMetrica));
+    var prazo = c.dataLimite ? '<span class="v2i-prazo">até '+esc(c.dataLimite)+'</span>' : '';
+    var concl = c.dataConclusao ? '<span class="v2i-concl">✓ concluída em '+esc(c.dataConclusao)+'</span>' : '';
+    return ''+
+    '<div class="v2i-item '+statusCls+'" data-id="'+esc(c.id)+'">'+
+      '<div class="v2i-item-top">'+
+        '<span class="v2i-badge-custom" title="Meta criada por você">PERSONALIZADA</span>'+
+        '<span class="v2i-item-status '+statusCls+'">'+esc((c.status||'em andamento').charAt(0).toUpperCase()+(c.status||'em andamento').slice(1))+'</span>'+
+      '</div>'+
+      '<div class="v2i-item-title">'+esc(c.titulo||'(sem título)')+'</div>'+
+      (c.descricao?'<div class="v2i-item-desc">'+esc(c.descricao)+'</div>':'')+
+      '<div class="v2i-item-meta"><span class="v2i-cat">'+esc(c.categoria||metricLabel(c.tipoMetrica))+'</span>'+prazo+concl+'</div>'+
+      '<div class="v2i-bar"><div class="v2i-bar-fill" style="width:'+pct+'%"></div></div>'+
+      '<div class="v2i-item-foot"><span class="v2i-progtxt">'+metaTxt+'</span><span class="v2i-pct">'+pct+'%</span></div>'+
+      '<div class="v2i-item-actions">'+
+        '<button type="button" class="v2i-mini" data-act="prog" data-id="'+esc(c.id)+'">Progresso</button>'+
+        (!done?'<button type="button" class="v2i-mini v2i-mini-ok" data-act="done" data-id="'+esc(c.id)+'">Concluir</button>':'')+
+        '<button type="button" class="v2i-mini" data-act="edit" data-id="'+esc(c.id)+'">Editar</button>'+
+        '<button type="button" class="v2i-mini v2i-mini-del" data-act="del" data-id="'+esc(c.id)+'">Excluir</button>'+
+      '</div>'+
+    '</div>';
+  }
+
+  function renderList(){
+    var box=el('v2i-list'); if(!box)return;
+    var arr=getCustom();
+    if(!arr.length){ box.innerHTML='<div class="v2i-empty">Você ainda não criou metas personalizadas. Clique em “+ Nova meta” para começar.</div>'; return; }
+    box.innerHTML=arr.map(itemHtml).join('');
+    box.querySelectorAll('.v2i-mini').forEach(function(b){
+      b.onclick=function(){ var act=b.getAttribute('data-act'), id=b.getAttribute('data-id'); handleAction(act,id); };
+    });
+  }
+
+  function openForm(c){
+    var f=el('v2i-form'); if(!f)return; f.style.display='block';
+    el('v2i-f-id').value=c?c.id:'';
+    el('v2i-f-titulo').value=c?(c.titulo||''):'';
+    el('v2i-f-descricao').value=c?(c.descricao||''):'';
+    el('v2i-f-categoria').value=c?(c.categoria||''):'';
+    el('v2i-f-tipoMetrica').value=c?(c.tipoMetrica||'questoes'):'questoes';
+    el('v2i-f-valorAlvo').value=c?(c.valorAlvo||''):'';
+    el('v2i-f-progressoAtual').value=c?(c.progressoAtual||0):0;
+    el('v2i-f-dataLimite').value=c?(c.dataLimite||''):'';
+    el('v2i-f-status').value=c?(c.status||'em andamento'):'em andamento';
+    f.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  function closeForm(){ var f=el('v2i-form'); if(f)f.style.display='none'; }
+
+  function saveForm(){
+    var id=el('v2i-f-id').value;
+    var arr=getCustom();
+    var titulo=el('v2i-f-titulo').value.trim();
+    if(!titulo){ el('v2i-f-titulo').focus(); return; }
+    var obj={
+      id: id||uid(),
+      tipo:'personalizada',
+      titulo:titulo,
+      descricao:el('v2i-f-descricao').value.trim(),
+      categoria:el('v2i-f-categoria').value.trim(),
+      tipoMetrica:el('v2i-f-tipoMetrica').value,
+      valorAlvo:parseFloat(el('v2i-f-valorAlvo').value)||0,
+      progressoAtual:parseFloat(el('v2i-f-progressoAtual').value)||0,
+      dataLimite:el('v2i-f-dataLimite').value||'',
+      status:el('v2i-f-status').value
+    };
+    if(id){
+      var existing=arr.filter(function(x){return x.id===id;})[0]||{};
+      obj.dataCriacao=existing.dataCriacao||todayISO();
+      obj.dataConclusao=existing.dataConclusao||null;
+      if((obj.status==='concluída'||obj.status==='concluida') && !obj.dataConclusao)obj.dataConclusao=todayISO();
+      var idx=arr.findIndex(function(x){return x.id===id;});
+      arr[idx]=obj;
+    } else {
+      obj.dataCriacao=todayISO();
+      obj.dataConclusao=(obj.status==='concluída'||obj.status==='concluida')?todayISO():null;
+      arr.push(obj);
+    }
+    saveCustom(arr);
+    closeForm();
+    renderList();
+    refreshLevel();
+  }
+
+  function handleAction(act,id){
+    var arr=getCustom();
+    var c=arr.filter(function(x){return x.id===id;})[0];
+    if(!c)return;
+    if(act==='edit'){ openForm(c); }
+    else if(act==='del'){ if(confirm('Excluir esta meta personalizada? Esta ação não afeta as conquistas automáticas.')){ arr=arr.filter(function(x){return x.id!==id;}); saveCustom(arr); renderList(); refreshLevel(); } }
+    else if(act==='done'){ c.status='concluída'; c.dataConclusao=todayISO(); if(c.valorAlvo>0&&c.progressoAtual<c.valorAlvo)c.progressoAtual=c.valorAlvo; saveCustom(arr); renderList(); refreshLevel(); try{if(typeof window.renderHome==='function')window.renderHome();}catch(e){} }
+    else if(act==='prog'){ var v=prompt('Progresso atual'+(c.valorAlvo>0?(' (alvo: '+c.valorAlvo+')'):'')+':', c.progressoAtual||0); if(v!==null){ var nv=parseFloat(v); if(!isNaN(nv)){ c.progressoAtual=Math.max(0,nv); if(c.valorAlvo>0&&c.progressoAtual>=c.valorAlvo&&c.status==='em andamento'){c.status='concluída';c.dataConclusao=todayISO();} saveCustom(arr); renderList(); refreshLevel(); } } }
+  }
+
+  function levelPanelHtml(info){
+    var phrase=nextStepPhrase(info);
+    return ''+
+    '<div class="card v2i-level-card" id="v2i-level-card">'+
+      '<div class="v2i-level-row">'+
+        '<div class="v2i-level-emblem">N'+info.level+'</div>'+
+        '<div class="v2i-level-main">'+
+          '<div class="v2i-level-name">Nível '+info.level+' — '+esc(info.nome)+'</div>'+
+          '<div class="v2i-level-bar"><div class="v2i-level-fill" style="width:'+info.pct+'%"></div></div>'+
+          '<div class="v2i-level-foot"><span id="v2i-level-phrase">'+esc(phrase)+'</span><span class="v2i-level-pct">'+(info.isMax?'MÁX':info.pct+'%')+'</span></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }
+
+  function refreshLevel(){
+    var info=levelInfo();
+    var h2=document.querySelector('#view-conquistas h2');
+    if(h2){
+      var b=el('v2i-levelbadge');
+      if(!b){ var span=document.createElement('span'); span.id='v2i-levelbadge'; h2.appendChild(span); b=span; }
+      b.textContent=' · Nível '+info.level+' — '+info.nome;
+      b.className='v2i-levelbadge';
+    }
+    var vc=el('view-conquistas');
+    if(vc && !el('v2i-level-card')){
+      var wrap=document.createElement('div'); wrap.innerHTML=levelPanelHtml(info);
+      var intro=vc.querySelector('.ux4-view-intro');
+      if(intro && intro.nextSibling){ vc.insertBefore(wrap.firstChild, intro.nextSibling); } else { vc.insertBefore(wrap.firstChild, vc.firstChild); }
+    } else if(el('v2i-level-card')){
+      var lc=el('v2i-level-card');
+      var fill=lc.querySelector('.v2i-level-fill'); if(fill)fill.style.width=info.pct+'%';
+      var nm=lc.querySelector('.v2i-level-name'); if(nm)nm.textContent='Nível '+info.level+' — '+info.nome;
+      var em=lc.querySelector('.v2i-level-emblem'); if(em)em.textContent='N'+info.level;
+      var ph=el('v2i-level-phrase'); if(ph)ph.textContent=nextStepPhrase(info);
+      var pc=lc.querySelector('.v2i-level-pct'); if(pc)pc.textContent=info.isMax?'MÁX':info.pct+'%';
+    }
+    var greet=document.querySelector('.greeting');
+    if(greet){
+      var hb=el('v2i-home-level');
+      if(!hb){ var d=document.createElement('div'); d.id='v2i-home-level'; d.className='v2i-home-level'; greet.appendChild(d); hb=d; }
+      hb.innerHTML='<span class="v2i-home-dot">N'+info.level+'</span> Nível '+info.level+' — '+esc(info.nome)+(info.isMax?'':' · '+info.pct+'% para o próximo');
+    }
+  }
+
+  function mountCustom(){
+    var vc=el('view-conquistas'); if(!vc)return;
+    if(!el('v2i-custom')){
+      var wrap=document.createElement('div'); wrap.innerHTML=formHtml();
+      vc.appendChild(wrap.firstChild);
+      el('v2i-new').onclick=function(){ openForm(null); };
+      el('v2i-cancel').onclick=closeForm;
+      el('v2i-save').onclick=saveForm;
+      renderList();
+    }
+  }
+
+  function tick(){
+    try{
+      mountCustom();
+      var changed=syncCustomProgress();
+      refreshLevel();
+      if(changed)renderList();
+    }catch(e){}
+  }
+
+  if(document.readyState==='complete'||document.readyState==='interactive'){ tick(); } else { window.addEventListener('load',tick); }
+  setInterval(tick, 1600);
+  window.catedraLevelInfo=function(){ return levelInfo(); };
+  window.catedraSyncCustom=function(){ syncCustomProgress(); refreshLevel(); };
+})();</script>
