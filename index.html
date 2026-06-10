@@ -11392,6 +11392,61 @@ h1,h2,h3,h4,.blk-t{letter-spacing:-.015em;}
   setInterval(boot,1800);
 })();
 </script>
+<style id="catedra-light-theme-dark-panels-fix">
+  /* Painéis escuros por design (rodada produto): em temas claros o texto interno
+     deve continuar claro e os campos internos escuros — sem isso, o tema claro
+     mistura texto escuro sobre painel escuro. */
+  body:not(.mentor-video-theme) #view-edital .ed-product-actions button,
+  body:not(.mentor-video-theme) #view-edital .ed-product-actions label,
+  body:not(.mentor-video-theme) #ed-quick-toggle,
+  body:not(.mentor-video-theme) #view-edital .ed-tab-panel .topic,
+  body:not(.mentor-video-theme) #view-edital .ed-drag-handle,
+  body:not(.mentor-video-theme) .cycle-step,
+  body:not(.mentor-video-theme) #view-erros.errors-lab-active .errors-lab-hero,
+  body:not(.mentor-video-theme) .errors-lab-card,
+  body:not(.mentor-video-theme) .errors-lab-item,
+  body:not(.mentor-video-theme) .errors-lab-actions button,
+  body:not(.mentor-video-theme) #view-dominio .dom-hero,
+  body:not(.mentor-video-theme) #view-dominio .dom-risk-row,
+  body:not(.mentor-video-theme) #view-dominio .dom-table,
+  body:not(.mentor-video-theme) #sim-subjects .sim-subrow,
+  body:not(.mentor-video-theme) #appearance-control-panel,
+  body:not(.mentor-video-theme) .ap-mode-btn,
+  body:not(.mentor-video-theme) .color-sync-panel,
+  body:not(.mentor-video-theme) .mode-choice,
+  body:not(.mentor-video-theme) #view-revisoes.rev-lab-active > .card,
+  body:not(.mentor-video-theme) .rev-filter-chip{
+    --text:#edf7ff;
+    --text-2:#c9dfff;
+    --text-3:#9db8e4;
+    --surface:#0c1d49;
+    --surface-2:rgba(10,28,70,.65);
+    --border:rgba(84,151,255,.28);
+    --border-2:rgba(84,151,255,.34);
+    color:var(--text-2);
+  }
+  /* fundos translúcidos viram cinza sobre tema claro — usar tom sólido */
+  body:not(.mentor-video-theme) #view-edital .ed-product-actions button,
+  body:not(.mentor-video-theme) #view-edital .ed-product-actions label,
+  body:not(.mentor-video-theme) #ed-quick-toggle,
+  body:not(.mentor-video-theme) .cycle-step,
+  body:not(.mentor-video-theme) .errors-lab-card,
+  body:not(.mentor-video-theme) #view-dominio .dom-risk-row,
+  body:not(.mentor-video-theme) #sim-subjects .sim-subrow,
+  body:not(.mentor-video-theme) #appearance-control-panel,
+  body:not(.mentor-video-theme) .color-sync-panel{background:#122a5e!important;}
+  body:not(.mentor-video-theme) #view-edital .ed-tab-panel .topic{background:#13295f!important;}
+  body:not(.mentor-video-theme) #view-edital .ed-tab-panel .topic:hover{background:#16306b!important;}
+  body:not(.mentor-video-theme) #view-edital .ed-drag-handle,
+  body:not(.mentor-video-theme) .errors-lab-item,
+  body:not(.mentor-video-theme) .errors-lab-actions button,
+  body:not(.mentor-video-theme) .ap-mode-btn,
+  body:not(.mentor-video-theme) .mode-choice,
+  body:not(.mentor-video-theme) .rev-filter-chip,
+  body:not(.mentor-video-theme) .rev-focus-meta span{background:#0d2152!important;}
+  body:not(.mentor-video-theme) #view-dominio .dom-table td{background:#0f2456!important;}
+  body:not(.mentor-video-theme) .anki-template-grid input{background:#0d2152!important;color:#edf7ff!important;}
+</style>
 <style id="catedra-dark-contrast-fix">
   /* Correcao de contraste: modulos com cores fixas de tema claro sobre o tema escuro */
   body.mentor-video-theme .v2i-level-card{background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(18,42,101,.92))!important;border-color:rgba(168,85,247,.35)!important;}
