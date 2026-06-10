@@ -6543,9 +6543,16 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
 </script>
 <!-- ===== fim PATCH EDITAL ===== -->
 
-<!-- Edital V2: reorder (KPIs abaixo do titulo, dados e disciplinas), chips elegantes, subtopicos persistentes, distribuicao removida, peso em estatisticas, form mesclado em ajustes -->
+<!-- Edital V2b: ordem (KPIs > seletor de disciplinas > dados da disciplina), layout largura total, sessao com dados opcionais de Anki, subtopicos persistentes, distribuicao removida, peso em estatisticas, form mesclado em ajustes -->
 <style id="edital-v2-css">
 #edital-disc-picker{margin:4px 0 22px 0}#edital-disc-picker .edrg-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 14px 2px;gap:12px}#edital-disc-picker .edrg-label{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text-2,#8a8f98);display:flex;align-items:center;gap:8px}#edital-disc-picker .edrg-label svg{width:14px;height:14px;opacity:.55}#edital-disc-picker .edrg-count{font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--text-2,#9aa0ab)}#edital-disc-picker .ed-tabs{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;background:transparent;border:0;overflow:visible}#edital-disc-picker .ed-tab{position:relative;display:inline-flex;align-items:center;gap:9px;padding:9px 15px;border-radius:12px;border:1px solid var(--border,rgba(130,140,160,.14));background:var(--surface,#fff);color:var(--text,#1e2430);font-size:13px;font-weight:600;letter-spacing:-.01em;cursor:pointer;transition:transform .18s cubic-bezier(.4,0,.2,1),box-shadow .18s,border-color .18s,background .18s;box-shadow:0 1px 2px rgba(20,25,40,.03)}#edital-disc-picker .ed-tab:hover{border-color:var(--border,rgba(130,140,160,.3));background:var(--surface-2,#fafaf8);transform:translateY(-1.5px);box-shadow:0 6px 16px rgba(20,25,40,.07)}#edital-disc-picker .ed-tab.active{background:var(--emerald,#0c8a5b);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(12,138,91,.30);transform:none}#edital-disc-picker .ed-tab.active:hover{transform:translateY(-1.5px)}#edital-disc-picker .ed-tab.active .ed-tab-count{background:rgba(255,255,255,.2);color:#fff}#edital-disc-picker .ed-tab.active .ed-tab-dot{box-shadow:0 0 0 3px rgba(255,255,255,.35)}#edital-disc-picker .ed-tab-dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto;transition:box-shadow .18s}#edital-disc-picker .ed-tab-t{white-space:nowrap;line-height:1.2}#edital-disc-picker .ed-tab-count{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--chip,rgba(130,140,160,.1));color:var(--text-2,#7a808b);line-height:1.5;letter-spacing:.01em}@media (max-width:640px){#edital-disc-picker .ed-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:thin}#edital-disc-picker .ed-tab{flex:0 0 auto}}.v2-dist-hidden{display:none !important}.v2-merged-form{margin-top:16px;padding-top:16px;border-top:1px dashed var(--border,rgba(130,140,160,.22))}.v2-merged-form .v2-mf-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2,#8a8f98);margin:0 0 10px}#stats-peso-card .v2-peso-grid{display:grid;grid-template-columns:1fr auto;gap:8px 14px;align-items:center;max-height:340px;overflow:auto;padding-right:4px}#stats-peso-card .v2-peso-name{font-size:13.5px;font-weight:600;color:var(--text,#1e2430);display:flex;align-items:center;gap:9px}#stats-peso-card .v2-peso-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}#stats-peso-card .v2-peso-input{width:78px;padding:7px 10px;border-radius:9px;border:1px solid var(--border,rgba(130,140,160,.2));background:var(--surface,#fff);color:var(--text,#1e2430);font-size:13.5px;font-weight:600;text-align:center}#stats-peso-card .v2-peso-input:focus{outline:none;border-color:var(--emerald,#0c8a5b);box-shadow:0 0 0 3px rgba(12,138,91,.12)}#stats-peso-card .v2-peso-hd{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2,#8a8f98)}
+
+/* V2b: full-width layout */
+.content{max-width:1600px !important;}
+@media(min-width:1700px){.content{max-width:90% !important;}}
+/* V2b: anki optional fields */
+#anki-extra .field label{font-size:11px;color:#8a8f98;}
+#anki-extra .v2-anki-title{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:#8a8f98;margin:6px 0 8px;font-weight:600;}
 </style>
 <script>
 (function(){
@@ -6598,8 +6605,8 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
     var cnt=document.getElementById('edrg-count'); var tabs=host.querySelector('.ed-tabs');
     if(cnt&&tabs){ var n=tabs.querySelectorAll('.ed-tab').length; cnt.textContent=n+(n===1?' matéria':' matérias'); }
     if(intro&&kpis&&kpis.parentElement===view){ if(intro.nextSibling!==kpis) view.insertBefore(kpis,intro.nextSibling); }
-    if(kpis&&meta&&meta.parentElement===view){ if(kpis.nextSibling!==meta) view.insertBefore(meta,kpis.nextSibling); }
-    if(meta&&host&&host.parentElement===view){ if(meta.nextSibling!==host) view.insertBefore(host,meta.nextSibling); }
+    if(kpis&&host&&host.parentElement===view){ if(kpis.nextSibling!==host) view.insertBefore(host,kpis.nextSibling); }
+    if(host&&meta&&meta.parentElement===view){ if(host.nextSibling!==meta) view.insertBefore(meta,host.nextSibling); }
     Array.from(view.children).forEach(function(c){ if(c.classList&&c.classList.contains('card') && /Distribuição de pesos e tempo/.test(c.textContent)){ c.classList.add('v2-dist-hidden'); } });
   }
   window.__editalV2Relocate=relocate;
@@ -6652,7 +6659,48 @@ var navBtn=document.querySelector('[data-view="edital"]');if(navBtn){navBtn.addE
     if(typeof window.renderEdital==='function' && !window.renderEdital.__v2){ var o=window.renderEdital; window.renderEdital=function(){var r=o.apply(this,arguments);try{relocate();}catch(e){} try{reapplySubs();}catch(e){} return r;}; window.renderEdital.__v2=true; }
     if(typeof window.renderStats==='function' && !window.renderStats.__v2){ var o2=window.renderStats; window.renderStats=function(){var r=o2.apply(this,arguments);try{renderPeso();}catch(e){}return r;}; window.renderStats.__v2=true; }
   }
-  function tick(){ hookRender(); try{relocate();}catch(e){} try{mergeForm();}catch(e){} try{renderPeso();}catch(e){} }
+  function ankiModule(){ try{
+var modal=document.getElementById('session-modal'); if(!modal) return;
+var grid=modal.querySelector('.form-grid'); var cat=document.getElementById('f-cat'); if(!grid||!cat) return;
+var hasOpt=false; for(var i=0;i<cat.options.length;i++){ if(cat.options[i].value==='anki') hasOpt=true; }
+if(!hasOpt){ var op=document.createElement('option'); op.value='anki'; op.textContent='Anki (cartoes)'; cat.appendChild(op); }
+if(!document.getElementById('anki-extra')){
+var box=document.createElement('div'); box.id='anki-extra'; box.style.cssText='display:none;grid-column:1/-1;';
+box.innerHTML='<div class="v2-anki-title">Dados do Anki (opcionais)</div>'
++'<div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;">'
++'<div class="field"><label>Cartoes revisados</label><input id="f-anki-rev" type="number" min="0" placeholder="ex.: 120"></div>'
++'<div class="field"><label>Cartoes novos</label><input id="f-anki-new" type="number" min="0" placeholder="ex.: 20"></div>'
++'<div class="field"><label>Retencao (%)</label><input id="f-anki-ret" type="number" min="0" max="100" placeholder="ex.: 88"></div>'
++'<div class="field"><label>Tempo Anki (min)</label><input id="f-anki-min" type="number" min="0" placeholder="ex.: 25"></div>'
++'</div>';
+grid.appendChild(box);
+}
+var box=document.getElementById('anki-extra');
+function toggleA(){ box.style.display=(cat.value==='anki')?'block':'none'; }
+if(!cat.__v2anki){ cat.addEventListener('change', toggleA); cat.__v2anki=true; }
+toggleA();
+var btn=document.getElementById('log-save');
+if(btn && !btn.__v2anki){
+btn.addEventListener('click', function(){ try{
+var st=(window.state); if(!st||!st.sessions||!st.sessions.length) return;
+var rev=parseInt((document.getElementById('f-anki-rev')||{}).value)||0;
+var nw=parseInt((document.getElementById('f-anki-new')||{}).value)||0;
+var retR=(document.getElementById('f-anki-ret')||{}).value; var ret=(retR===''||retR==null)?null:parseInt(retR);
+var amin=parseInt((document.getElementById('f-anki-min')||{}).value)||0;
+if(cat.value==='anki' || rev||nw||amin||(ret!=null && !isNaN(ret))){
+var last=st.sessions[st.sessions.length-1];
+last.anki={rev:rev,nw:nw,ret:(ret!=null&&!isNaN(ret))?ret:null,min:amin};
+if(!Array.isArray(st.anki)) st.anki=[];
+st.anki.push({id:last.id,date:last.date,disc:last.disc,rev:rev,nw:nw,ret:(ret!=null&&!isNaN(ret))?ret:null,min:amin});
+if(typeof window.save==='function') window.save();
+['f-anki-rev','f-anki-new','f-anki-ret','f-anki-min'].forEach(function(id){var e=document.getElementById(id); if(e) e.value='';});
+try{ if(typeof window.__catedraRefreshAll==='function') window.__catedraRefreshAll(); }catch(e){}
+}
+}catch(e){} }, false);
+btn.__v2anki=true;
+}
+}catch(e){} }
+function tick(){ hookRender(); try{relocate();}catch(e){} try{mergeForm();}catch(e){} try{renderPeso();}catch(e){} try{ankiModule();}catch(e){} }
   hookRender();
   var n=0; var iv=setInterval(function(){ tick(); if(++n>25)clearInterval(iv); },400);
   document.addEventListener('DOMContentLoaded',tick);
