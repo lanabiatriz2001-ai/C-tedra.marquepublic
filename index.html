@@ -7444,7 +7444,23 @@ function v2gRiskRefresh(){
   try{ if(window.__catedraRefreshAll)window.__catedraRefreshAll(); }catch(e){}
 }
 function v2gRiskTick(){
-  try{ var host=document.getElementById('dom-risk-map'); if(!host)return; v2gRenderRiskMap(); }catch(e){}
+  try{
+    var host=document.getElementById('dom-risk-map'); if(!host)return;
+    if(!host.__v2gObserved){
+      host.__v2gObserved=true;
+      try{
+        var mo=new MutationObserver(function(){
+          if(host.__v2gGuard)return;
+          var fc=host.firstElementChild;
+          var mine=fc && (fc.classList && (fc.classList.contains('v2g-risk-row') || (fc.classList.contains('empty') && /Registre sess|risco relevante|Sem disciplinas/.test(fc.textContent))));
+          if(!mine){ host.__v2gGuard=true; try{ v2gRenderRiskMap(); }catch(e){} host.__v2gGuard=false; }
+        });
+        mo.observe(host,{childList:true});
+        host.__v2gMo=mo;
+      }catch(e){}
+    }
+    host.__v2gGuard=true; try{ v2gRenderRiskMap(); }catch(e){} host.__v2gGuard=false;
+  }catch(e){}
 }
 
 function tick(){ try{simuladoModule();}catch(e){} try{sessionModule();}catch(e){} try{metaQuickActions();}catch(e){} try{relabelAjustes();}catch(e){} try{statsInfoTable();}catch(e){} hookRender(); try{relocate();}catch(e){} try{buildDropdown();}catch(e){} try{mergeForm();}catch(e){} try{renderPeso();}catch(e){} try{ankiModule();}catch(e){}  try{v2gSimuladoModule();}catch(e){} try{v2gRiskTick();}catch(e){} }
