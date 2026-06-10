@@ -2745,7 +2745,13 @@ function renderEdital(){
     kpi(st.pend,'Pendentes','--amber','M9 6l6 6-6 6','')+
     kpi(st.pct+'%','Progresso','--purple','M3 17l6-6 4 4 7-8','')+
     kpi(new Set(state.edital.map(t=>t.disc)).size,'Disciplinas','--red','M4 6h16M4 12h16M4 18h10','');
-  const list=document.getElementById('edital-list');list.innerHTML='';
+  const list=document.getElementById('edital-list');
+  /* CRÍTICO: a lateral vive dentro de #edital-list, que é zerada a cada render.
+     Estaciona os cards persistentes fora antes de limpar, senão são destruídos. */
+  {let park=document.getElementById('ed-park');
+   if(!park){park=document.createElement('div');park.id='ed-park';park.style.display='none';document.body.appendChild(park);}
+   ['card-importar','card-ed-add','edital-meta-wrap-f21','edital-meta-wrap','ed-disc-tools'].forEach(id=>{const n=document.getElementById(id);if(n&&list.contains(n))park.appendChild(n);});}
+  list.innerHTML='';
   if(st.total===0){list.innerHTML='<div class="card"><div class="empty">Nenhum tópico cadastrado. Use o formulário acima — pode colar vários de uma vez, um por linha.</div></div>';return;}
 
   const groups={};state.edital.forEach(t=>{(groups[t.disc]=groups[t.disc]||[]).push(t);});
