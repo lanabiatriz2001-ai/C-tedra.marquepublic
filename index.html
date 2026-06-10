@@ -1596,6 +1596,17 @@ const Store={
 const SUPA_URL  = 'https://glzgqlxfvsfivyydfsbz.supabase.co';
 const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdsemdxbHhmdnNmaXZ5eWRmc2J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0OTU0OTMsImV4cCI6MjA5NjA3MTQ5M30.BZx5_kjbDZfNSccZOmkr46UwuRjyYpj_8OpUGmP43Yg';
 let cloudLoaded = false;
+let _cloudPushTimer = null;
+let _cloudErrorShown = false;
+function cloudWarn(detail){
+  console.error('[Cátedra sync]', detail);
+  try{
+    if(!_cloudErrorShown && typeof toast === 'function'){
+      _cloudErrorShown = true;
+      toast('⚠️ Falha ao salvar na nuvem — dados mantidos só neste aparelho', 4500);
+    }
+  }catch(e){}
+}
 function catedraAuth(){
   try{
     const k = Object.keys(localStorage).find(x => x.startsWith('sb-') && x.endsWith('-auth-token'));
@@ -1605,14 +1616,27 @@ function catedraAuth(){
     return { uid: v.user.id, token: v.access_token };
   }catch(e){ return null; }
 }
+async function getCloudAuth(){
+  try{
+    if(window.sb && window.sb.auth){
+      const { data } = await window.sb.auth.getSession();
+      if(data && data.session) return { uid: data.session.user.id, token: data.session.access_token };
+    }
+  }catch(e){}
+  return catedraAuth();
+}
 async function loadState(){try{const v=localStorage.getItem(KEY);if(v)return JSON.parse(v);}catch(e){}return defaultState();}
 async function save(){const j=JSON.stringify(state);try{localStorage.setItem(KEY,j);}catch(e){}pushStateToCloud();}
-async function pushStateToCloud(){
-  if(!cloudLoaded) return;
-  const a = catedraAuth();
+function pushStateToCloud(){
+  clearTimeout(_cloudPushTimer);
+  _cloudPushTimer = setTimeout(_pushStateNow, 800);
+}
+async function _pushStateNow(){
+  const a = await getCloudAuth();
   if(!a) return;
+  if(!cloudLoaded){ await catedraLoadFromCloud(); }
   try{
-    await fetch(SUPA_URL + '/rest/v1/app_state', {
+    const r = await fetch(SUPA_URL + '/rest/v1/app_state?on_conflict=user_id', {
       method: 'POST',
       headers: {
         'apikey': SUPA_ANON,
@@ -1622,22 +1646,33 @@ async function pushStateToCloud(){
       },
       body: JSON.stringify({ user_id: a.uid, state: state, atualizado_em: new Date().toISOString() })
     });
-  }catch(e){ console.error('pushStateToCloud', e); }
+    if(!r.ok){
+      const t = await r.text().catch(()=> '');
+      cloudWarn('Erro ao salvar (HTTP ' + r.status + '): ' + t.slice(0,300));
+    } else {
+      _cloudErrorShown = false;
+    }
+  }catch(e){ cloudWarn('pushStateToCloud: ' + (e && e.message || e)); }
 }
 async function catedraLoadFromCloud(){
   try{
-    const a = catedraAuth();
+    const a = await getCloudAuth();
     if(!a) return;
     const r = await fetch(SUPA_URL + '/rest/v1/app_state?user_id=eq.' + a.uid + '&select=state', {
       headers: { 'apikey': SUPA_ANON, 'Authorization': 'Bearer ' + a.token }
     });
+    if(!r.ok){
+      const t = await r.text().catch(()=> '');
+      cloudWarn('Erro ao carregar da nuvem (HTTP ' + r.status + '): ' + t.slice(0,300));
+      return;
+    }
     const rows = await r.json();
     if(Array.isArray(rows) && rows[0] && rows[0].state){
       state = rows[0].state;
       localStorage.setItem('catedra:state', JSON.stringify(state));
       if(typeof initAll === 'function') initAll();
     }
-  }catch(e){ console.error('catedraLoadFromCloud', e); }
+  }catch(e){ cloudWarn('catedraLoadFromCloud: ' + (e && e.message || e)); }
   finally{ cloudLoaded = true; }
 }
 window.catedraLoadFromCloud = catedraLoadFromCloud;
