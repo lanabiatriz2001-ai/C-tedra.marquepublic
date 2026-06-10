@@ -2820,13 +2820,22 @@ function renderEdital(){
     +'<div class="gbar" style="margin-top:10px;"><i style="width:'+pct+'%;background:'+colorOf(disc)+'"></i></div>';
   const acoes=document.createElement('div');acoes.className='card';acoes.style.marginTop='16px';
   acoes.innerHTML='<div class="card-h"><h3>Ações rápidas</h3><span class="hint">organização do edital</span></div>'
-    +'<div class="ed-acoes"><button class="btn-ghost" id="ed-act-reorder">Reorganizar tópicos</button>'
+    +'<div class="ed-acoes"><button class="btn-ghost" id="ed-act-import">⬇ Importar edital</button>'
+    +'<button class="btn-ghost" id="ed-act-addtop">＋ Adicionar tópicos</button>'
+    +'<button class="btn-ghost" id="ed-act-reorder">Reorganizar tópicos</button>'
     +'<button class="btn-ghost" id="ed-act-sub">Adicionar subtópico</button>'
     +'<button class="btn-ghost" id="ed-act-exportar">Exportar disciplina</button>'
     +'<button class="btn" id="ed-act-salvar">Salvar alterações</button></div>';
   aside.appendChild(resumo);aside.appendChild(acoes);
   split.appendChild(card);split.appendChild(aside);
   list.appendChild(split);
+  const _goCard=id=>{const c=document.getElementById(id);if(!c){toast('card não encontrado');return;}
+    c.scrollIntoView({behavior:'smooth',block:'center'});
+    c.style.outline='2px solid var(--emerald)';c.style.outlineOffset='3px';
+    setTimeout(()=>{c.style.outline='';c.style.outlineOffset='';},1800);
+    const inp=c.querySelector('textarea,input');if(inp)setTimeout(()=>inp.focus(),450);};
+  const _im=acoes.querySelector('#ed-act-import');if(_im)_im.onclick=()=>_goCard('card-importar');
+  const _at=acoes.querySelector('#ed-act-addtop');if(_at)_at.onclick=()=>_goCard('card-ed-add');
   const _re=acoes.querySelector('#ed-act-reorder');if(_re)_re.onclick=()=>{window.editalReorderMode=!window.editalReorderMode;renderEdital();};
   const _sub=acoes.querySelector('#ed-act-sub');if(_sub)_sub.onclick=()=>{const tg=card.querySelector('.topic .sub-toggle');if(tg){tg.click();tg.scrollIntoView({block:'center'});}else toast('Cadastre um tópico primeiro');};
   const _ex=acoes.querySelector('#ed-act-exportar');if(_ex)_ex.onclick=()=>{const txt=disc+'\n'+items.map((t,i)=>String(i+1).padStart(2,'0')+'. '+t.t+(t.inc?(' ['+t.inc+']'):'')).join('\n');try{navigator.clipboard.writeText(txt);toast('disciplina copiada ✓');}catch(e){toast('copie manualmente');}};
@@ -8302,6 +8311,8 @@ function tick(){ try{simuladoModule();}catch(e){} try{sessionModule();}catch(e){
 /* imagem 2: painel "Dados da disciplina" removido — sobra apenas a parte da imagem 3 (estatísticas + tópicos e status) */
 #edital-meta-wrap>.card-h,#edital-meta-wrap-f21>.card-h,#edm-quick,#edital-meta-panel .edm-disc-name,#edital-meta-panel .edm-grid,#edital-meta-panel .edm-row{display:none!important;}
 #edital-meta-wrap,#edital-meta-wrap-f21{margin:0!important;}
+/* lista de status com rolagem interna: a lateral não vira um paredão e Importar/Adicionar ficam alcançáveis */
+#edital-meta-wrap-f21 .edm-topics,#edital-meta-wrap .edm-topics{max-height:300px;overflow-y:auto;}
 /* imagem 7: card "Pesos, questões e disciplinas" sai de Ajustes */
 #view-ajustes .card:has(#disc-list){display:none!important;}
 /* lateral única */
