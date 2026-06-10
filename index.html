@@ -298,7 +298,7 @@ body{background:var(--canvas);}
   .mini-dot.on svg{stroke-dashoffset:0;}
   .mini-tx{flex:1;min-width:0;}
   .mini-tx .t{font-size:13.5px;font-weight:600;}
-  .mini-blk.on .mini-tx .t{color:var(--text-3);text-decoration:line-through;}
+  .mini-blk.on .mini-tx .t{color:var(--text-3);}
   .mini-tx .s{font-size:11.5px;color:var(--text-3);}
   .mini-tag{font-size:10px;font-weight:600;color:var(--text-3);background:var(--surface-2);border:1px solid var(--border);padding:2px 8px;border-radius:99px;flex-shrink:0;}
 
@@ -422,7 +422,7 @@ body{background:var(--canvas);}
   .q-mv:hover{border-color:var(--emerald);color:var(--emerald-d);}
   .dt-item{display:flex;align-items:center;gap:11px;padding:8px 4px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-3);}
   .dt-item:last-child{border-bottom:none;}
-  .dt-item .t{text-decoration:line-through;flex:1;min-width:0;}
+  .dt-item .t{flex:1;min-width:0;color:var(--text-3);}
   .dt-undo{flex-shrink:0;font-size:11px;font-weight:600;color:var(--text-2);background:var(--surface-2);border:1px solid var(--border-2);border-radius:7px;padding:3px 9px;cursor:pointer;}
   .dt-undo:hover{border-color:var(--amber);color:var(--amber);}
   .rot-toggle{flex-shrink:0;font-size:10px;font-weight:700;letter-spacing:.03em;border-radius:7px;padding:5px 8px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-3);cursor:pointer;}
@@ -432,7 +432,7 @@ body{background:var(--canvas);}
   .blk-subs{margin-top:9px;display:flex;flex-direction:column;gap:3px;}
   .sub-chk{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-2);cursor:pointer;padding:2px 0;}
   .sub-chk input{accent-color:var(--emerald);width:14px;height:14px;cursor:pointer;flex-shrink:0;margin:0;}
-  .sub-chk.on span{text-decoration:line-through;color:var(--text-3);}
+  .sub-chk.on span{color:var(--text-3);}
   .blk-sub-prog{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
   /* anotação por tarefa */
   .blk-extra{margin-top:8px;display:flex;gap:7px;align-items:center;}
@@ -525,7 +525,7 @@ body{background:var(--canvas);}
   .tdot svg{width:11px;height:11px;stroke:#fff;stroke-width:3;fill:none;stroke-dasharray:18;stroke-dashoffset:18;transition:stroke-dashoffset .25s;}
   .tdot.on svg{stroke-dashoffset:0;}
   .topic .tt{flex:1;min-width:0;font-size:13.5px;font-weight:500;}
-  .topic.on .tt{color:var(--text-3);text-decoration:line-through;}
+  .topic.on .tt{color:var(--text-3);}
   .topic .trm{flex-shrink:0;width:28px;height:28px;border-radius:7px;border:1px solid transparent;background:none;color:var(--text-3);font-size:13px;opacity:0;transition:all .15s;}
   .topic:hover .trm{opacity:1;}
   .topic .trm:hover{color:var(--red);background:var(--red-soft);}
@@ -695,7 +695,7 @@ body{background:var(--canvas);}
   .cal-cell.today .cal-daynum{background:var(--emerald);color:#fff;}
   .cal-ev{font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:3px solid var(--text-3);line-height:1.4;}
   .cal-ev.rev{background:var(--surface-2)!important;border-left-style:dashed;}
-  .cal-ev.is-done{opacity:.5;text-decoration:line-through;}
+  .cal-ev.is-done{opacity:.55;}
   .cal-more{font-size:10px;color:var(--text-3);font-weight:600;padding-left:3px;}
   .cal-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:11.5px;color:var(--text-3);}
   .cal-legend span{display:flex;align-items:center;gap:7px;}
@@ -715,7 +715,7 @@ body{background:var(--canvas);}
   .day-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
   .day-item .di-m{flex:1;min-width:0;}
   .day-item .di-t{font-size:13.5px;font-weight:600;}
-  .day-item.di-done .di-t{color:var(--text-3);text-decoration:line-through;}
+  .day-item.di-done .di-t{color:var(--text-3);}
   .day-item .di-s{font-size:11.5px;color:var(--text-3);margin-top:1px;}
   .day-item .di-act{display:flex;gap:6px;flex-shrink:0;}
   .day-item .di-act button{width:30px;height:30px;border-radius:8px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-2);font-size:13px;display:flex;align-items:center;justify-content:center;}
@@ -4418,7 +4418,7 @@ function rolloverDay(){
       const cb=document.createElement('button'); cb.type='button'; cb.className='cal-check'; cb.textContent=ev.done?'✓':'○'; cb.title='Marcar atividade';
       cb.style.cssText='border:0;background:rgba(255,255,255,.22);color:#fff;border-radius:6px;margin-right:4px;font-weight:900;cursor:pointer';
       cb.onclick=function(e){e.stopPropagation(); ev.done=!ev.done; saveAll(); safe(()=>window.__catedraRenderCalendario&&window.__catedraRenderCalendario(),null);};
-      el.prepend(cb); if(ev.done)el.style.textDecoration='line-through';
+      el.prepend(cb); if(ev.done)el.style.opacity='.6';
     });
   }
 
@@ -5483,7 +5483,7 @@ if(a){s.setProperty('--emerald',a,'important');s.setProperty('--emerald-d',shade
           var dot=document.createElement("button"); dot.type="button";
           dot.style.cssText="width:16px;height:16px;border-radius:5px;border:1.5px solid "+(it.done?"var(--emerald)":"var(--border)")+";background:"+(it.done?"var(--emerald)":"transparent")+";cursor:pointer;flex:0 0 auto";
           dot.onclick=function(){ it.done=!it.done; it.st=it.done?'concluido':'pendente'; persist(); renderPanel(); toggle.textContent=badge(); refresh(); };
-          var tx=document.createElement("span"); tx.textContent=it.t; tx.style.cssText="flex:1"+(it.done?";text-decoration:line-through;color:var(--text-3)":"");
+          var tx=document.createElement("span"); tx.textContent=it.t; tx.style.cssText="flex:1"+(it.done?";color:var(--text-3)":"");
           /* status do subt\u00f3pico (Fase 2) */
           var stb=document.createElement("button"); stb.type="button";
           try{var sk=it.st||(it.done?'concluido':'pendente');var sc=EDITAL_ST[sk];
@@ -6581,7 +6581,7 @@ if(a){s.setProperty('--emerald',a,'important');s.setProperty('--emerald-d',shade
   .public-checklist{display:grid;gap:10px;}
   .public-check{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:20px;padding:13px 15px;background:color-mix(in srgb,var(--surface) 88%,transparent);}
   .public-check input{width:24px;height:24px;accent-color:var(--emerald);}
-  .public-check.done{opacity:.62}.public-check.done strong{text-decoration:line-through;color:var(--text-3)}
+  .public-check.done{opacity:.62}.public-check.done strong{color:var(--text-3)}
   .public-check-main strong{display:block;font-size:14px}.public-check-main span{display:block;font-size:12.4px;color:var(--text-2);line-height:1.4;margin-top:2px;}
   .public-check-open{border:none;border-radius:14px;padding:10px 13px;font-weight:700;cursor:pointer;background:#ff4d9d;color:#fff;}
   .public-check-open.ghost{background:transparent;color:var(--text-2);border:1px solid var(--border);}
@@ -9817,8 +9817,7 @@ function tick(){ try{simuladoModule();}catch(e){} try{sessionModule();}catch(e){
 #edital-meta-wrap,#edital-meta-wrap-f21{margin:0!important;}
 /* lista de status com rolagem interna: a lateral não vira um paredão e Importar/Adicionar ficam alcançáveis */
 #edital-meta-wrap-f21 .edm-topics,#edital-meta-wrap .edm-topics{max-height:300px;overflow-y:auto;}
-/* imagem 7: card "Pesos, questões e disciplinas" sai de Ajustes */
-#view-ajustes .card:has(#disc-list){display:none!important;}
+/* card "Pesos, questões e disciplinas" restaurado em Ajustes (cadastro de disciplinas) */
 /* lateral única */
 .ed-panel-aside>*{margin-bottom:16px!important;margin-top:0!important;}
 /* ferramentas sutis da disciplina (cor · peso · questões) */
@@ -9970,11 +9969,11 @@ h1,h2,h3,h4,.blk-t{letter-spacing:-.015em;}
 </style>
 
 
-<script>(function(){function catedraNormStr(s){return String(s==null?'':s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ');} function catedraReconcile(state,dryRun){var report={changed:0,orphans:[],details:[]};if(!state||!Array.isArray(state.discs)||!Array.isArray(state.edital))return report;var canon={};state.discs.forEach(function(d){var n=catedraNormStr(d);if(!(n in canon))canon[n]=d;});var exact={};state.discs.forEach(function(d){exact[d]=true;});state.edital.forEach(function(it){if(!it||typeof it.disc!=='string')return;if(exact[it.disc])return;var n=catedraNormStr(it.disc);if(n in canon){report.changed++;report.details.push({from:it.disc,to:canon[n]});if(!dryRun)it.disc=canon[n];}else{report.orphans.push({disc:it.disc,topic:it.t});}});return report;} window.catedraNormStr=catedraNormStr;window.catedraReconcile=catedraReconcile;try{if(typeof window.save==='function'&&!window.__catedraReconcileHooked){var _origSave=window.save;window.save=function(){try{var raw=localStorage.getItem('catedra:state');if(raw){var st=JSON.parse(raw);var rep=catedraReconcile(st,false);if(rep.changed>0){localStorage.setItem('catedra:state',JSON.stringify(st));if(rep.orphans.length)console.warn('[CATEDRA] orfaos detectados (nao removidos):',rep.orphans);}}}catch(e){console.warn('[CATEDRA] reconcile skip:',e);}return _origSave.apply(this,arguments);};window.__catedraReconcileHooked=true;}}catch(e){console.warn('[CATEDRA] hook skip:',e);}})();</script>
+<script>(function(){function catedraNormStr(s){return String(s==null?'':s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ');} function catedraReconcile(state,dryRun){var report={changed:0,orphans:[],details:[]};if(!state||!Array.isArray(state.discs)||!Array.isArray(state.edital))return report;var canon={};state.discs.forEach(function(d){var n=catedraNormStr(d);if(!(n in canon))canon[n]=d;});var exact={};state.discs.forEach(function(d){exact[d]=true;});state.edital.forEach(function(it){if(!it||typeof it.disc!=='string')return;if(exact[it.disc])return;var n=catedraNormStr(it.disc);if(n in canon){report.changed++;report.details.push({from:it.disc,to:canon[n]});if(!dryRun)it.disc=canon[n];}else{report.orphans.push({disc:it.disc,topic:it.t});if(!dryRun){state.discs.push(it.disc);canon[n]=it.disc;exact[it.disc]=true;report.changed++;(report.adopted=report.adopted||[]).push(it.disc);}}});return report;} window.catedraNormStr=catedraNormStr;window.catedraReconcile=catedraReconcile;try{if(typeof window.save==='function'&&!window.__catedraReconcileHooked){var _origSave=window.save;window.save=function(){try{var st=(typeof window.state==='object'&&window.state)?window.state:null;if(st&&Array.isArray(st.discs)&&Array.isArray(st.edital)){var rep=catedraReconcile(st,false);if(rep.changed>0){try{if(typeof window.syncDiscs==='function')window.syncDiscs();}catch(e2){}try{if(typeof window.refreshDiscSelects==='function')window.refreshDiscSelects();}catch(e3){}if(rep.adopted&&rep.adopted.length)console.info('[CATEDRA] disciplinas recuperadas e cadastradas automaticamente:',rep.adopted);}}}catch(e){console.warn('[CATEDRA] reconcile skip:',e);}return _origSave.apply(this,arguments);};window.__catedraReconcileHooked=true;}}catch(e){console.warn('[CATEDRA] hook skip:',e);}})();</script>
 
 <script>(function(){var tries=0;function applyExt(){if(window.__catedraRefreshExtended)return;if(typeof window.__catedraRefreshAll==='function'){var _o=window.__catedraRefreshAll;window.__catedraRefreshAll=function(){var r=_o.apply(this,arguments);['recomputeQuadro','renderQuadro','renderDiscs','renderWeek'].forEach(function(fn){try{if(typeof window[fn]==='function')window[fn]();}catch(e){}});return r;};window.__catedraRefreshExtended=true;}else if(tries++<60){setTimeout(applyExt,250);}}if(document.readyState==='complete'){applyExt();}else{window.addEventListener('load',applyExt);}setTimeout(applyExt,1000);})();</script>
 
-                                                                                           <script>(function(){var tries=0;function showOrphanAlert(){try{var raw=localStorage.getItem('catedra:state');if(!raw)return;var st=JSON.parse(raw);if(typeof window.catedraReconcile!=='function')return;var rep=window.catedraReconcile(st,true);var box=document.getElementById('catedra-orphan-alert');if(!rep.orphans||!rep.orphans.length){if(box)box.style.display='none';return;}if(!box){box=document.createElement('div');box.id='catedra-orphan-alert';box.style.cssText='position:fixed;bottom:16px;left:16px;max-width:360px;z-index:99999;background:#fff7ed;border:1px solid #fdba74;color:#7c2d12;padding:12px 14px;border-radius:10px;box-shadow:0 8px 30px rgba(20,20,30,.15);font:13px/1.4 system-ui,sans-serif;';document.body.appendChild(box);}var names=rep.orphans.slice(0,5).map(function(o){return (o.topic||'')+' ('+o.disc+')';}).join('; ');var extra=rep.orphans.length>5?(' e mais '+(rep.orphans.length-5)):'';box.innerHTML='<b>Dados orfaos detectados</b><br>'+rep.orphans.length+' topico(s) ligados a disciplina inexistente'+extra+'. Nada foi removido. Revise: '+names+'.<br><button id="catedra-orphan-x" style="margin-top:8px;background:#7c2d12;color:#fff;border:none;padding:4px 10px;border-radius:6px;cursor:pointer;">Dispensar</button>';box.style.display='block';var x=document.getElementById('catedra-orphan-x');if(x)x.onclick=function(){box.style.display='none';};}catch(e){}}function applyOrphan(){if(window.__catedraOrphanReady)return;if(typeof window.catedraReconcile==='function'){window.catedraOrphanAlert=showOrphanAlert;window.__catedraOrphanReady=true;showOrphanAlert();}else if(tries++<60){setTimeout(applyOrphan,250);}}if(document.readyState==='complete'){applyOrphan();}else{window.addEventListener('load',applyOrphan);}setTimeout(applyOrphan,1200);})();</script>
+                                                                                           <script>(function(){var tries=0;function showOrphanAlert(){try{if(typeof window.catedraReconcile!=='function')return;var live=(typeof window.state==='object'&&window.state)?window.state:null;var box=document.getElementById('catedra-orphan-alert');if(live&&Array.isArray(live.discs)&&Array.isArray(live.edital)){var fix=window.catedraReconcile(live,false);if(fix.changed>0){try{if(typeof window.syncDiscs==='function')window.syncDiscs();}catch(e1){}try{if(typeof window.refreshDiscSelects==='function')window.refreshDiscSelects();}catch(e2){}try{if(typeof window.renderDiscs==='function')window.renderDiscs();}catch(e3){}try{if(typeof window.save==='function')window.save();}catch(e4){}var adopted=(fix.adopted||[]).filter(function(v,i,a){return a.indexOf(v)===i;});if(adopted.length&&typeof window.toast==='function'){try{window.toast('disciplina(s) recuperada(s): '+adopted.join(', ')+' ✓',4000);}catch(e5){}}}}var st=live||function(){try{return JSON.parse(localStorage.getItem('catedra:state')||'{}');}catch(e){return {};}}();var rep=window.catedraReconcile(st,true);if(!rep.orphans||!rep.orphans.length){if(box)box.style.display='none';return;}if(!box){box=document.createElement('div');box.id='catedra-orphan-alert';box.style.cssText='position:fixed;bottom:16px;left:16px;max-width:360px;z-index:99999;background:#fff7ed;border:1px solid #fdba74;color:#7c2d12;padding:12px 14px;border-radius:10px;box-shadow:0 8px 30px rgba(20,20,30,.15);font:13px/1.4 system-ui,sans-serif;';document.body.appendChild(box);}var names=rep.orphans.slice(0,5).map(function(o){return (o.topic||'')+' ('+o.disc+')';}).join('; ');var extra=rep.orphans.length>5?(' e mais '+(rep.orphans.length-5)):'';box.innerHTML='<b>Dados orfaos detectados</b><br>'+rep.orphans.length+' topico(s) ligados a disciplina inexistente'+extra+'. Nada foi removido. Revise: '+names+'.<br><button id="catedra-orphan-x" style="margin-top:8px;background:#7c2d12;color:#fff;border:none;padding:4px 10px;border-radius:6px;cursor:pointer;">Dispensar</button>';box.style.display='block';var x=document.getElementById('catedra-orphan-x');if(x)x.onclick=function(){box.style.display='none';};}catch(e){}}function applyOrphan(){if(window.__catedraOrphanReady)return;if(typeof window.catedraReconcile==='function'){window.catedraOrphanAlert=showOrphanAlert;window.__catedraOrphanReady=true;showOrphanAlert();}else if(tries++<60){setTimeout(applyOrphan,250);}}if(document.readyState==='complete'){applyOrphan();}else{window.addEventListener('load',applyOrphan);}setTimeout(applyOrphan,1200);})();</script>
 
 
 <style id="v2h-style">
