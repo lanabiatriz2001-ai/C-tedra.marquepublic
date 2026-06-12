@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cátedra · Plataforma de Estudos</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0c8a5b">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
+<link rel="apple-touch-icon" href="./icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,500&display=swap">
@@ -838,7 +842,7 @@ body{background:var(--canvas);}
   .system-sync-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
   .system-sync-title b{display:block;font-size:14px;}
   .system-sync-title span:not(.ux-pill){display:block;font-size:12.5px;color:var(--text-3);margin-top:2px;}
-  .system-provider-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .system-provider-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
   .system-provider{display:flex;align-items:center;gap:10px;text-align:left;background:var(--surface);border:1px solid var(--border-2);border-radius:12px;padding:12px;color:var(--text-2);box-shadow:var(--sh-sm);}
   .system-provider:hover{border-color:var(--text-3);transform:translateY(-1px);}
   .system-provider.active{border-color:#ff4aa2;box-shadow:0 0 0 3px rgba(255,74,162,.12);color:var(--text);}
@@ -895,9 +899,7 @@ body{background:var(--canvas);}
     <div class="nav-label">Desempenho</div>
     <button class="nav-item" data-view="simulados"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 4h6a1 1 0 0 1 1 1v1h2v15H6V6h2V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 4h6v3H9z" stroke-linejoin="round"/><path d="M9 12l1.5 1.5L13 11M9 17h6" stroke-linecap="round" stroke-linejoin="round"/></svg>Simulados</button>
     <button class="nav-item" data-view="conquistas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 4h10v4a5 5 0 0 1-10 0V4ZM5 4H3v2a3 3 0 0 0 3 3M19 4h2v2a3 3 0 0 1-3 3M9 17h6M8 21h8M12 13v4" stroke-linecap="round" stroke-linejoin="round"/></svg>Conquistas</button>
-    <button class="nav-item" data-view="desempenho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18M7 14l3-4 4 3 5-7" stroke-linecap="round" stroke-linejoin="round"/></svg>Desempenho</button>
-    <button class="nav-item" data-view="historico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4zM4 9h16M9 5v14" stroke-linejoin="round"/></svg>Histórico</button>
-    <button class="nav-item" data-view="relatorio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2h9l5 5v15H6z" stroke-linejoin="round"/><path d="M14 2v6h6M9 17v-4M12 17v-6M15 17v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>Relatório</button>
+    <button class="nav-item" data-view="analise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18M7 14l3-4 4 3 5-7" stroke-linecap="round" stroke-linejoin="round"/></svg>Análise</button>
     <div class="nav-label">Sistema</div>
     <button class="nav-item" data-view="personalizacao"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8H20l-4.9 3.6 1.9 5.8L12 14.6 7 18.2l1.9-5.8L4 8.8h6.1z"/></svg>Personalização</button>
     <button class="nav-item" data-view="ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7.6 1.6 1.6 0 0 0-1.6 1.3H12a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-2.7-.6l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.3-2.3H1a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.3-2.7l-.1-.1A2 2 0 1 1 5 2.6l.1.1a1.6 1.6 0 0 0 2.7-.6V2a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 2.7.6l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1H23a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1Z" stroke-linecap="round" stroke-linejoin="round"/></svg>Ajustes</button>
@@ -1113,12 +1115,28 @@ body{background:var(--canvas);}
   </div>
 
   <!-- ===== DESEMPENHO (planilha geral por disciplina) ===== -->
-  <div class="view" id="view-desempenho"><div id="dz-root"></div></div>
+  <!-- view-desempenho consolidado na aba Análise (painel "Por disciplina") -->
 
   <!-- ===== STATS: conteúdo movido para dentro do Início — o container #view-stats
        agora é emitido pelo mountDash dentro de #view-inicio (sem classe "view") ===== -->
 
   <!-- ===== HISTÓRICO ===== -->
+  <!-- ===== ANÁLISE (consolida Desempenho · Risco · Histórico · Relatório) ===== -->
+  <div class="view" id="view-analise">
+    <div class="ana-tabs" id="ana-tabs">
+      <button class="ana-tab active" data-ana="visao" type="button">Visão geral</button>
+      <button class="ana-tab" data-ana="disciplina" type="button">Por disciplina</button>
+      <button class="ana-tab" data-ana="risco" type="button">Risco</button>
+      <button class="ana-tab" data-ana="historico" type="button">Histórico</button>
+      <button class="ana-tab" data-ana="relatorio" type="button">Relatório</button>
+    </div>
+    <div class="ana-panel active" id="ana-visao"></div>
+    <div class="ana-panel" id="ana-disciplina"><div id="dz-root"></div></div>
+    <div class="ana-panel" id="ana-risco"></div>
+    <div class="ana-panel" id="ana-historico"></div>
+    <div class="ana-panel" id="ana-relatorio"></div>
+  </div>
+
   <div class="view" id="view-historico">
     <div class="card">
       <div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4zM4 9h16M9 5v14" stroke-linejoin="round"/></svg></span>Histórico de sessões</h3><div class="hist-filter" style="display:flex;gap:10px;align-items:center;"><select id="hist-disc"></select><span class="hint" id="hist-count"></span></div></div>
@@ -1334,8 +1352,6 @@ body{background:var(--canvas);}
         <div class="system-provider-grid" id="settings-provider-grid">
           <button class="system-provider active" type="button" data-provider="supabase"><b>S</b><span><strong>Supabase</strong><small>automática com login</small></span></button>
           <button class="system-provider" type="button" data-provider="icloud"><b>☁</b><span><strong>iCloud Drive</strong><small>backup JSON manual</small></span></button>
-          <button class="system-provider" type="button" data-provider="gdrive"><b>G</b><span><strong>Google Drive</strong><small>preparado para API</small></span></button>
-          <button class="system-provider" type="button" data-provider="onedrive"><b>1D</b><span><strong>OneDrive</strong><small>preparado para API</small></span></button>
         </div>
       </div>
 
@@ -1497,6 +1513,98 @@ body{background:var(--canvas);}
 </div>
 
 <div class="toast" id="toast"><span class="tk"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span id="toast-txt">salvo</span></div>
+
+<script id="catedra-idb-bootstrap">
+/* ===== Fase 0.1 — Fundação de dados =====
+   IndexedDB como cofre do estado: o localStorage é volátil (Safari apaga após 7 dias
+   sem uso; qualquer limpeza de site zera o histórico). Este bootstrap roda ANTES do
+   script principal: se o localStorage foi apagado mas o IndexedDB tem o espelho,
+   restaura tudo e recarrega uma única vez. O espelhamento contínuo, os snapshots
+   diários e a UI de restauração ficam no bloco catedra-roadmap-v1 (fim do arquivo). */
+(function(){
+  'use strict';
+  var DB='catedra-db', VER=1;
+  /* chaves fora de catedra:state que compõem o estado completo da plataforma */
+  var EXTRA_KEYS=['catedra:accent','catedra:accent2','catedraAccent','catedraMode',
+    'catedra_user_personalization','catedra:statsPeriod','catedra_edital','catedra_eventos',
+    'catedra:repact','catedra_biblioteca_v2','catedra:auth-mode','catedra:sync-provider',
+    'catedra:onboarded','catedra:state-updated-at','catedra:system-settings',
+    'catedra:notificacoes-descartadas:v4','catedra:challengeFilter','catedra:ankiconnect:hidden'];
+  function open(cb){
+    try{
+      var r=indexedDB.open(DB,VER);
+      r.onupgradeneeded=function(){
+        var d=r.result;
+        if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');
+        if(!d.objectStoreNames.contains('backups'))d.createObjectStore('backups');
+        if(!d.objectStoreNames.contains('meta'))d.createObjectStore('meta');
+      };
+      r.onsuccess=function(){cb(r.result);};
+      r.onerror=function(){cb(null);};
+    }catch(e){cb(null);}
+  }
+  function kvGet(store,key,cb){open(function(db){if(!db)return cb(undefined);try{var rq=db.transaction(store).objectStore(store).get(key);rq.onsuccess=function(){cb(rq.result);};rq.onerror=function(){cb(undefined);};}catch(e){cb(undefined);}});}
+  function kvSet(store,key,val,cb){open(function(db){if(!db)return cb&&cb(false);try{var tx=db.transaction(store,'readwrite');tx.objectStore(store).put(val,key);tx.oncomplete=function(){cb&&cb(true);};tx.onerror=function(){cb&&cb(false);};}catch(e){cb&&cb(false);}});}
+  function kvDel(store,key,cb){open(function(db){if(!db)return cb&&cb(false);try{var tx=db.transaction(store,'readwrite');tx.objectStore(store).delete(key);tx.oncomplete=function(){cb&&cb(true);};tx.onerror=function(){cb&&cb(false);};}catch(e){cb&&cb(false);}});}
+  function kvKeys(store,cb){open(function(db){if(!db)return cb([]);try{var rq=db.transaction(store).objectStore(store).getAllKeys();rq.onsuccess=function(){cb(rq.result||[]);};rq.onerror=function(){cb([]);};}catch(e){cb([]);}});}
+  function payloadNow(){
+    var extras={};
+    EXTRA_KEYS.forEach(function(k){try{var v=localStorage.getItem(k);if(v!=null)extras[k]=v;}catch(e){}});
+    var st=null; try{st=localStorage.getItem('catedra:state');}catch(e){}
+    return {schemaVersion:1, savedAt:new Date().toISOString(), state:st, extras:extras};
+  }
+  function applyPayload(p){
+    if(!p)return false;
+    try{
+      if(p.state!=null)localStorage.setItem('catedra:state',p.state);
+      if(p.extras)Object.keys(p.extras).forEach(function(k){try{localStorage.setItem(k,p.extras[k]);}catch(e){}});
+      return true;
+    }catch(e){return false;}
+  }
+  function hasContent(p){
+    if(!p||!p.state)return false;
+    try{var s=JSON.parse(p.state);return !!((s.sessions&&s.sessions.length)||(s.edital&&s.edital.length)||(s.errors&&s.errors.length)||(s.studyDays&&s.studyDays.length));}catch(e){return false;}
+  }
+  window.CatIDB={open:open,get:kvGet,set:kvSet,del:kvDel,keys:kvKeys,payloadNow:payloadNow,applyPayload:applyPayload,hasContent:hasContent,EXTRA_KEYS:EXTRA_KEYS};
+  /* Recuperação em duas etapas, à prova de corrida com o boot do app:
+     1ª carga (localStorage vazio): lê o espelho do IndexedDB (assíncrono), estaciona o
+        payload no sessionStorage e recarrega — NÃO aplica direto, porque o script
+        principal já pode ter gravado um estado default por cima durante o boot.
+     2ª carga: este bootstrap roda ANTES do script principal e aplica o payload de
+        forma SÍNCRONA a partir do sessionStorage — sem janela para corrida. */
+  function diag(m){try{sessionStorage.setItem('catedra:idb-diag',(sessionStorage.getItem('catedra:idb-diag')||'')+'|'+m);}catch(e){}}
+  window.addEventListener('error',function(e){diag('ERR:'+(e.message||'')+'@'+(e.filename||'').split('/').pop()+':'+e.lineno);});
+  window.addEventListener('unhandledrejection',function(e){diag('REJ:'+(e.reason&&(e.reason.message||String(e.reason))||'').slice(0,120)+'@'+((e.reason&&e.reason.stack||'').match(/index[^\n]*?:(\d+):/)||[])[1]);});
+  try{
+    var staged=sessionStorage.getItem('catedra:idb-payload');
+    if(staged){
+      sessionStorage.removeItem('catedra:idb-payload');
+      var sp=JSON.parse(staged);
+      diag('staged:'+staged.length+':has='+hasContent(sp));
+      if(hasContent(sp)){applyPayload(sp);diag('applied');}
+      try{var _t=+(sessionStorage.getItem('catedra:idb-restored')||0);sessionStorage.setItem('catedra:idb-restored',String(_t+1));}catch(e){}
+    }
+  }catch(e){diag('stage-err:'+(e&&e.message));}
+  var lsEmpty=false;
+  try{lsEmpty=!localStorage.getItem('catedra:state');}catch(e){}
+  diag('boot:lsEmpty='+lsEmpty+':flag='+(sessionStorage.getItem('catedra:idb-restored')||''));
+  var _tries=0; try{_tries=+(sessionStorage.getItem('catedra:idb-restored')||0);}catch(e){}
+  if(lsEmpty && _tries<2){
+    kvGet('kv','mirror',function(p){
+      diag('cb:has='+hasContent(p));
+      if(hasContent(p)){
+        try{
+          sessionStorage.setItem('catedra:idb-payload',JSON.stringify(p));
+          diag('stagedSet');
+          location.reload();
+        }catch(e){ /* sessionStorage cheio: aplica direto como plano B */
+          if(applyPayload(p)){try{sessionStorage.setItem('catedra:idb-restored','1');}catch(e2){}location.reload();}
+        }
+      }
+    });
+  }
+})();
+</script>
 
 <script>
 const DIAS=[
@@ -1702,21 +1810,38 @@ async function catedraLoadFromCloud(force){
       const localAt = cloudLoaded ? localUpdatedAt() : BOOT_LOCAL_STAMP;
       const remoteMs = remoteAt ? Date.parse(remoteAt) : 0;
       const localMs = localAt ? Date.parse(localAt) : 0;
-      if(!force && localMs && remoteMs && localMs > remoteMs && stateHasContent(state)){
-        cloudLoaded = true;
-        pushStateToCloud();
-        return;
-      }
       const incoming = JSON.stringify(rows[0].state);
       let current = '';
       try{ current = JSON.stringify(state); }catch(e){}
       /* só re-renderiza se a nuvem trouxer dados realmente diferentes —
          evita reconstruir a página inteira (tremor) a cada foco/refresh de sessão */
       if(incoming !== current){
-        state = rows[0].state;
-        localStorage.setItem('catedra:state', incoming);
-        if(remoteAt) markLocalUpdated(remoteAt);
-        if(typeof initAll === 'function') initAll();
+        const localNewer = !!(localMs && remoteMs && localMs > remoteMs);
+        let next = rows[0].state;
+        /* roadmap 2.1: merge por natureza do dado — sessões/revisões/erros/simulados/anki
+           são append-only (união por id, sem conflito); configurações/edital seguem
+           last-write-wins. Dois dispositivos editando offline convergem sem perder sessões. */
+        if(typeof window.catedraMergeStates === 'function' && stateHasContent(state) && stateHasContent(next)){
+          next = window.catedraMergeStates(state, rows[0].state, localNewer);
+        } else if(!force && localNewer && stateHasContent(state)){
+          /* sem função de merge disponível: preserva o comportamento antigo (local mais novo vence) */
+          cloudLoaded = true;
+          pushStateToCloud();
+          return;
+        }
+        const nextJson = JSON.stringify(next);
+        if(nextJson !== current){
+          state = next;
+          localStorage.setItem('catedra:state', nextJson);
+          if(typeof initAll === 'function') initAll();
+        }
+        cloudLoaded = true;
+        if(nextJson !== incoming){
+          markLocalUpdated(); /* o merge incorporou dados locais: somos a versão mais nova */
+          pushStateToCloud(); /* convergir a nuvem para o resultado do merge */
+        } else if(remoteAt){
+          markLocalUpdated(remoteAt); /* pull puro: adota o carimbo remoto, sem fingir ser mais novo */
+        }
       }
     } else if(stateHasContent(state)){
       cloudLoaded = true;
@@ -1842,6 +1967,7 @@ function renderProfile(){if(!document.getElementById('greet'))return;
         window.cmRemoveExam=function(id){
           cmEnsureExams();
           var wasActive=state.exams.some(function(x){return x.id===id && x.active;});
+          try{if(window.catedraTombstone)catedraTombstone('exams',id);}catch(e){}
           state.exams=state.exams.filter(function(x){return x.id!==id;});
           if(wasActive){
             if(state.exams.length){ state.exams[0].active=true; state.exam={name:state.exams[0].name||'', date:state.exams[0].date||''}; }
@@ -1964,11 +2090,10 @@ document.querySelectorAll('.nav-item').forEach(b=>b.onclick=()=>{
   document.getElementById('nav').classList.remove('open');document.getElementById('side-foot').classList.remove('open');
   const v=b.dataset.view;
   if(v==='ciclo')renderCycle();
-  if(v==='desempenho'&&window.renderDesempenho)renderDesempenho();
   if(v==='revisoes')renderRevisions();
   if(v==='simulados')renderSimulados();
   if(v==='edital')renderEdital();
-  if(v==='historico')renderHistory();
+  if(v==='analise'&&window.renderAnalise)renderAnalise();
   if(v==='calendario')renderCalendar();
   if(v==='erros')renderErros();
   if(v==='conquistas')renderConquistas();
@@ -3330,7 +3455,7 @@ document.getElementById('rel-older').onclick=()=>{relOffset++;renderRelatorio();
 document.getElementById('rel-newer').onclick=()=>{relOffset=Math.max(0,relOffset-1);renderRelatorio();};
 document.getElementById('rel-period').onchange=(e)=>{relPeriod=parseInt(e.target.value,10)||7;relOffset=0;renderRelatorio();};
 document.getElementById('rel-print').onclick=()=>window.print();
-document.querySelector('[data-view=relatorio]').addEventListener('click',renderRelatorio);
+{const _nrel=document.querySelector('[data-view=relatorio]');if(_nrel)_nrel.addEventListener('click',renderRelatorio);} /* botão consolidado na aba Análise */
 
 /* ===== streak ===== */
 function renderStreak(){const days=[...new Set(state.studyDays)].sort();let s=0,cur=todayStr();
@@ -3423,6 +3548,7 @@ function renderHistory(){const t=document.getElementById('hist-table');
     sess.map(s=>{const acc=s.q>0?Math.round(s.c/s.q*100)+'%':'—';
     return '<tr><td>'+fmtDate(s.date)+'</td><td>'+s.disc+'</td><td>'+escapeHtml(s.topic)+'</td><td><span class="pill-cat" style="background:'+CAT_COLOR[s.cat]+'1e;color:'+CAT_COLOR[s.cat]+'">'+CAT_LABEL[s.cat]+'</span></td><td class="num">'+fmtHMS(sessSec(s))+'</td><td class="num">'+(s.q||'—')+'</td><td class="num">'+acc+'</td><td class="num">'+(s.pg||'—')+'</td><td class="num">'+(s.au||'—')+'</td><td class="note">'+(s.note?escapeHtml(s.note):'')+'</td><td><button class="del" data-id="'+s.id+'">excluir</button></td></tr>';}).join('');
   t.querySelectorAll('.del').forEach(b=>b.onclick=()=>{const id=Number(b.dataset.id);
+    try{if(window.catedraTombstone){catedraTombstone('sessions',id);state.revisions.filter(r=>r.sid===id).forEach(r=>catedraTombstone('revisions',r.id));}}catch(e){}
     state.sessions=state.sessions.filter(s=>s.id!==id);state.revisions=state.revisions.filter(r=>r.sid!==id);
     save();renderHistory();renderRevBadge();renderStreak();renderHome();});}
 
@@ -5185,8 +5311,8 @@ function rolloverDay(){
   .ca-sync-option.active{border-color:#0c8a5b;box-shadow:0 0 0 3px rgba(12,138,91,.12);background:#f7fcfa;}
   .ca-cloud-ico{width:32px;height:32px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:#eef0ed;color:#11151b;flex-shrink:0;font-size:16px;font-weight:900;}
   .ca-sync-option.active .ca-cloud-ico{background:#0c8a5b;color:#fff;}
-  .ca-sync-main{font-size:13px;font-weight:800;line-height:1.1;}
-  .ca-sync-sub{font-size:11.3px;color:#6a7079;margin-top:3px;line-height:1.25;}
+  .ca-sync-main{display:block;font-size:13px;font-weight:800;line-height:1.1;}
+  .ca-sync-sub{display:block;font-size:11.3px;color:#6a7079;margin-top:3px;line-height:1.25;}
   .ca-sync-note{font-size:12px;color:#6a7079;line-height:1.45;background:#f1f5f3;border:1px solid #e1e5df;border-radius:13px;padding:11px 12px;margin-top:11px;}
   .ca-sync-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px;}
   @media(max-width:900px){.ca-auth-shell{grid-template-columns:1fr;}.ca-auth-hero{min-height:auto;padding:30px;}.ca-proof-grid{grid-template-columns:1fr 1fr 1fr;}.ca-auth-card{padding:30px;}}
@@ -5239,8 +5365,6 @@ function rolloverDay(){
       <div class="ca-sync-grid" id="ca-sync-grid">
         <button class="ca-sync-option active" type="button" data-provider="supabase"><span class="ca-cloud-ico">S</span><span><span class="ca-sync-main">Supabase</span><span class="ca-sync-sub">automática com login</span></span></button>
         <button class="ca-sync-option" type="button" data-provider="icloud"><span class="ca-cloud-ico">☁</span><span><span class="ca-sync-main">iCloud Drive</span><span class="ca-sync-sub">backup JSON manual</span></span></button>
-        <button class="ca-sync-option" type="button" data-provider="gdrive"><span class="ca-cloud-ico">G</span><span><span class="ca-sync-main">Google Drive</span><span class="ca-sync-sub">preparado para API</span></span></button>
-        <button class="ca-sync-option" type="button" data-provider="onedrive"><span class="ca-cloud-ico">1D</span><span><span class="ca-sync-main">OneDrive</span><span class="ca-sync-sub">preparado para API</span></span></button>
       </div>
       <div class="ca-sync-note" id="ca-sync-note">Supabase é a sincronização automática já conectada ao login. iCloud Drive funciona como backup: exporte o JSON e salve na pasta iCloud Drive.</div>
       <div class="ca-sync-actions">
@@ -6793,7 +6917,7 @@ function renderDomain(){ensureView();const rows=allRows();renderKpis(rows);rende
 function renderReportCard(){const view=$('view-relatorio');if(!view)return;let card=$('dom-report-decision');if(!card){card=document.createElement('div');card.id='dom-report-decision';card.className='card dom-report-card';const anchor=$('rel-kpis2')||$('rel-kpis')||view.firstElementChild;if(anchor&&anchor.nextSibling)view.insertBefore(card,anchor.nextSibling);else view.appendChild(card);}const rows=allRows();card.innerHTML='<div class="card-h"><h3><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 12l4 4L20 4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Relatório de decisão</h3><span class="hint">continue · reduza · aumente · pause · corrija</span></div><div class="dom-actions" id="dom-report-actions"></div>';renderDecisions(rows,'dom-report-actions');}
 function bindRefresh(){qa('.nav-item[data-view]').forEach(b=>{if(b.dataset.domBind)return;b.dataset.domBind='1';b.addEventListener('click',()=>setTimeout(()=>{if(b.dataset.view==='dominio')renderDomain();if(b.dataset.view==='relatorio')renderReportCard();const rows=allRows();const badge=$('nav-dominio');if(badge){const n=rows.filter(r=>r.risk>=70).length;badge.textContent=String(n);badge.style.display=n?'flex':'none';}},90));});}
 function wrapRenders(){['renderHome','renderEdital','renderAnki','renderErros','renderRevisions','renderStats','renderRelatorio','renderPlanejamento'].forEach(name=>{const fn=window[name];if(typeof fn==='function'&&!fn.__dominioRisco){window[name]=function(){const r=fn.apply(this,arguments);setTimeout(()=>{if($('view-dominio')?.classList.contains('active'))renderDomain();if($('view-relatorio')?.classList.contains('active'))renderReportCard();const rows=allRows(),b=$('nav-dominio');if(b){const n=rows.filter(x=>x.risk>=70).length;b.textContent=String(n);b.style.display=n?'flex':'none';}},70);return r;};window[name].__dominioRisco=true;}});}
-function boot(){window.allRows=allRows;ensureNav();ensureView();bindRefresh();wrapRenders();renderDomain();renderReportCard();}
+function boot(){window.allRows=allRows;window.renderDomain=renderDomain;ensureView();bindRefresh();wrapRenders();renderDomain();renderReportCard();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 </script>
@@ -7652,9 +7776,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     var id = active ? String(active.id || '').replace('view-','') : '';
     var map = {
       inicio:'renderHome', ciclo:'renderCycle', revisoes:'renderRevisions', simulados:'renderSimulados',
-      edital:'renderEdital', calendario:'renderCalendar',
-      desempenho:'renderDesempenho', historico:'renderHistory', relatorio:'renderRelatorio', ajustes:'renderAjustes',
-      anki:'renderAnki', erros:'renderErros', conquistas:'renderConquistas', dominio:'renderDomain'
+      edital:'renderEdital', calendario:'renderCalendar', analise:'renderAnalise', ajustes:'renderAjustes',
+      anki:'renderAnki', erros:'renderErros', conquistas:'renderConquistas'
     };
     if(map[id]) call(map[id]);
   }
@@ -8408,8 +8531,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     var seen={};
     qa('.nav-item[data-view]',nav).forEach(function(item){ var v=item.dataset.view; if(seen[v]){ item.dataset.catedraDuplicate='1'; item.remove(); } else { seen[v]=item; item.title=(item.textContent||'').trim(); } });
     qa('.nav-label',nav).forEach(function(label,idx){ var next=label.nextElementSibling; if(next && next.classList && next.classList.contains('nav-label')) label.remove(); if(idx>0 && label.textContent.trim()===qa('.nav-label',nav)[idx-1]?.textContent.trim()) label.remove(); });
-    var order=['inicio','ciclo','revisoes','edital','dominio','calendario','biblioteca','reta-final','simulados','desempenho','relatorio','conquistas','anki','erros','flashcards','historico','personalizacao','ajustes'];
-    var groups=[['Estudo',['inicio','ciclo','revisoes','edital','dominio','calendario','biblioteca']],['Desempenho',['reta-final','simulados','desempenho','relatorio','conquistas','anki','erros','flashcards']],['Sistema',['historico','personalizacao','ajustes']]];
+    var order=['inicio','ciclo','revisoes','flashcards','anki','erros','edital','calendario','simulados','reta-final','biblioteca','analise','conquistas','personalizacao','ajustes'];
+    var groups=[['Estudar',['inicio','ciclo','revisoes','flashcards','anki','erros']],['Planejar',['edital','calendario','simulados','reta-final','biblioteca']],['Analisar',['analise','conquistas']],['Sistema',['personalizacao','ajustes']]];
     var frag=document.createDocumentFragment();
     groups.forEach(function(g){ var lab=document.createElement('div'); lab.className='nav-label'; lab.textContent=g[0]; frag.appendChild(lab); g[1].forEach(function(v){ var el=seen[v]||q('.nav-item[data-view="'+v+'"]',nav); if(el){ el.style.display=''; frag.appendChild(el); } }); });
     order.forEach(function(v){ var el=seen[v]||q('.nav-item[data-view="'+v+'"]',nav); if(el && !frag.contains(el)) frag.appendChild(el); });
@@ -8470,14 +8593,12 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     'view-ciclo':['renderCycle'],
     'view-revisoes':['renderRevisions'],
     'view-edital':['renderEditalCard','renderDistribuicao'],
-    'view-dominio':['renderDomain'],
     'view-calendario':['renderCalendar'],
     'view-simulados':['renderSimulados'],
-    'view-relatorio':['renderRelatorio'],
     'view-conquistas':['renderConquistas'],
     'view-anki':['renderAnki'],
     'view-erros':['renderErros'],
-    'view-historico':['renderHistory']
+    'view-analise':['renderAnalise']
   };
   var ALL_RENDERERS=['renderProfile','renderCountdown','renderGoals','renderResumo','renderStreak','renderRevBadge','renderErrosBadge','renderEditalBadge','renderEditalCard','renderHome','renderCycle','renderRevisions','renderStats','renderDistribuicao','renderSimulados','renderHistory','renderRelatorio','renderConquistas','renderCalendar','renderAnki','renderErros','renderDomain','renderDesempenho'];
   function refreshAll(reason){
@@ -8713,11 +8834,14 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     var prevStats=by('view-stats');
     if(prevStats&&prevStats.parentNode){try{prevStats.parentNode.removeChild(prevStats);}catch(e){prevStats=null;}}
     var D=compute();
-    var kpis=[['Tempo estudado',fmtH(D.totalMin)],['Total de quest\u00f5es',D.totalQ],['Total de mat\u00e9rias',D.nDisc],['Dias estudados',D.diasEst],['Simulados feitos',D.nSim],['T\u00f3picos estudados',D.nTopics],['Revis\u00f5es conclu\u00eddas',D.revDone],['Acerto m\u00e9dio',D.acertoMedio+'%']].map(function(k){return kpiCard(k[0],k[1]);}).join('');
+    /* roadmap 1.2: KPIs reduzidos a 2 — constância e taxa de acerto da semana */
+    var wkAcc=(function(){try{var ws=(typeof weekStart==='function')?weekStart():null;var sw=(window.state&&state.sessions||[]).filter(function(x){return ws&&x.date>=ws;});var q=sw.reduce(function(a,x){return a+(+x.q||0);},0),c=sw.reduce(function(a,x){return a+(+x.c||0);},0);return q?Math.round(c/q*100)+'%':'\u2014';}catch(e){return '\u2014';}})();
+    var kpis=[['Dias de const\u00e2ncia',D.diasEst],['Acerto na semana',wkAcc]].map(function(k){return kpiCard(k[0],k[1]);}).join('');
     v.innerHTML='<div class="dash-root">'
       +'<div class="dash-hello"><h1>In\u00edcio</h1><p>'+greeting()+'</p></div>'
+      +'<section class="dash-card foco-agora" id="foco-agora-card"></section>'
       +'<section class="dash-card dash-streak">'+streakBlock(D)+'</section>'
-      +'<div class="dash-kpis">'+kpis+'</div>'
+      +'<div class="dash-kpis dash-kpis-2">'+kpis+'</div>'
       +'<div class="dash-central">'
         +'<section class="dash-card dash-week">'+weekBlock(D)+'</section>'
         +'<section class="dash-card dash-today"><h3 class="dash-h">Tempo de estudos hoje</h3>'+donut(D.porDisc,D.hojeMin)+'</section>'
@@ -8735,6 +8859,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     Array.prototype.forEach.call(v.querySelectorAll('[data-open-session]'),function(b){b.onclick=function(){if(window.openSessionModal){window.openSessionModal();}else{var ob=by('open-session');if(ob)ob.click();}};});
     try{if(typeof window.renderStats==='function')window.renderStats();}catch(e){}
     try{if(typeof window.statsInfoTable==='function')window.statsInfoTable();}catch(e){}
+    try{if(typeof window.renderFocoAgora==='function')window.renderFocoAgora();}catch(e){}
   }
 
   window.renderHome=mountDash;
@@ -10940,7 +11065,7 @@ h1,h2,h3,h4,.blk-t{letter-spacing:-.015em;}
       saveAll(); try{if(window.renderAnki)window.renderAnki();}catch(e){} renderAnkiActionPanel();
       if(st)st.textContent='Anki sincronizado: '+decks.length+' baralho(s), '+totals.due+' cartão(ões) vencidos.';
     }catch(e){
-      if(st)st.textContent='Não consegui ler o Anki. Abra o Anki, ative o AnkiConnect e mantenha localhost:8765 disponível.';
+      if(st)st.textContent=(typeof window.catedraAnkiHelp==='function')?window.catedraAnkiHelp():'Não consegui ler o Anki. Abra o Anki, ative o AnkiConnect e mantenha localhost:8765 disponível.';
     }
   }
 
@@ -11217,10 +11342,18 @@ h1,h2,h3,h4,.blk-t{letter-spacing:-.015em;}
 /* ===== Integração AnkiConnect (Anki desktop · add-on 2055492159) ===== */
 (function(){
   'use strict';
+  /* roadmap 3.4: diagnóstico específico em vez de falha genérica.
+     Em página HTTPS (GitHub Pages), o fetch para http://127.0.0.1:8765 é bloqueado
+     como mixed content — a orientação precisa dizer isso, não "erro de conexão". */
+  window.catedraAnkiHelp=function(){
+    if(location.protocol==='https:')
+      return 'Este site está em HTTPS e o navegador bloqueia a conexão com o Anki local (http://127.0.0.1:8765 — "conteúdo misto"). Para usar: clique no cadeado do navegador → Configurações do site → permita "Conteúdo inseguro" para este domínio, ou abra a plataforma pelo arquivo local. O Anki também precisa estar aberto com o add-on AnkiConnect (2055492159).';
+    return 'Não encontrei o Anki. Abra o Anki no computador, instale/ative o add-on AnkiConnect (código 2055492159) e tente de novo — a porta usada é a 8765, local.';
+  };
   function ankiConnectInvoke(action, version, params={}) {
       return new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
-          xhr.addEventListener('error', () => reject('failed to connect to AnkiConnect'));
+          xhr.addEventListener('error', () => reject(window.catedraAnkiHelp()));
           xhr.addEventListener('load', () => {
               try {
                   const response = JSON.parse(xhr.responseText);
@@ -11407,14 +11540,33 @@ h1,h2,h3,h4,.blk-t{letter-spacing:-.015em;}
     return activeErrors().filter(function(e){var s=cardSrs(e.id);return !s||String(s.due||t)<=t;});
   }
 
+  /* roadmap 3.3: scheduler adaptativo por cartão (estilo FSRS) no lugar dos degraus
+     fixos 1·3·7·15·30 — cada cartão tem ease/intervalo próprios conforme o desempenho.
+     Migração: cartões antigos {step} herdam o intervalo do degrau em que estavam. */
+  function migrateSrs(cur){
+    if(cur.ease==null){
+      cur.ease=2.3;
+      cur.interval=IV[Math.min(+cur.step||0,IV.length-1)]||1;
+    }
+    return cur;
+  }
   function grade(g){
     var c=queue[idx]; if(!c)return;
     var store=srs(), k=String(c.id);
-    var cur=store[k]||{step:0,due:T(),history:[]};
-    if(g==='errei'){cur.step=0;cur.due=addD(T(),1);}
-    else if(g==='quase'){cur.due=addD(T(),Math.max(1,Math.round(IV[Math.min(cur.step,IV.length-1)]/2)));}
-    else {cur.step=Math.min(IV.length-1,(+cur.step||0)+1);cur.due=addD(T(),IV[cur.step]);}
-    cur.history=cur.history||[];cur.history.push({date:T(),g:g});
+    var cur=migrateSrs(store[k]||{step:0,due:T(),history:[],ease:2.3,interval:0});
+    if(g==='errei'){
+      cur.ease=Math.max(1.3,(+cur.ease||2.3)-0.2);
+      cur.interval=1; cur.step=0;
+    } else if(g==='quase'){
+      cur.ease=Math.max(1.3,(+cur.ease||2.3)-0.05);
+      cur.interval=Math.max(1,Math.round((+cur.interval||1)*1.2));
+    } else {
+      cur.ease=Math.min(3.2,(+cur.ease||2.3)+0.06);
+      cur.interval=Math.min(365,Math.max(1,Math.round(((+cur.interval||0)||0.6)*cur.ease)));
+      cur.step=Math.min(IV.length-1,(+cur.step||0)+1); /* compat com leitores antigos */
+    }
+    cur.due=addD(T(),cur.interval);
+    cur.history=cur.history||[];cur.history.push({date:T(),g:g,iv:cur.interval});
     store[k]=cur; saveAll();
     idx++; showingBack=false; renderStudy(); renderListAndBadge();
   }
@@ -11447,8 +11599,8 @@ h1,h2,h3,h4,.blk-t{letter-spacing:-.015em;}
         +'<div class="flash-back">'+back+'</div>'
         +'<div class="flash-grades">'
         +'<button class="flash-grade errei" data-g="errei" type="button">Errei<small>volta em 1 dia</small></button>'
-        +'<button class="flash-grade quase" data-g="quase" type="button">Quase<small>meio intervalo</small></button>'
-        +'<button class="flash-grade acertei" data-g="acertei" type="button">Acertei<small>avança 1·3·7·15·30</small></button>'
+        +'<button class="flash-grade quase" data-g="quase" type="button">Quase<small>intervalo curto</small></button>'
+        +'<button class="flash-grade acertei" data-g="acertei" type="button">Acertei<small>intervalo adaptativo</small></button>'
         +'</div></div>';
       qa('[data-g]',host).forEach(function(b){b.onclick=function(){grade(this.dataset.g);};});
     }
@@ -11616,5 +11768,1113 @@ h1,h2,h3,h4,.blk-t{letter-spacing:-.015em;}
   body.mentor-video-theme .s-misto label,
   body.mentor-video-theme .s-result label{color:var(--text-2,#c9dfff)!important;}
 </style>
+
+<style id="catedra-roadmap-v1-css">
+/* ===== Roadmap v1 — Foco de Agora, Análise, check-in, onboarding, mobile ===== */
+.foco-agora{position:relative;border:1px solid color-mix(in srgb,var(--emerald) 45%,transparent);background:linear-gradient(135deg,color-mix(in srgb,var(--emerald) 16%,var(--surface)) 0%,var(--surface) 70%);}
+.foco-agora .fa-eyebrow{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--emerald);margin-bottom:8px;}
+.foco-agora .fa-eyebrow .fa-reta{background:var(--amber,#d97706);color:#fff;border-radius:999px;padding:2px 9px;font-size:10.5px;letter-spacing:.04em;}
+.foco-agora h2{font-size:clamp(17px,2.2vw,22px);margin:0 0 6px;letter-spacing:-.01em;}
+.foco-agora .fa-reason{font-size:13.5px;line-height:1.55;color:var(--text-2);margin:0 0 14px;max-width:720px;}
+.foco-agora .fa-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.foco-agora .fa-start{border:none;border-radius:11px;padding:12px 26px;font-size:14.5px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--emerald),var(--emerald-d));color:#fff;box-shadow:0 3px 12px color-mix(in srgb,var(--emerald) 40%,transparent);}
+.foco-agora .fa-start:hover{transform:translateY(-1px);}
+.foco-agora .fa-alt{background:none;border:1px solid var(--border-2);border-radius:11px;padding:11px 16px;font-size:13px;color:var(--text-2);cursor:pointer;}
+.foco-agora .fa-alert{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--amber,#b45309);background:color-mix(in srgb,var(--amber,#d97706) 12%,transparent);border-radius:10px;padding:8px 12px;margin-top:12px;}
+.foco-agora .fa-queue{margin-top:12px;font-size:12px;color:var(--text-3);}
+.dash-kpis-2{grid-template-columns:repeat(2,1fr)!important;}
+.ana-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:0;}
+.ana-tab{background:none;border:none;border-bottom:2px solid transparent;padding:10px 16px;font-size:13.5px;font-weight:600;color:var(--text-3);cursor:pointer;}
+.ana-tab.active{color:var(--emerald);border-bottom-color:var(--emerald);}
+.ana-panel{display:none;}
+.ana-panel.active{display:block;}
+.ana-embed{display:block;}
+#ana-disciplina .dz-bar{width:90px;height:8px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden;}
+#ana-disciplina .dz-bar i{display:block;height:100%;border-radius:99px;transition:width .4s;}
+#ana-disciplina .dz-pct{display:inline-flex;min-width:48px;justify-content:center;padding:4px 9px;border-radius:999px;font-weight:700;font-size:12px;}
+#ana-disciplina .htable .muted td{opacity:.55;}
+.prontidao-card .pr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:10px;}
+.prontidao-card .pr-cell,.pr-cell{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;}
+.pr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:10px;}
+.pr-cell b{display:block;font-size:20px;}
+.pr-cell span{font-size:11.5px;color:var(--text-3);}
+.ckin-overlay{position:fixed;inset:0;background:rgba(10,14,20,.55);z-index:9998;display:flex;align-items:center;justify-content:center;padding:18px;}
+.ckin-card{background:var(--surface);color:var(--text);border-radius:18px;max-width:460px;width:100%;padding:24px;box-shadow:0 18px 60px rgba(0,0,0,.35);}
+.ckin-card h3{margin:0 0 4px;font-size:18px;}
+.ckin-card .ck-sub{font-size:12.5px;color:var(--text-3);margin:0 0 16px;}
+.ckin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.ckin-card label{display:flex;flex-direction:column;gap:5px;font-size:11.5px;color:var(--text-2);font-weight:600;}
+.ckin-card input[type=text],.ckin-card input[type=number],.ckin-card select{border:1px solid var(--border-2);background:var(--surface-2);color:var(--text);border-radius:9px;padding:9px 11px;font-family:inherit;font-size:13.5px;}
+.ckin-card .ck-check{flex-direction:row;align-items:center;gap:8px;font-size:13px;font-weight:500;margin-top:4px;}
+.ckin-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap;}
+.ckin-actions .pri{background:var(--emerald);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-weight:700;cursor:pointer;}
+.ckin-actions .sec{background:none;border:1px solid var(--border-2);border-radius:10px;padding:10px 14px;color:var(--text-2);cursor:pointer;}
+.onb-overlay{position:fixed;inset:0;background:rgba(8,12,18,.66);z-index:10000;display:flex;align-items:center;justify-content:center;padding:18px;}
+.onb-card{background:var(--surface);color:var(--text);border-radius:20px;max-width:520px;width:100%;padding:30px;box-shadow:0 20px 80px rgba(0,0,0,.45);}
+.onb-card .onb-step{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--emerald);text-transform:uppercase;margin-bottom:8px;}
+.onb-card h2{margin:0 0 8px;font-size:22px;letter-spacing:-.01em;}
+.onb-card p{font-size:13.5px;color:var(--text-2);line-height:1.55;margin:0 0 18px;}
+.onb-card label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:12px;}
+.onb-card input{border:1px solid var(--border-2);background:var(--surface-2);color:var(--text);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;}
+.onb-choices{display:grid;gap:10px;margin-bottom:6px;}
+.onb-choice{display:flex;flex-direction:column;gap:3px;text-align:left;border:1px solid var(--border-2);background:var(--surface-2);border-radius:13px;padding:14px 16px;cursor:pointer;color:var(--text);}
+.onb-choice:hover{border-color:var(--emerald);}
+.onb-choice b{font-size:14px;}
+.onb-choice span{font-size:12px;color:var(--text-3);}
+.onb-foot{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:10px;}
+.onb-foot .pri{background:var(--emerald);color:#fff;border:none;border-radius:11px;padding:11px 22px;font-weight:700;cursor:pointer;}
+.onb-foot .ghost{background:none;border:none;color:var(--text-3);font-size:12.5px;cursor:pointer;}
+.snap-list{display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:260px;overflow:auto;}
+.snap-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:9px 12px;font-size:12.5px;}
+.snap-row button{border:1px solid var(--border-2);background:var(--surface);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--text-2);}
+.repac-banner{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;border:1px solid color-mix(in srgb,var(--amber,#d97706) 45%,transparent);background:color-mix(in srgb,var(--amber,#d97706) 10%,var(--surface));border-radius:13px;padding:12px 16px;margin-bottom:14px;font-size:13px;}
+.repac-banner button{background:var(--amber,#d97706);border:none;color:#fff;border-radius:9px;padding:9px 16px;font-weight:700;cursor:pointer;}
+#mentor-report{display:none;}
+@media print{
+  body.print-mentor>*:not(#mentor-report){display:none!important;}
+  body.print-mentor #mentor-report{display:block!important;color:#111;background:#fff;font-size:12px;line-height:1.5;}
+  body.print-mentor #mentor-report h1{font-size:20px;margin:0 0 2px;}
+  body.print-mentor #mentor-report h2{font-size:14px;margin:18px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;}
+  body.print-mentor #mentor-report table{width:100%;border-collapse:collapse;font-size:11px;}
+  body.print-mentor #mentor-report th,body.print-mentor #mentor-report td{border:1px solid #ddd;padding:5px 7px;text-align:left;}
+}
+#mobile-timer-bar{display:none;}
+@media(max-width:720px){
+  body.cat-timer-running #mobile-timer-bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:400;background:var(--ink,#1a2332);color:#fff;align-items:center;justify-content:space-between;padding:10px 16px;gap:12px;box-shadow:0 -4px 18px rgba(0,0,0,.3);}
+  #mobile-timer-bar .mtb-time{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;}
+  #mobile-timer-bar button{border:none;border-radius:9px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:12.5px;}
+  #mobile-timer-bar .mtb-pause{background:rgba(255,255,255,.16);color:#fff;}
+  #mobile-timer-bar .mtb-stop{background:var(--emerald);color:#fff;}
+  body.cat-timer-running .quick-register-fab,body.cat-timer-running .public-center-fab{bottom:140px;}
+}
+body:has(#session-modal.open) .quick-register-fab,body:has(#session-modal.open) .public-center-fab,
+body:has(.modal-overlay.open) .quick-register-fab,body:has(.modal-overlay.open) .public-center-fab,
+body:has(.ckin-overlay) .quick-register-fab,body:has(.ckin-overlay) .public-center-fab,
+body:has(.onb-overlay) .quick-register-fab,body:has(.onb-overlay) .public-center-fab{display:none!important;}
+</style>
+
+<script id="catedra-roadmap-v1">
+/* ============================================================================
+   ROADMAP v1 — da ferramenta de registro ao mentor de estudo
+   Fase 0: espelho IndexedDB + snapshots + restauração + auto-export + onboarding
+   Fase 1: motor de priorização, Foco de Agora, check-in, anti-inflação do
+           cronômetro, repactuação, reta final como regime, Análise consolidada
+   Fase 2: merge append-only p/ nuvem, PWA, notificações locais, PDF p/ mentor
+   Fase 3: prévia de conferência do import de edital
+   ============================================================================ */
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var qa=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+var esc=function(v){return String(v==null?'':v).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+function S(){try{if(typeof state!=='undefined'&&state){window.state=state;return state;}}catch(e){}return window.state||{};}
+function tISO(){if(typeof todayStr==='function')return todayStr();var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function addD(s,n){if(typeof addDays==='function')return addDays(s,n);return s;}
+function toastSafe(m,t){try{if(typeof toast==='function')toast(m,t);}catch(e){}}
+function saveSafe(){try{if(typeof window.save==='function')return window.save();}catch(e){}}
+var _normCache=new Map();
+function norm(v){
+  v=String(v||'');
+  var c=_normCache.get(v); if(c!==undefined)return c;
+  var n=v.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();
+  if(_normCache.size>6000)_normCache.clear();
+  _normCache.set(v,n);
+  return n;
+}
+function dteSafe(){try{if(typeof daysToExam==='function')return daysToExam();}catch(e){}return null;}
+
+/* ===== 0.1 — espelho IndexedDB + snapshots + restauração + auto-export ===== */
+var IDB=window.CatIDB;
+var mirrorTimer=null, lastMirrorJson='', mirrorHadContent=false, mirrorGuardReady=false, mirrorQueued=false;
+if(IDB)IDB.get('kv','mirror',function(p){mirrorHadContent=(p===undefined)?false:IDB.hasContent(p);mirrorGuardReady=true;if(mirrorQueued){mirrorQueued=false;mirrorNow();}});
+function mirrorNow(){
+  if(!IDB)return;
+  if(!mirrorGuardReady){mirrorQueued=true;return;} /* não gravar antes de saber se o espelho atual é rico */
+  var p=IDB.payloadNow();
+  if(!p.state)return;
+  /* nunca envenenar um espelho com conteúdo usando um estado vazio
+     (acontece num boot pós-limpeza, antes da restauração completar) */
+  var rich=IDB.hasContent(p);
+  if(!rich&&mirrorHadContent)return;
+  var j=String(p.state||'').length+'|'+JSON.stringify(p.extras||{});
+  if(j!==lastMirrorJson){
+    lastMirrorJson=j;
+    IDB.set('kv','mirror',p);
+    if(rich){mirrorHadContent=true;snapshotDaily();}
+    autoExportSoon(p);
+  }
+}
+function mirrorSoon(){clearTimeout(mirrorTimer);mirrorTimer=setTimeout(mirrorNow,1200);}
+function snapshotDaily(){
+  if(!IDB)return;
+  IDB.get('meta','lastSnapshot',function(last){
+    var today=tISO();
+    if(last===today)return;
+    var p=IDB.payloadNow();
+    if(!IDB.hasContent(p))return;
+    IDB.set('backups',new Date().toISOString(),p,function(){
+      IDB.set('meta','lastSnapshot',today);
+      IDB.keys('backups',function(keys){
+        keys.sort();
+        while(keys.length>30){IDB.del('backups',keys.shift());}
+      });
+    });
+  });
+}
+function renderSnapshotsCard(){
+  var host=$('view-ajustes'); if(!host||$('snap-card')||!IDB)return;
+  var fileInput=$('import-file');
+  var anchor=fileInput?(fileInput.closest('.card')||null):null;
+  var card=document.createElement('div');
+  card.className='card'; card.id='snap-card'; card.style.marginTop='16px';
+  card.innerHTML='<div class="card-h"><h3>Pontos de restauração</h3><span class="hint">snapshots automáticos diários · últimos 30</span></div>'
+    +'<p style="font-size:12.5px;color:var(--text-3);margin:0 0 10px">O estado completo é espelhado no armazenamento permanente do navegador (IndexedDB) e um snapshot é guardado por dia. Se o navegador limpar o site ou algo der errado, restaure um ponto anterior — inclusive de 7 dias atrás.</p>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="snap-now" type="button">Criar ponto agora</button><button class="btn-ghost" id="snap-export-dir" type="button">Ativar backup automático em arquivo</button><span id="snap-export-status" style="font-size:12px;color:var(--text-3);align-self:center"></span></div>'
+    +'<div class="snap-list" id="snap-list"></div>';
+  if(anchor&&anchor.parentNode)anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  else host.appendChild(card);
+  $('snap-now').onclick=function(){
+    var p=IDB.payloadNow();
+    IDB.set('backups',new Date().toISOString(),p,function(){toastSafe('ponto de restauração criado ✓');fillSnapList();});
+  };
+  $('snap-export-dir').onclick=enableAutoExport;
+  fillSnapList(); refreshAutoExportStatus();
+}
+function fillSnapList(){
+  var list=$('snap-list'); if(!list||!IDB)return;
+  IDB.keys('backups',function(keys){
+    keys=keys.slice().sort().reverse();
+    if(!keys.length){list.innerHTML='<div style="font-size:12.5px;color:var(--text-3)">Nenhum snapshot ainda — o primeiro é criado automaticamente uma vez por dia.</div>';return;}
+    list.innerHTML=keys.map(function(k){
+      var d=new Date(String(k).replace('-pre-restore',''));
+      var lbl=isNaN(d)?String(k):d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      return '<div class="snap-row"><span>'+esc(lbl)+(String(k).indexOf('pre-restore')>=0?' <i style="color:var(--text-3)">(antes de restaurar)</i>':'')+'</span><button data-snap="'+esc(k)+'" type="button">Restaurar</button></div>';
+    }).join('');
+    qa('[data-snap]',list).forEach(function(b){
+      b.onclick=function(){
+        var key=b.dataset.snap;
+        if(!confirm('Restaurar este snapshot? O estado atual será substituído (guardo um ponto do estado atual antes).'))return;
+        var cur=IDB.payloadNow();
+        IDB.set('backups',new Date().toISOString()+'-pre-restore',cur,function(){
+          IDB.get('backups',key,function(p){
+            if(p&&IDB.applyPayload(p)){
+              /* carimbo NOVO: sem isso o merge da nuvem (atualizado_em mais novo) desfaz a restauração no próximo boot */
+              try{localStorage.setItem('catedra:state-updated-at',new Date().toISOString());}catch(e){}
+              IDB.set('kv','mirror',p,function(){toastSafe('snapshot restaurado — recarregando…');location.reload();});
+            }
+            else toastSafe('não consegui ler esse snapshot');
+          });
+        });
+      };
+    });
+  });
+}
+var exportHandle=null, exportTimer=null;
+function refreshAutoExportStatus(){
+  var st=$('snap-export-status'); if(!st)return;
+  if(!window.showSaveFilePicker){st.textContent='(gravação direta em arquivo: indisponível neste navegador)';return;}
+  IDB.get('meta','exportHandle',function(h){
+    if(!h){st.textContent='';return;}
+    exportHandle=h;
+    try{
+      h.queryPermission({mode:'readwrite'}).then(function(p){
+        st.textContent=p==='granted'?'backup automático em arquivo ativo ✓':'clique para reautorizar o backup em arquivo';
+      }).catch(function(){st.textContent='';});
+    }catch(e){st.textContent='';}
+  });
+}
+function enableAutoExport(){
+  if(!window.showSaveFilePicker){toastSafe('este navegador não grava arquivos sozinho — use Exportar backup JSON',3000);return;}
+  var act=function(handle){
+    exportHandle=handle;
+    IDB.set('meta','exportHandle',handle);
+    writeAutoExport(IDB.payloadNow());
+    toastSafe('backup automático ativado — o arquivo escolhido será atualizado sozinho ✓',3200);
+    refreshAutoExportStatus();
+  };
+  var pickFile=function(cb){
+    window.showSaveFilePicker({suggestedName:'catedra-backup.json',types:[{description:'Backup Cátedra',accept:{'application/json':['.json']}}]}).then(cb).catch(function(){});
+  };
+  if(exportHandle){
+    try{
+      exportHandle.requestPermission({mode:'readwrite'}).then(function(p){
+        if(p==='granted')act(exportHandle); else pickFile(act);
+      }).catch(function(){pickFile(act);});
+    }catch(e){pickFile(act);}
+  }else pickFile(act);
+}
+function writeAutoExport(p){
+  if(!exportHandle||!p||!p.state)return;
+  try{
+    exportHandle.queryPermission({mode:'readwrite'}).then(function(perm){
+      if(perm!=='granted')return;
+      exportHandle.createWritable().then(function(w){
+        var body=JSON.stringify({app:'Catedra',version:4,exportedAt:new Date().toISOString(),state:JSON.parse(p.state||'{}'),extras:p.extras},null,1);
+        return w.write(body).then(function(){return w.close();});
+      }).catch(function(){});
+    }).catch(function(){});
+  }catch(e){}
+}
+function autoExportSoon(p){clearTimeout(exportTimer);exportTimer=setTimeout(function(){writeAutoExport(p);},4000);}
+document.addEventListener('catedra:statechange',mirrorSoon);
+document.addEventListener('catedra:integrated-sync',mirrorSoon);
+window.addEventListener('beforeunload',mirrorNow);
+setInterval(mirrorSoon,45000);
+try{var pv=localStorage.getItem('catedra:sync-provider');if(pv==='gdrive'||pv==='onedrive')localStorage.setItem('catedra:sync-provider','supabase');}catch(e){}
+
+/* ===== 2.1 — merge de estados (nuvem): append-only por id; resto LWW ===== */
+/* exclusões viram lápides (tombstones): sem isso a união por id ressuscita
+   qualquer item apagado assim que outro dispositivo sincroniza */
+window.catedraTombstone=function(coll,id){
+  try{
+    var s=S(); s.deleted=s.deleted||{};
+    var m=s.deleted[coll]=s.deleted[coll]||{};
+    m[String(id)]=new Date().toISOString();
+    var ks=Object.keys(m);
+    if(ks.length>800){ks.sort(function(a,b){return String(m[a]).localeCompare(String(m[b]));});while(ks.length>800)delete m[ks.shift()];}
+  }catch(e){}
+};
+window.catedraMergeStates=function(local,remote,localNewer){
+  var APPEND=['sessions','revisions','errors','simulados','anki','exams','events'];
+  var winner=localNewer?local:remote;
+  var out;
+  try{out=JSON.parse(JSON.stringify(winner));}catch(e){return winner;}
+  /* lápides: união dos dois lados (carimbo mais novo vence) */
+  var tomb={};
+  [local.deleted||{},remote.deleted||{}].forEach(function(src){
+    Object.keys(src).forEach(function(coll){
+      var m=tomb[coll]=tomb[coll]||{};
+      Object.keys(src[coll]||{}).forEach(function(id){
+        if(!m[id]||String(src[coll][id])>String(m[id]))m[id]=src[coll][id];
+      });
+    });
+  });
+  out.deleted=tomb;
+  APPEND.forEach(function(k){
+    var a=Array.isArray(local[k])?local[k]:[], b=Array.isArray(remote[k])?remote[k]:[];
+    var dead=tomb[k]||{};
+    var byId={}, order=[];
+    a.concat(b).forEach(function(it){
+      if(!it)return;
+      var id=(it.id!=null)?String(it.id):JSON.stringify(it);
+      if(dead[id])return; /* apagado em algum dispositivo: não ressuscitar */
+      if(byId[id]){
+        var prev=byId[id], keep=prev, other=it;
+        /* resolução DETERMINÍSTICA e simétrica do conflito — os dois dispositivos
+           chegam ao mesmo vencedor, senão o sync faz ping-pong para sempre */
+        try{if(JSON.stringify(it)>JSON.stringify(prev)){keep=it;other=prev;var ix=order.indexOf(prev);if(ix>=0)order[ix]=it;byId[id]=it;}}catch(e){}
+        if(k==='revisions'&&(keep.done||other.done))keep.done=true;
+        if(k==='errors'){
+          if(String(keep.status)==='resolvido'||String(other.status)==='resolvido')keep.status='resolvido';
+          if(other.retest&&(!keep.retest||(+other.retest.step||0)>(+keep.retest.step||0)))keep.retest=other.retest;
+        }
+        return;
+      }
+      byId[id]=it; order.push(it);
+    });
+    order.sort(function(x,y){return String(x.date||x.due||'').localeCompare(String(y.date||y.due||''))||String(x.id).localeCompare(String(y.id));});
+    out[k]=order;
+  });
+  out.studyDays=Array.from(new Set([].concat(local.studyDays||[],remote.studyDays||[]))).sort();
+  var fs={};
+  [local.flashSRS||{},remote.flashSRS||{}].forEach(function(src){
+    Object.keys(src).forEach(function(k2){
+      var cur=fs[k2], it=src[k2];
+      if(!cur||String((it&&it.due)||'')>String((cur&&cur.due)||''))fs[k2]=it;
+    });
+  });
+  out.flashSRS=fs;
+  return out;
+};
+
+/* ===== 1.1 — motor de priorização =====
+   prioridade = peso_edital × lacuna_efetiva × urgência + boost_erro
+   lacuna_efetiva = 1 − retenção, com retenção = domínio_EWMA × e^(−t/τ)
+   (o decaimento entra REDUZINDO a retenção — tópico esquecido sobe na fila;
+    τ cresce com revisões concluídas e domínio, proxy de estabilidade FSRS) */
+var _engCache=null,_engAt=0;
+function engInvalidate(){_engCache=null;}
+document.addEventListener('catedra:statechange',engInvalidate);
+document.addEventListener('catedra:integrated-sync',engInvalidate);
+function incW(inc){inc=norm(inc);if(inc==='alta')return 1.5;if(inc==='media')return 1;if(inc==='baixa')return 0.6;return 1;}
+function topicMatches(text,topic){
+  var a=norm(text),b=norm(topic);
+  if(!a||!b)return false;
+  if(a===b)return true;
+  var sh=a.length<=b.length?a:b, lg=a.length<=b.length?b:a;
+  var i=lg.indexOf(sh);
+  if(i<0)return false;
+  /* contenção só conta quando o trecho é substancial ou é prefixo — evita que
+     "Recursos" contamine o domínio de todos os tópicos que contêm a palavra */
+  return sh.length>=lg.length*0.5||i===0;
+}
+function engineTopics(){
+  var st=S(); var ed=Array.isArray(st.edital)?st.edital:[];
+  if(ed.length)return ed.map(function(t){return {id:t.id,disc:t.disc||'Sem disciplina',t:t.t||'',inc:t.inc||'',done:!!t.done,fromEdital:true};});
+  var seen={},out=[];
+  (st.sessions||[]).forEach(function(s2){
+    var t=(s2.topic||'').trim(); if(!t)return;
+    var k=norm((s2.disc||'')+'|'+t); if(seen[k])return; seen[k]=1;
+    out.push({id:k,disc:s2.disc||'Sem disciplina',t:t,inc:'',done:false,fromEdital:false});
+  });
+  return out;
+}
+function retaFinalMode(){
+  var d=dteSafe();
+  if(d==null||d<0)return false;
+  var lim=30;
+  try{var pz=JSON.parse(localStorage.getItem('catedra_user_personalization')||'{}');if(pz&&pz.final){if(pz.final.enabled===false)return false;lim=+pz.final.days||30;}}catch(e){}
+  return d<=lim;
+}
+function engineRows(){
+  var now=Date.now();
+  if(_engCache&&now-_engAt<5000)return _engCache;
+  var st=S(); var today=tISO(); var d=dteSafe();
+  var urg=(d==null||d<0)?1:(1+Math.min(1.2,Math.max(0,75-d)/60));
+  var reta=retaFinalMode();
+  var topics=engineTopics();
+  var openErr=(st.errors||[]).filter(function(e2){return (e2.status||'pendente')!=='resolvido';});
+  var pesos=topics.map(function(t){return ((st.plano&&st.plano[t.disc])?(+st.plano[t.disc].peso||1):1)*incW(t.inc);});
+  var sortedP=pesos.slice().sort(function(a,b){return a-b;});
+  var medP=sortedP.length?sortedP[Math.floor(sortedP.length/2)]:1;
+  var rows=topics.map(function(t,i){
+    var sess=(st.sessions||[]).filter(function(s2){return String(s2.disc||'')===String(t.disc)&&topicMatches(s2.topic,t.t);});
+    var dom=null,qSum=0;
+    sess.slice().sort(function(a,b){return String(a.date).localeCompare(String(b.date));}).forEach(function(s2){
+      if(+s2.q>0){qSum+=(+s2.q||0);var acc=Math.min(1,(+s2.c||0)/(+s2.q));dom=(dom==null)?acc:(0.3*acc+0.7*dom);}
+    });
+    var min=sess.reduce(function(a,s2){return a+(+s2.min||0);},0);
+    /* tópicos só de teoria: minutos elevam o domínio gradualmente (até 0.5) em vez de travar em 0.3 */
+    if(dom==null)dom=t.done?0.45:(min>0?Math.min(0.5,0.3+min/600):0);
+    var revs=(st.revisions||[]).filter(function(r){return String(r.disc||'')===String(t.disc)&&topicMatches(r.topic,t.t);});
+    var revDone=revs.filter(function(r){return r.done;}).length;
+    var lastTouch='';
+    sess.forEach(function(s2){if(String(s2.date||'')>lastTouch)lastTouch=s2.date;});
+    revs.forEach(function(r){if(r.done&&String(r.due||'')>lastTouch)lastTouch=r.due;});
+    var studied=min>0||sess.length>0||t.done;
+    if(!lastTouch&&t.done)lastTouch=t.doneAt||today; /* concluído direto no edital, sem sessão: tratar como tocado */
+    var tdays=lastTouch?Math.max(0,Math.round((new Date(today+'T00:00:00')-new Date(lastTouch+'T00:00:00'))/86400000)):999;
+    var tau=6+4*revDone+8*dom;
+    var retention=studied?dom*Math.exp(-tdays/tau):0;
+    var peso=pesos[i];
+    var errN=openErr.filter(function(e2){return String(e2.disc||'')===String(t.disc)&&topicMatches(e2.topic||e2.note,t.t);}).length;
+    var boost=0.45*Math.min(3,errN);
+    var score=peso*(1-retention)*urg+boost;
+    if(reta&&!studied&&peso<=medP)score*=0.4; /* reta final: teoria nova de peso baixo/médio perde prioridade */
+    var revLate=revs.filter(function(r){return !r.done&&String(r.due||'')<=today;}).length;
+    return {id:t.id,disc:t.disc,topic:t.t,inc:t.inc,done:t.done,studied:studied,dom:dom,min:min,qSum:qSum,
+      retention:retention,tdays:tdays,peso:peso,errN:errN,revLate:revLate,score:score,sessN:sess.length};
+  });
+  rows.sort(function(a,b){return b.score-a.score;});
+  _engCache=rows;_engAt=now;
+  return rows;
+}
+function engineQueue(){
+  var st=S(); var today=tISO();
+  var dailyMin=(st.goals&&(+st.goals.dailyMin))||Math.round(((st.goals&&+st.goals.hoursWk||15)*60)/((st.goals&&+st.goals.daysWk)||5))||120;
+  var rows=engineRows();
+  var scoreOf={}; rows.forEach(function(r){scoreOf[norm(r.disc+'|'+r.topic)]=r.score;});
+  var overdue=(st.revisions||[]).filter(function(r){return !r.done&&String(r.due||'')<=today;})
+    .sort(function(a,b){return (scoreOf[norm((b.disc||'')+'|'+(b.topic||''))]||0)-(scoreOf[norm((a.disc||'')+'|'+(a.topic||''))]||0);});
+  var revShare=retaFinalMode()?0.6:0.4; /* reta final: dobra o peso de revisão na fila */
+  var revBudget=Math.round(dailyMin*revShare), perRev=12;
+  var revN=Math.min(overdue.length,Math.max(overdue.length?1:0,Math.floor(revBudget/perRev)));
+  var queue=overdue.slice(0,revN).map(function(r){return {kind:'revisao',disc:r.disc,topic:r.topic,min:perRev,rev:r};});
+  var pend=rows.filter(function(r){return !r.done||r.retention<0.75;});
+  var byDisc={},discOrder=[];
+  pend.forEach(function(r){if(!byDisc[r.disc]){byDisc[r.disc]=[];discOrder.push(r.disc);}byDisc[r.disc].push(r);});
+  var blockMin=50, room=Math.max(1,Math.round((dailyMin-queue.length*perRev)/blockMin)), gi=0, guard=0;
+  while(queue.filter(function(x){return x.kind==='topico';}).length<room&&discOrder.length&&guard<80){
+    guard++;
+    var dn=discOrder[gi%discOrder.length];
+    var lst=byDisc[dn];
+    if(lst&&lst.length){var r2=lst.shift();queue.push({kind:'topico',disc:r2.disc,topic:r2.topic,min:blockMin,row:r2});gi++;}
+    else{discOrder.splice(gi%discOrder.length,1);}
+  }
+  return {items:queue,dailyMin:dailyMin,overdueTotal:overdue.length,reta:retaFinalMode()};
+}
+function engineFocus(){
+  var q=engineQueue();
+  var it=q.items[0]||null;
+  if(!it)return null;
+  var d=dteSafe();
+  var reason=[];
+  if(it.kind==='revisao'){
+    reason.push('zerar as revisões vencidas antes de avançar — a memória do que você já estudou está expirando');
+    if(q.overdueTotal>1)reason.push('há '+q.overdueTotal+' revisões pendentes no total');
+  }else{
+    var r=it.row;
+    if(r.studied&&r.retention<0.7)reason.push('retenção estimada caiu a ~'+Math.round(r.retention*100)+'%');
+    if(!r.studied)reason.push('tópico do edital ainda não estudado');
+    if(r.peso>=1.3)reason.push('o tema tem peso alto no edital');
+    if(r.errN>0)reason.push(r.errN+' erro(s) aberto(s) no caderno');
+  }
+  if(d!=null&&d>=0)reason.push('a prova está a '+d+' dia'+(d===1?'':'s'));
+  if(!reason.length)reason.push('próximo da fila do motor de prioridade');
+  return {task:it,reason:reason.join(' · '),queue:q,reta:q.reta};
+}
+function engineFalso(){
+  var st=S(); var rows=engineRows(); var today=tISO(); var alerts=[];
+  var grind=null,lowHi=null,hiLow=null;
+  rows.forEach(function(r){
+    /* regras de domínio exigem volume mínimo de questões — sem isso o detector
+       acusaria "acerta pouco" para quem nunca respondeu nada */
+    if(!grind&&r.min>180&&r.studied&&r.dom<0.55&&r.sessN>=3&&r.qSum>=10)grind=r;
+    if(!lowHi&&r.peso<=0.8&&r.dom>=0.8&&r.studied&&r.qSum>=10)lowHi=r;
+    if(!hiLow&&r.peso>=1.3&&r.dom<0.5&&r.studied&&r.qSum>=10)hiLow=r;
+  });
+  if(grind)alerts.push({k:'grind',txt:'Estuda muito e acerta pouco em '+grind.disc+' · '+grind.topic+' ('+Math.round(grind.dom*100)+'% de domínio em '+Math.round(grind.min/60)+'h) — troque volume por correção ativa.'});
+  var d14=addD(today,-13);
+  var s14=(st.sessions||[]).filter(function(s2){return s2.date>=d14;});
+  var teoMin=s14.filter(function(s2){return ['teoria','leiseca','juris'].indexOf(String(s2.cat||'').toLowerCase())>=0;}).reduce(function(a,s2){return a+(+s2.min||0);},0);
+  var q14=s14.reduce(function(a,s2){return a+(+s2.q||0);},0);
+  if(teoMin>=300&&q14<40)alerts.push({k:'teoria',txt:'Muita teoria e poucas questões nos últimos 14 dias ('+Math.round(teoMin/60)+'h de teoria · '+q14+' questões) — teoria sem teste não comprova domínio.'});
+  var overdue=(st.revisions||[]).filter(function(r){return !r.done&&String(r.due||'')<=today;}).length;
+  var edDone=(st.edital||[]).filter(function(t){return t.done;}).length;
+  if(overdue>=5&&edDone>0)alerts.push({k:'rev',txt:'O edital avança, mas '+overdue+' revisões estão vencidas — progresso sem revisão evapora.'});
+  if(lowHi&&hiLow)alerts.push({k:'aloc',txt:'Acerto alto onde pesa pouco ('+lowHi.disc+') e baixo onde pesa muito ('+hiLow.disc+' · '+hiLow.topic+') — realoque o tempo para o que pontua.'});
+  return alerts;
+}
+function engineCoverage(){
+  var st=S(); var ed=Array.isArray(st.edital)?st.edital:[];
+  if(!ed.length)return null;
+  var remaining=ed.filter(function(t){return !t.done;}).length;
+  if(!remaining)return {remaining:0,text:'Edital 100% percorrido — fase de manutenção: revisão, simulados e lei seca.'};
+  var d14=addD(tISO(),-13);
+  var sess14=(st.sessions||[]).filter(function(s2){return s2.date>=d14;});
+  var touched={};
+  sess14.forEach(function(s2){if(s2.topic)touched[norm((s2.disc||'')+'|'+s2.topic)]=1;});
+  var doneRecent=0;
+  ed.forEach(function(t){if(t.done&&(touched[norm((t.disc||'')+'|'+(t.t||''))]||String(t.doneAt||'')>=d14))doneRecent++;});
+  var pace=doneRecent/14;
+  var d=dteSafe();
+  if(!pace||d==null||d<0)return {remaining:remaining,pace:pace,text:remaining+' tópico(s) do edital ainda pendentes'+(pace?'.':' · sem ritmo de conclusão medido nos últimos 14 dias.')};
+  var need=Math.ceil(remaining/pace);
+  var diff=d-need;
+  return {remaining:remaining,pace:pace,daysNeeded:need,
+    text:'No ritmo atual ('+(pace*7).toFixed(1)+' tópico(s)/semana), você fecha o edital '+(diff>=0?Math.abs(diff)+' dia(s) ANTES da prova.':Math.abs(diff)+' dia(s) DEPOIS da prova — acelere ou corte tópicos de baixo peso.')};
+}
+window.CatedraEngine={rows:engineRows,queue:engineQueue,focus:engineFocus,falso:engineFalso,coverage:engineCoverage,reta:retaFinalMode,invalidate:engInvalidate};
+
+/* ===== 1.2 — Foco de Agora ===== */
+window.__focoTask=null;
+window.renderFocoAgora=function(){
+  var host=$('foco-agora-card'); if(!host)return;
+  var f=null; try{f=engineFocus();}catch(e){}
+  if(!f){
+    host.innerHTML='<div class="fa-eyebrow">Foco de agora</div><h2>Comece pelo edital</h2><p class="fa-reason">Cadastre o edital (ou registre a primeira sessão) e o mentor passa a indicar exatamente o que estudar a cada momento.</p><div class="fa-row"><button class="fa-start" data-fa-edital type="button">Cadastrar edital</button><button class="fa-alt" data-fa-sessao type="button">Registrar sessão</button></div>';
+    var be=host.querySelector('[data-fa-edital]'); if(be)be.onclick=function(){var b=document.querySelector('.nav-item[data-view="edital"]');if(b)b.click();};
+    var bs=host.querySelector('[data-fa-sessao]'); if(bs)bs.onclick=function(){if(window.openSessionModal)window.openSessionModal();};
+    return;
+  }
+  var it=f.task;
+  var titulo=(it.kind==='revisao'?'Revisar: ':'Estudar: ')+(it.topic||it.disc);
+  var alerts=[]; try{alerts=engineFalso().slice(0,1);}catch(e){}
+  var next=f.queue.items.slice(1,4).map(function(x){return (x.kind==='revisao'?'revisão · ':'')+(x.topic||x.disc);}).join('  →  ');
+  var motivo=(it.kind==='revisao'?'':it.disc+' — ')+f.reason;
+  host.innerHTML='<div class="fa-eyebrow">Foco de agora'+(f.reta?'<span class="fa-reta">⚡ modo reta final ativo</span>':'')+'</div>'
+    +'<h2>'+esc(titulo)+'</h2>'
+    +'<p class="fa-reason">'+esc(motivo.charAt(0).toUpperCase()+motivo.slice(1))+'.</p>'
+    +'<div class="fa-row"><button class="fa-start" id="fa-start" type="button">▶ Começar ('+it.min+'min)</button><button class="fa-alt" id="fa-reg" type="button">Já estudei — registrar</button></div>'
+    +(alerts.length?'<div class="fa-alert">⚠ <span>'+esc(alerts[0].txt)+'</span></div>':'')
+    +(next?'<div class="fa-queue">Depois: '+esc(next)+'</div>':'');
+  var bSt=$('fa-start');
+  if(bSt)bSt.onclick=function(){
+    window.__focoTask={disc:it.disc,topic:it.topic,kind:it.kind};
+    var tb=$('tstart');
+    if(tb&&tb.textContent.indexOf('Pausar')<0){tb.click();baselineSet(S().timerSec||0);}
+    toastSafe('cronômetro rodando — '+(it.topic||it.disc)+' · faça o check-in ao pausar ✓',3000);
+  };
+  var bRg=$('fa-reg');
+  if(bRg)bRg.onclick=function(){
+    window.__focoTask={disc:it.disc,topic:it.topic,kind:it.kind};
+    if(window.openSessionModal)window.openSessionModal();
+    setTimeout(function(){
+      var fd=$('f-disc'),ft=$('f-topic');
+      if(fd&&it.disc){fd.value=it.disc;fd.dispatchEvent(new Event('change',{bubbles:true}));}
+      if(ft&&it.topic)ft.value=it.topic;
+    },120);
+  };
+};
+
+/* ===== 1.3 — check-in pós-sessão + cronômetro sem inflação ===== */
+window.__lastCheckinSec=0;
+function timerMode(){try{if(typeof focusMode!=='undefined')return focusMode;}catch(e){}return (S().focusMode)||'livre';}
+/* baseline do check-in persistida no estado — antes vivia só na janela e um reload
+   fazia o primeiro pause oferecer TODO o histórico do cronômetro como "sessão" */
+function baselineGet(){var s=S();if(s.lastCheckinSec==null)s.lastCheckinSec=(+s.timerSec||0);return Math.min(+s.lastCheckinSec||0,+s.timerSec||0);}
+function baselineSet(v){var s=S();s.lastCheckinSec=Math.max(0,Math.min(+v||0,(+s.timerSec||0)));window.__lastCheckinSec=s.lastCheckinSec;}
+function isTimerRunning(){
+  if(timerMode()==='pomo')return false; /* o pomodoro tem ciclo próprio: vigia de ociosidade e barra mobile não se aplicam */
+  var b=$('tstart');return !!(b&&b.textContent.indexOf('Pausar')>=0);
+}
+function openCheckin(elapsedSec){
+  if($('ckin-overlay'))return;
+  var st=S();
+  var disc=(window.__focoTask&&window.__focoTask.disc)||'';
+  var topic=(window.__focoTask&&window.__focoTask.topic)||'';
+  var discs=(st.discs&&st.discs.length?st.discs:(typeof DISCIPLINAS!=='undefined'?DISCIPLINAS:[]));
+  var min=Math.max(1,Math.round(elapsedSec/60));
+  var ov=document.createElement('div');
+  ov.className='ckin-overlay'; ov.id='ckin-overlay';
+  ov.innerHTML='<div class="ckin-card" role="dialog" aria-modal="true"><h3>Sessão de '+min+'min — como foi?</h3><p class="ck-sub">4 respostas e eu atualizo ciclo, revisões, estatísticas e caderno de erros por você.</p>'
+    +'<div class="ckin-grid">'
+    +'<label>Disciplina<select id="ck-disc">'+discs.map(function(d){return '<option'+(d===disc?' selected':'')+'>'+esc(d)+'</option>';}).join('')+'</select></label>'
+    +'<label>Tópico<input type="text" id="ck-topic" value="'+esc(topic)+'" placeholder="o que você estudou"></label>'
+    +'<label>Questões feitas<input type="number" id="ck-q" min="0" value="0"></label>'
+    +'<label>Acertos<input type="number" id="ck-c" min="0" value="0"></label>'
+    +'</div>'
+    +'<label class="ck-check"><input type="checkbox" id="ck-err"> Houve erro recorrente (criar no caderno de erros)</label>'
+    +'<label class="ck-check"><input type="checkbox" id="ck-rev" checked> Criar revisões espaçadas (1 · 7 · 30)</label>'
+    +'<div class="ckin-actions"><button class="sec" id="ck-discard" type="button">Descartar tempo</button><button class="sec" id="ck-later" type="button">Depois</button><button class="pri" id="ck-save" type="button">Salvar sessão</button></div>'
+    +'</div>';
+  document.body.appendChild(ov);
+  $('ck-later').onclick=function(){ov.remove();};
+  $('ck-discard').onclick=function(){
+    if(!confirm('Descartar '+min+'min do cronômetro?'))return;
+    var s2=S(); s2.timerSec=Math.max(0,(+s2.timerSec||0)-elapsedSec);
+    baselineSet(s2.timerSec);
+    saveSafe(); try{if(typeof renderTimer==='function')renderTimer();}catch(e){}
+    ov.remove();
+  };
+  $('ck-save').onclick=function(){
+    var s2=S();
+    var q=+($('ck-q').value)||0, c=Math.min(q,+($('ck-c').value)||0);
+    var dsc=$('ck-disc').value||'', tp=($('ck-topic').value||'').trim()||'(sem tópico)';
+    var cat=q>0?'questoes':'teoria';
+    var sess={id:Date.now(),date:tISO(),disc:dsc,topic:tp,cat:cat,min:min,sec:elapsedSec,q:q,c:c,b:0,note:'Check-in pós-sessão'};
+    s2.sessions=s2.sessions||[]; s2.sessions.push(sess);
+    if(!Array.isArray(s2.studyDays))s2.studyDays=[];
+    if(s2.studyDays.indexOf(sess.date)<0)s2.studyDays.push(sess.date);
+    if($('ck-rev').checked){
+      s2.revisions=s2.revisions||[];
+      ((s2.revIntervals&&s2.revIntervals.length)?s2.revIntervals:[{d:1},{d:7},{d:30}]).forEach(function(iv){
+        s2.revisions.push({id:sess.id+'_'+iv.d,sid:sess.id,disc:dsc,topic:tp,label:iv.d+(iv.d===1?' dia':' dias'),due:addD(sess.date,iv.d),done:false});
+      });
+    }
+    if($('ck-err').checked){
+      s2.errors=s2.errors||[];
+      s2.errors.push({id:Date.now()+1,date:sess.date,disc:dsc,topic:tp,note:'Erro recorrente sinalizado no check-in',cause:'sessao',fix:'',action:'Refazer questões do tópico',status:'pendente'});
+    }
+    try{var ed=(s2.edital||[]).find(function(t){return String(t.disc)===dsc&&norm(t.t)===norm(tp);});if(ed&&cat==='questoes'&&q>=5&&c>=q*0.7){ed.done=true;ed.doneAt=tISO();}}catch(e){}
+    baselineSet(0);
+    try{if(typeof window.resetTimer==='function')window.resetTimer();}catch(e){}
+    saveSafe(); engInvalidate();
+    try{if(typeof window.renderHome==='function')renderHome();}catch(e){}
+    try{if(typeof window.renderRevisions==='function')renderRevisions();}catch(e){}
+    toastSafe('sessão registrada ✓ — ciclo, revisões e estatísticas atualizados',3000);
+    ov.remove();
+  };
+}
+(function wrapTimer(){
+  var tries=0;
+  var iv=setInterval(function(){
+    if(typeof window.toggleTimer!=='function'){if(++tries>40)clearInterval(iv);return;}
+    clearInterval(iv);
+    var orig=window.toggleTimer;
+    window.toggleTimer=function(){
+      var wasRunning=isTimerRunning();
+      var r=orig.apply(this,arguments);
+      if(wasRunning&&!window.__autoPause){
+        var elapsed=(S().timerSec||0)-baselineGet();
+        if(elapsed>=600)setTimeout(function(){openCheckin(elapsed);},250);
+      }
+      if(!wasRunning)window.__idleLastAct=Date.now();
+      return r;
+    };
+    var origReset=window.resetTimer;
+    if(typeof origReset==='function')window.resetTimer=function(){var r=origReset.apply(this,arguments);baselineSet(0);return r;};
+  },250);
+})();
+/* check-in também no pomodoro: pausa do ciclo (running true→false) dispara o modal */
+(function wrapPomo(){
+  var tries=0;
+  var iv=setInterval(function(){
+    if(typeof window.pomoToggle!=='function'){if(++tries>40)clearInterval(iv);return;}
+    clearInterval(iv);
+    var orig=window.pomoToggle;
+    window.pomoToggle=function(){
+      var was=false; try{was=(typeof pomo!=='undefined')&&pomo.running===true;}catch(e){}
+      var r=orig.apply(this,arguments);
+      if(was&&!window.__autoPause){
+        var elapsed=(S().timerSec||0)-baselineGet();
+        if(elapsed>=600)setTimeout(function(){openCheckin(elapsed);},250);
+      }
+      return r;
+    };
+  },250);
+})();
+/* registrar pela via clássica (log-save) avança a baseline — sem isso o próximo
+   check-in ofereceria de novo os minutos já registrados manualmente */
+(function(){
+  var tries=0;
+  var iv=setInterval(function(){
+    var b=$('log-save'); if(!b){if(++tries>40)clearInterval(iv);return;}
+    clearInterval(iv);
+    b.addEventListener('click',function(){setTimeout(function(){
+      var s2=S(); var last=(s2.sessions||[])[ (s2.sessions||[]).length-1 ];
+      if(last&&Date.now()-(+last.id||0)<3000)baselineSet(+s2.timerSec||0);
+    },400);});
+  },300);
+})();
+window.__idleLastAct=Date.now();
+var __hiddenAt=0;
+['pointermove','pointerdown','keydown','touchstart','scroll'].forEach(function(ev){
+  var last=0;
+  document.addEventListener(ev,function(){var n=Date.now();if(n-last>1000){last=n;window.__idleLastAct=n;}},{passive:true});
+});
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden)__hiddenAt=Date.now();
+  else{
+    if(window.__pendingIdle)showIdlePrompt();
+    __hiddenAt=0; window.__idleLastAct=Date.now();
+  }
+});
+setInterval(function(){
+  if(!isTimerRunning())return;
+  var now=Date.now();
+  var hiddenFor=(document.hidden&&__hiddenAt)?now-__hiddenAt:0;
+  var idleFor=now-window.__idleLastAct;
+  var IDLE_HIDDEN=5*60000, IDLE_ACTIVE=8*60000;
+  if(hiddenFor>IDLE_HIDDEN||idleFor>IDLE_ACTIVE){
+    var idleSec=Math.round(Math.max(hiddenFor,idleFor)/1000);
+    var s2=S();
+    s2.timerSec=Math.max(0,(+s2.timerSec||0)-idleSec);
+    window.__autoPause=true;
+    try{window.toggleTimer();}catch(e){}
+    window.__autoPause=false;
+    window.__pendingIdle={idleSec:idleSec,pausedAt:+s2.timerSec||0};
+    saveSafe(); try{if(typeof renderTimer==='function')renderTimer();}catch(e){}
+    if(!document.hidden)showIdlePrompt();
+  }
+},20000);
+function showIdlePrompt(){
+  var info=window.__pendingIdle; if(!info||$('idle-overlay'))return;
+  var mins=Math.round(info.idleSec/60);
+  var ov=document.createElement('div');
+  ov.className='ckin-overlay'; ov.id='idle-overlay';
+  var hms=(typeof fmtHMS==='function')?fmtHMS(info.pausedAt):Math.round(info.pausedAt/60)+'min';
+  ov.innerHTML='<div class="ckin-card"><h3>Pausei o cronômetro aos '+hms+'</h3><p class="ck-sub">Detectei ~'+mins+'min sem atividade (aba em segundo plano ou sem interação). Removi esse intervalo do tempo de estudo para a estatística não mentir — sessão inflada engana o motor de prioridade.</p>'
+    +'<div class="ckin-actions"><button class="sec" id="idle-keep" type="button">Eu estava estudando — manter os '+mins+'min</button><button class="pri" id="idle-resume" type="button">Retomar estudo</button></div></div>';
+  document.body.appendChild(ov);
+  $('idle-keep').onclick=function(){
+    var s2=S(); s2.timerSec=(+s2.timerSec||0)+info.idleSec; saveSafe();
+    try{if(typeof renderTimer==='function')renderTimer();}catch(e){}
+    window.__pendingIdle=null; ov.remove();
+  };
+  $('idle-resume').onclick=function(){
+    window.__pendingIdle=null; ov.remove();
+    if(!isTimerRunning()){window.__autoPause=true;try{window.toggleTimer();}catch(e){}window.__autoPause=false;}
+  };
+}
+
+/* ===== 1.4 — repactuação de revisões atrasadas ===== */
+function overdueRevs(){var t=tISO();return (S().revisions||[]).filter(function(r){return !r.done&&String(r.due||'')<t;});}
+function repacPreview(perDay){
+  var rows=engineRows(); var scoreOf={};
+  rows.forEach(function(r){scoreOf[norm(r.disc+'|'+r.topic)]=r.score;});
+  var list=overdueRevs().slice().sort(function(a,b){return (scoreOf[norm((b.disc||'')+'|'+(b.topic||''))]||0)-(scoreOf[norm((a.disc||'')+'|'+(a.topic||''))]||0);});
+  var plan=[]; var day=0;
+  /* hoje já tem revisões marcadas: o redistribuído entra por cima só até o teto diário */
+  var hoje=tISO();
+  var inDay=(S().revisions||[]).filter(function(r){return !r.done&&String(r.due||'')===hoje;}).length;
+  if(inDay>=perDay){day=1;inDay=0;}
+  list.forEach(function(r){
+    if(inDay>=perDay){day++;inDay=0;}
+    plan.push({rev:r,due:addD(tISO(),day)});
+    inDay++;
+  });
+  return plan;
+}
+function openRepacModal(){
+  if($('repac-overlay'))return;
+  var n=overdueRevs().length; if(!n)return;
+  var st=S();
+  var perDay=Math.max(2,(st.reviewPrefs&&+st.reviewPrefs.maxDaily)||Math.ceil(n/4));
+  var ov=document.createElement('div');
+  ov.className='ckin-overlay'; ov.id='repac-overlay';
+  function previewHtml(pd){
+    var plan=repacPreview(pd); var groups={};
+    plan.forEach(function(p){(groups[p.due]=groups[p.due]||[]).push(p.rev);});
+    return Object.keys(groups).sort().map(function(d){
+      var lbl=d===tISO()?'Hoje':new Date(d+'T00:00:00').toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'});
+      return '<div style="padding:4px 0;border-bottom:1px solid var(--border)"><b>'+esc(lbl)+'</b> <span style="color:var(--text-3);font-size:12px">'+groups[d].map(function(r){return esc(String(r.topic||r.disc||'revisão').slice(0,28));}).join(' · ')+'</span></div>';
+    }).join('');
+  }
+  ov.innerHTML='<div class="ckin-card"><h3>Repactuar '+n+' revisões atrasadas</h3><p class="ck-sub">Redistribuo as revisões vencidas nos próximos dias, começando pelos tópicos mais críticos segundo o motor de prioridade (peso × lacuna × urgência).</p>'
+    +'<label>Revisões por dia<input type="number" id="repac-perday" min="1" max="'+n+'" value="'+perDay+'"></label>'
+    +'<div id="repac-preview" style="font-size:12.5px;max-height:200px;overflow:auto;background:var(--surface-2);border-radius:10px;padding:8px 12px">'+previewHtml(perDay)+'</div>'
+    +'<div class="ckin-actions"><button class="sec" id="repac-cancel" type="button">Cancelar</button><button class="pri" id="repac-apply" type="button">Aplicar redistribuição</button></div></div>';
+  document.body.appendChild(ov);
+  $('repac-perday').oninput=function(){var pd=Math.max(1,+this.value||1);$('repac-preview').innerHTML=previewHtml(pd);};
+  $('repac-cancel').onclick=function(){ov.remove();};
+  $('repac-apply').onclick=function(){
+    var pd=Math.max(1,+$('repac-perday').value||perDay);
+    repacPreview(pd).forEach(function(p){p.rev.due=p.due;});
+    saveSafe(); engInvalidate();
+    try{if(typeof window.renderRevisions==='function')renderRevisions();}catch(e){}
+    try{if(typeof window.renderFocoAgora==='function')renderFocoAgora();}catch(e){}
+    toastSafe('revisões redistribuídas ✓',2500);
+    ov.remove();
+  };
+}
+window.catedraRepacRevisoes=openRepacModal;
+(function(){
+  var tries=0;
+  var iv=setInterval(function(){
+    if(typeof window.renderRevisions!=='function'){if(++tries>40)clearInterval(iv);return;}
+    clearInterval(iv);
+    var orig=window.renderRevisions;
+    window.renderRevisions=function(){
+      var r=orig.apply(this,arguments);
+      try{
+        var n=overdueRevs().length;
+        var el2=$('rev-list');
+        if(el2&&n>=6&&!$('repac-banner-rev')){
+          var b=document.createElement('div');
+          b.className='repac-banner'; b.id='repac-banner-rev';
+          b.innerHTML='<span>Você tem <b>'+n+' revisões atrasadas</b>. Redistribuir nos próximos dias, começando pelos tópicos mais críticos?</span><button type="button">Redistribuir</button>';
+          b.querySelector('button').onclick=openRepacModal;
+          el2.insertBefore(b,el2.firstChild);
+        }
+      }catch(e){}
+      return r;
+    };
+  },250);
+})();
+
+/* ===== 1.6/1.7 — Análise consolidada + prontidão ===== */
+function anaEmbed(id,panelId){
+  var node=$(id),panel=$(panelId);
+  if(!node||!panel||panel.contains(node))return;
+  node.classList.remove('view','active');
+  node.classList.add('ana-embed');
+  panel.appendChild(node);
+}
+function anaCurrentTab(){try{return localStorage.getItem('catedra:anaTab')||'visao';}catch(e){return 'visao';}}
+function anaSelect(tab){
+  try{localStorage.setItem('catedra:anaTab',tab);}catch(e){}
+  qa('#ana-tabs .ana-tab').forEach(function(b){b.classList.toggle('active',b.dataset.ana===tab);});
+  qa('#view-analise .ana-panel').forEach(function(p){p.classList.toggle('active',p.id==='ana-'+tab);});
+  ['view-historico','view-relatorio','view-dominio'].forEach(function(id){
+    var n=$(id); if(n)n.classList.toggle('active',
+      (id==='view-historico'&&tab==='historico')||(id==='view-relatorio'&&tab==='relatorio')||(id==='view-dominio'&&tab==='risco'));
+  });
+  if(tab==='visao')renderAnaVisao();
+  if(tab==='disciplina'){try{if(typeof window.renderDesempenho==='function')renderDesempenho();}catch(e){}}
+  if(tab==='risco'){renderProntidao();try{if(typeof window.renderDomain==='function')renderDomain();}catch(e){}}
+  if(tab==='historico'){try{if(typeof window.renderHistory==='function')renderHistory();}catch(e){}}
+  if(tab==='relatorio'){try{if(typeof window.renderRelatorio==='function')renderRelatorio();}catch(e){}}
+}
+function renderProntidao(){
+  var panel=$('ana-risco'); if(!panel)return;
+  var card=$('prontidao-card');
+  if(!card){
+    card=document.createElement('div');
+    card.className='card prontidao-card'; card.id='prontidao-card'; card.style.marginBottom='16px';
+    panel.insertBefore(card,panel.firstChild);
+  }
+  var rows=[],cov=null;
+  try{rows=engineRows();cov=engineCoverage();}catch(e){}
+  var studied=rows.filter(function(r){return r.studied;});
+  var avgRet=studied.length?Math.round(studied.reduce(function(a,r){return a+r.retention;},0)/studied.length*100):0;
+  var ready=studied.length?Math.round(studied.filter(function(r){return r.retention>=0.7;}).length/studied.length*100):0;
+  var lowest=studied.slice().sort(function(a,b){return a.retention-b.retention;}).slice(0,3);
+  card.innerHTML='<div class="card-h"><h3>Prontidão por tópico</h3><span class="hint">retenção estimada (domínio × decaimento) + cobertura projetada</span></div>'
+    +'<div class="pr-grid">'
+    +'<div class="pr-cell"><b>'+avgRet+'%</b><span>retenção média estimada nos tópicos estudados</span></div>'
+    +'<div class="pr-cell"><b>'+ready+'%</b><span>tópicos estudados com retenção ≥ 70%</span></div>'
+    +'<div class="pr-cell"><b>'+rows.filter(function(r){return !r.studied;}).length+'</b><span>tópicos do edital ainda não estudados</span></div>'
+    +'</div>'
+    +(cov?'<p style="font-size:13px;margin:12px 0 0;color:var(--text-2)">'+esc(cov.text)+'</p>':'')
+    +(lowest.length?'<p style="font-size:12px;margin:8px 0 0;color:var(--text-3)">Retenção mais baixa: '+lowest.map(function(r){return esc(r.topic||r.disc)+' ('+Math.round(r.retention*100)+'%)';}).join(' · ')+'</p>':'')
+    +'<p style="font-size:11.5px;margin:10px 0 0;color:var(--text-3)">Prontidão aqui é retenção + cobertura. O app não estima probabilidade de aprovação — sem dados de calibração, esse número seria chute vestido de métrica.</p>';
+}
+function renderAnaVisao(){
+  var panel=$('ana-visao'); if(!panel)return;
+  var rows=[],alerts=[],cov=null,q=null;
+  try{rows=engineRows();alerts=engineFalso();cov=engineCoverage();q=engineQueue();}catch(e){}
+  var st=S(); var t=tISO();
+  var overdue=(st.revisions||[]).filter(function(r){return !r.done&&String(r.due||'')<=t;}).length;
+  var openE=(st.errors||[]).filter(function(e2){return (e2.status||'pendente')!=='resolvido';}).length;
+  var top=rows.slice(0,5);
+  panel.innerHTML='<div class="card" style="margin-bottom:16px"><div class="card-h"><h3>Leitura do momento</h3><span class="hint">motor de prioridade · atualizado a cada sessão</span></div>'
+    +'<div class="pr-grid">'
+    +'<div class="pr-cell"><b>'+overdue+'</b><span>revisões vencidas</span></div>'
+    +'<div class="pr-cell"><b>'+openE+'</b><span>erros abertos</span></div>'
+    +'<div class="pr-cell"><b>'+(q?q.items.length:0)+'</b><span>blocos na fila de hoje</span></div>'
+    +'</div>'
+    +(cov?'<p style="font-size:13px;margin:12px 0 0;color:var(--text-2)">'+esc(cov.text)+'</p>':'')
+    +'</div>'
+    +(alerts.length?'<div class="card" style="margin-bottom:16px"><div class="card-h"><h3>Detector de falso progresso</h3><span class="hint">'+alerts.length+' sinal(is)</span></div>'+alerts.map(function(a){return '<div class="fa-alert" style="margin-top:8px">⚠ <span>'+esc(a.txt)+'</span></div>';}).join('')+'</div>':'')
+    +'<div class="card"><div class="card-h"><h3>Prioridades do motor</h3><span class="hint">peso × lacuna × urgência + erros</span></div>'
+    +(top.length?top.map(function(r,i){return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="font-weight:800;color:var(--text-3)">'+(i+1)+'</span><div style="flex:1"><b>'+esc(r.disc)+' · '+esc(r.topic)+'</b><div style="font-size:11.5px;color:var(--text-3)">'+(r.studied?('retenção ~'+Math.round(r.retention*100)+'%'):'não estudado')+' · peso '+r.peso.toFixed(1)+(r.errN?' · '+r.errN+' erro(s)':'')+(r.revLate?' · '+r.revLate+' revisão(ões) vencida(s)':'')+'</div></div><span style="font-weight:700;font-size:12px;color:var(--emerald)">'+r.score.toFixed(2)+'</span></div>';}).join(''):'<div class="empty">Cadastre o edital e registre sessões para o motor priorizar.</div>')
+    +'</div>';
+}
+window.renderAnalise=function(){
+  anaEmbed('view-historico','ana-historico');
+  anaEmbed('view-relatorio','ana-relatorio');
+  anaEmbed('view-dominio','ana-risco');
+  anaSelect(anaCurrentTab());
+};
+var __anaBooted=false;
+function bootAnalise(){
+  if(__anaBooted)return;
+  var tabs=$('ana-tabs'); if(!tabs)return;
+  __anaBooted=true;
+  qa('.ana-tab',tabs).forEach(function(b){b.onclick=function(){anaSelect(b.dataset.ana);};});
+  window.renderAnalise();
+  document.addEventListener('click',function(e){
+    var b=e.target&&e.target.closest&&e.target.closest('[data-final-view],[data-cdia-view]');
+    if(!b)return;
+    var v=b.dataset.finalView||b.dataset.cdiaView;
+    var map={historico:'historico',relatorio:'relatorio',dominio:'risco',desempenho:'disciplina'};
+    if(map[v]){
+      var nav=document.querySelector('.nav-item[data-view="analise"]');
+      if(nav)nav.click();
+      setTimeout(function(){anaSelect(map[v]);},120);
+    }
+  });
+}
+
+try{bootAnalise();}catch(e){} /* abas da Análise ativas desde o primeiro paint, sem esperar o boot atrasado */
+
+/* ===== 0.4 — onboarding de primeiro uso (login adiado) ===== */
+function isFirstUse(){
+  try{
+    if(localStorage.getItem('catedra:onboarded'))return false;
+    var st=S();
+    return !((st.sessions&&st.sessions.length)||(st.edital&&st.edital.length)||(st.studyDays&&st.studyDays.length));
+  }catch(e){return false;}
+}
+function onboard(){
+  try{if(!localStorage.getItem('catedra:auth-mode')&&!localStorage.getItem('sb-gbwzkejabubpdbavfoyg-auth-token')){
+    localStorage.setItem('catedra:auth-mode','local');
+    var au=$('catedra-auth'); if(au){au.style.display='none';au.setAttribute('aria-hidden','true');}
+  }}catch(e){}
+  if(!isFirstUse())return;
+  var ov=document.createElement('div');
+  ov.className='onb-overlay'; ov.id='onb-overlay';
+  document.body.appendChild(ov);
+  var stepEl=function(html){ov.innerHTML='<div class="onb-card">'+html+'</div>';};
+  function done(){try{localStorage.setItem('catedra:onboarded','1');}catch(e){}mirrorSoon();ov.remove();}
+  function step1(){
+    stepEl('<div class="onb-step">Passo 1 de 3</div><h2>Qual é a sua prova?</h2><p>Com o concurso-alvo e a data, o mentor calcula urgência, ritmo necessário e quando ativar a reta final.</p>'
+      +'<label>Concurso / prova<input type="text" id="onb-exam" placeholder="ex.: Magistratura TJ-SP"></label>'
+      +'<label>Data (deixe vazio se ainda não saiu)<input type="date" id="onb-date"></label>'
+      +'<div class="onb-foot"><button class="ghost" id="onb-skip" type="button">Pular tudo</button><button class="pri" id="onb-next" type="button">Continuar</button></div>');
+    $('onb-skip').onclick=done;
+    $('onb-next').onclick=function(){
+      var nm=($('onb-exam').value||'').trim(), dt=$('onb-date').value||'';
+      if(nm||dt){
+        var st=S();
+        st.exam={name:nm,date:dt};
+        st.exams=[{id:'ex'+Date.now(),name:nm||'Prova',date:dt,active:true}];
+        saveSafe();
+        try{if(typeof renderCountdown==='function')renderCountdown();}catch(e){}
+      }
+      step2();
+    };
+  }
+  function step2(){
+    stepEl('<div class="onb-step">Passo 2 de 3</div><h2>Por onde você quer começar?</h2><p>Tudo pode ser mudado depois — isso só define o primeiro passo.</p>'
+      +'<div class="onb-choices">'
+      +'<button class="onb-choice" id="onb-edital" type="button"><b>📋 Tenho o edital</b><span>Colar ou importar o edital verticalizado — o mentor prioriza por peso e incidência.</span></button>'
+      +'<button class="onb-choice" id="onb-ciclo" type="button"><b>🔄 Começar com o ciclo padrão</b><span>Blocos prontos de estudo + revisão espaçada. O edital pode entrar depois.</span></button>'
+      +'<button class="onb-choice" id="onb-import" type="button"><b>📁 Importar meus dados</b><span>Backup JSON de outro dispositivo ou de uma versão anterior.</span></button>'
+      +'</div>'
+      +'<div class="onb-foot"><button class="ghost" id="onb-back" type="button">Voltar</button><span></span></div>');
+    $('onb-back').onclick=step1;
+    $('onb-edital').onclick=function(){done();var b=document.querySelector('.nav-item[data-view="edital"]');if(b)b.click();toastSafe('cole o edital no formulário de importação — eu organizo o resto ✓',3500);};
+    $('onb-ciclo').onclick=step3;
+    $('onb-import').onclick=function(){done();var b=document.querySelector('.nav-item[data-view="ajustes"]');if(b)b.click();setTimeout(function(){var i=$('import2');if(i)i.click();},300);};
+  }
+  function step3(){
+    stepEl('<div class="onb-step">Passo 3 de 3</div><h2>Primeira sessão</h2><p>O mentor aprende com o que você registra: cada sessão alimenta o domínio por tópico, as revisões espaçadas e o mapa de risco. Que tal começar agora?</p>'
+      +'<div class="onb-choices">'
+      +'<button class="onb-choice" id="onb-start" type="button"><b>▶ Iniciar cronômetro e estudar</b><span>O check-in ao pausar registra tudo em 4 respostas.</span></button>'
+      +'<button class="onb-choice" id="onb-log" type="button"><b>✍️ Registrar uma sessão que já fiz</b><span>Abrir o formulário de registro completo.</span></button>'
+      +'</div>'
+      +'<div class="onb-foot"><button class="ghost" id="onb-later" type="button">Deixar para depois</button><span style="font-size:11.5px;color:var(--text-3)">Sincronizar entre dispositivos? Entre na conta depois, em Ajustes.</span></div>');
+    $('onb-later').onclick=done;
+    $('onb-start').onclick=function(){done();var tb=$('tstart');if(tb&&tb.textContent.indexOf('Pausar')<0)tb.click();toastSafe('cronômetro rodando — bom estudo! faça o check-in ao pausar ✓',3000);};
+    $('onb-log').onclick=function(){done();if(window.openSessionModal)window.openSessionModal();};
+  }
+  step1();
+}
+
+/* ===== 2.2/2.3 — PWA + notificações locais ===== */
+function bootPWA(){
+  if(!('serviceWorker' in navigator))return;
+  /* só em produção (GitHub Pages/HTTPS): em localhost o cache do SW atrapalharia o desenvolvimento */
+  if(location.protocol!=='https:')return;
+  navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
+function notifyOverdue(){
+  if(!('Notification' in window)||Notification.permission!=='granted')return;
+  var t=tISO();
+  try{if(localStorage.getItem('catedra:notified-day')===t)return;}catch(e){}
+  var n=(S().revisions||[]).filter(function(r){return !r.done&&String(r.due||'')<=t;}).length;
+  if(!n)return;
+  try{
+    new Notification('Cátedra — revisões de hoje',{body:n+' revisão(ões) vencem hoje. Zere a fila antes de abrir conteúdo novo.',tag:'catedra-rev'});
+    localStorage.setItem('catedra:notified-day',t);
+  }catch(e){}
+}
+function bootNotifCard(){
+  var host=$('snap-card'); if(!host||$('notif-perm-row'))return;
+  var row=document.createElement('div');
+  row.id='notif-perm-row';
+  row.style.cssText='display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap';
+  var supported=('Notification' in window);
+  var stTxt=!supported?'não suportadas neste navegador':(Notification.permission==='granted'?'ativadas ✓':'desativadas');
+  row.innerHTML='<button class="btn-ghost" id="notif-enable" type="button" '+(!supported?'disabled':'')+'>🔔 Notificações de revisão</button><span style="font-size:12px;color:var(--text-3)" id="notif-status">'+stTxt+' · com o app aberto ou instalado (PWA), aviso quando revisões vencem</span>';
+  host.appendChild(row);
+  var b=$('notif-enable');
+  if(b&&supported)b.onclick=function(){
+    Notification.requestPermission().then(function(p){
+      $('notif-status').textContent=p==='granted'?'ativadas ✓':'permissão negada pelo navegador';
+      if(p==='granted')notifyOverdue();
+    });
+  };
+}
+
+/* ===== 2.4 — relatório PDF para mentor/coach ===== */
+function buildMentorReport(){
+  var st=S(); var t=tISO(); var d14=addD(t,-13), d28=addD(t,-27);
+  var cur=(st.sessions||[]).filter(function(s2){return s2.date>=d14;});
+  var prev=(st.sessions||[]).filter(function(s2){return s2.date>=d28&&s2.date<d14;});
+  function agg(list){
+    var by={};
+    list.forEach(function(s2){var k=s2.disc||'—';by[k]=by[k]||{min:0,q:0,c:0};by[k].min+=(+s2.min||0);by[k].q+=(+s2.q||0);by[k].c+=(+s2.c||0);});
+    return by;
+  }
+  var A=agg(cur),B=agg(prev);
+  var discs=Array.from(new Set(Object.keys(A).concat(Object.keys(B))));
+  var rows=[],alerts=[],cov=null;
+  try{rows=engineRows();alerts=engineFalso();cov=engineCoverage();}catch(e){}
+  var overdue=(st.revisions||[]).filter(function(r){return !r.done&&String(r.due||'')<=t;}).length;
+  var emDia=(st.revisions||[]).filter(function(r){return r.done;}).length;
+  var dias14=new Set(cur.map(function(s2){return s2.date;})).size;
+  var stk=0; try{stk=(typeof streak==='function')?streak():0;}catch(e){}
+  var risco=rows.filter(function(r){return r.studied||r.peso>=1.3;}).slice(0,5);
+  var pontos=[];
+  if(overdue>0)pontos.push('Há '+overdue+' revisões vencidas — recomendo pausar conteúdo novo até zerar a fila.');
+  alerts.forEach(function(a){pontos.push(a.txt);});
+  if(cov)pontos.push(cov.text);
+  if(!pontos.length)pontos.push('Sem alertas críticos no período — manter o ritmo e acompanhar a evolução do acerto.');
+  var el2=$('mentor-report');
+  if(!el2){el2=document.createElement('div');el2.id='mentor-report';document.body.appendChild(el2);}
+  el2.innerHTML='<h1>Cátedra · Relatório de acompanhamento</h1>'
+    +'<p style="color:#555;margin:0 0 4px">'+esc((st.profile&&st.profile.name)||'Aluno(a)')+(st.exam&&st.exam.name?(' · '+esc(st.exam.name)+(st.exam.date?' ('+new Date(st.exam.date+'T00:00:00').toLocaleDateString('pt-BR')+')':'')):'')+'</p>'
+    +'<p style="color:#777;font-size:11px;margin:0">Período: '+new Date(d14+'T00:00:00').toLocaleDateString('pt-BR')+' a '+new Date(t+'T00:00:00').toLocaleDateString('pt-BR')+' · gerado em '+new Date().toLocaleDateString('pt-BR')+'</p>'
+    +'<h2>Constância</h2><p>'+dias14+' de 14 dias com estudo · sequência atual de '+stk+' dia(s) · '+Math.round(cur.reduce(function(a,s2){return a+(+s2.min||0);},0)/60)+'h no período</p>'
+    +'<h2>Evolução por disciplina (14 dias vs. 14 anteriores)</h2>'
+    +'<table><tr><th>Disciplina</th><th>Tempo</th><th>Questões</th><th>Acerto</th><th>Acerto anterior</th></tr>'
+    +discs.map(function(k){var a=A[k]||{min:0,q:0,c:0},b2=B[k]||{min:0,q:0,c:0};return '<tr><td>'+esc(k)+'</td><td>'+(Math.round(a.min/60*10)/10)+'h</td><td>'+a.q+'</td><td>'+(a.q?Math.round(a.c/a.q*100)+'%':'—')+'</td><td>'+(b2.q?Math.round(b2.c/b2.q*100)+'%':'—')+'</td></tr>';}).join('')
+    +'</table>'
+    +'<h2>Mapa de risco (top 5 do motor de prioridade)</h2>'
+    +'<table><tr><th>#</th><th>Tópico</th><th>Retenção est.</th><th>Peso</th><th>Erros abertos</th></tr>'
+    +risco.map(function(r,i){return '<tr><td>'+(i+1)+'</td><td>'+esc(r.disc)+' · '+esc(r.topic)+'</td><td>'+(r.studied?Math.round(r.retention*100)+'%':'não estudado')+'</td><td>'+r.peso.toFixed(1)+'</td><td>'+r.errN+'</td></tr>';}).join('')
+    +'</table>'
+    +'<h2>Revisões</h2><p>'+emDia+' concluídas no total · '+overdue+' vencidas hoje</p>'
+    +'<h2>Pontos de atenção para a mentoria</h2>'
+    +'<ul>'+pontos.map(function(p2){return '<li>'+esc(p2)+'</li>';}).join('')+'</ul>'
+    +'<p style="margin-top:24px;color:#999;font-size:10px">Gerado pela plataforma Cátedra. Retenção estimada = domínio (média móvel dos acertos) × decaimento temporal; o relatório não estima probabilidade de aprovação.</p>';
+  document.body.classList.add('print-mentor');
+  var cleanup=function(){document.body.classList.remove('print-mentor');window.removeEventListener('afterprint',cleanup);};
+  window.addEventListener('afterprint',cleanup);
+  setTimeout(function(){window.print();setTimeout(cleanup,2000);},80);
+}
+function bootMentorBtn(){
+  var acts=$('rel-actions'); if(!acts||$('rel-mentor-pdf'))return;
+  var b=document.createElement('button');
+  b.className='btn-ghost'; b.id='rel-mentor-pdf'; b.type='button'; b.textContent='PDF para mentor';
+  b.title='Relatório quinzenal com leitura de terceiro: constância, evolução, risco e pontos de atenção';
+  b.onclick=buildMentorReport;
+  acts.appendChild(b);
+}
+
+/* ===== 2.5 — mobile: barra compacta do cronômetro ===== */
+function bootMobileBar(){
+  if($('mobile-timer-bar'))return;
+  var bar=document.createElement('div');
+  bar.id='mobile-timer-bar';
+  bar.innerHTML='<span class="mtb-time" id="mtb-time">0:00:00</span><div style="display:flex;gap:8px"><button class="mtb-pause" id="mtb-pause" type="button">Pausar</button><button class="mtb-stop" id="mtb-stop" type="button">Encerrar</button></div>';
+  document.body.appendChild(bar);
+  $('mtb-pause').onclick=function(){var b=$('tstart');if(b)b.click();};
+  $('mtb-stop').onclick=function(){
+    var b=$('tstart'); if(b&&isTimerRunning())b.click();
+    else{var el2=(S().timerSec||0)-baselineGet();if(el2>=60)openCheckin(el2);}
+  };
+  setInterval(function(){
+    var run=isTimerRunning();
+    document.body.classList.toggle('cat-timer-running',run);
+    if(run){var d2=$('tdisp');var m=$('mtb-time');if(d2&&m)m.textContent=d2.textContent;}
+  },1000);
+}
+
+/* ===== 3.1 — prévia de conferência do import de edital ===== */
+function bootEditalPreview(){
+  var btn=$('ed-import-btn'); if(!btn||btn.dataset.previewWired)return;
+  btn.dataset.previewWired='1';
+  btn.addEventListener('click',function(e){
+    var ta=$('ed-import'); var raw=ta?ta.value:'';
+    var rows=[];
+    try{rows=(typeof parseEditalText==='function')?parseEditalText(raw):[];}catch(err){}
+    if(!rows.length)return; /* sem parse: o fluxo original mostra a orientação de formato */
+    e.preventDefault(); e.stopImmediatePropagation();
+    var byDisc={};
+    rows.forEach(function(r){(byDisc[r.disc]=byDisc[r.disc]||[]).push(r);});
+    var discs=Object.keys(byDisc);
+    var ov=document.createElement('div');
+    ov.className='ckin-overlay'; ov.id='edprev-overlay';
+    ov.innerHTML='<div class="ckin-card" style="max-width:560px"><h3>Conferência do edital</h3><p class="ck-sub">Encontrei <b>'+discs.length+' disciplina(s)</b> e <b>'+rows.length+' tópico(s)</b>. Confira antes de gerar o plano — desmarque o que não for disciplina e renomeie se preciso.</p>'
+      +'<div style="max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:8px">'
+      +discs.map(function(d,i){return '<div style="display:flex;align-items:center;gap:8px;font-size:13px"><input type="checkbox" checked data-epd="'+i+'"><input type="text" value="'+esc(d)+'" data-epn="'+i+'" style="flex:1;border:1px solid var(--border-2);background:var(--surface-2);color:var(--text);border-radius:8px;padding:7px 10px;font-size:13px"><span style="color:var(--text-3);font-size:12px;white-space:nowrap">'+byDisc[d].length+' tópico(s)</span></div>';}).join('')
+      +'</div>'
+      +'<div class="ckin-actions"><button class="sec" id="edprev-cancel" type="button">Cancelar</button><button class="pri" id="edprev-ok" type="button">Importar selecionadas</button></div></div>';
+    document.body.appendChild(ov);
+    $('edprev-cancel').onclick=function(){ov.remove();};
+    $('edprev-ok').onclick=function(){
+      var st=S(); st.edital=st.edital||[];
+      var nt=0;
+      discs.forEach(function(d,i){
+        var inc=ov.querySelector('[data-epd="'+i+'"]');
+        if(!inc||!inc.checked)return;
+        var name=(ov.querySelector('[data-epn="'+i+'"]').value||d).trim()||d;
+        if(typeof DISCIPLINAS!=='undefined'&&DISCIPLINAS.indexOf(name)<0){DISCIPLINAS.push(name);st.discs=DISCIPLINAS.slice();try{syncDiscs();}catch(e2){}}
+        byDisc[d].forEach(function(r,j){
+          if(st.edital.some(function(x){return x.disc===name&&x.t===r.t;}))return;
+          st.edital.push({id:'imp'+Date.now().toString(36)+'_'+i+'_'+j,disc:name,t:r.t,inc:'',done:false,st:'pendente',obs:'',
+            subs:(r.subs||[]).map(function(s2,k2){return {id:'is'+Date.now().toString(36)+i+j+'_'+k2,t:s2,done:false,st:'pendente'};})});
+          nt++;
+        });
+      });
+      if(ta)ta.value='';
+      saveSafe(); engInvalidate();
+      try{renderEdital();renderEditalCard();}catch(e2){}
+      toastSafe('importado: '+nt+' tópico(s) ✓ — o motor de prioridade já considera o novo edital',3500);
+      ov.remove();
+    };
+  },true);
+}
+
+/* ===== boot ===== */
+function boot(){
+  mirrorNow(); snapshotDaily();
+  onboard();
+  bootAnalise();
+  renderSnapshotsCard(); bootNotifCard();
+  bootMentorBtn(); bootMobileBar(); bootEditalPreview();
+  bootPWA();
+  setTimeout(notifyOverdue,8000);
+  try{if(typeof window.renderFocoAgora==='function')renderFocoAgora();}catch(e){}
+  setInterval(function(){renderSnapshotsCard();bootNotifCard();bootMentorBtn();bootEditalPreview();},4000);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,400);});
+else setTimeout(boot,400);
+})();
+</script>
 </body>
 </html>
