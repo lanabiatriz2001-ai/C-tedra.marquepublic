@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="./icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@200;300;500;600;700&display=swap">
   <style>
   /* ===== REDESIGN — paleta esmeralda + sidebar petróleo ===== */
 :root{
@@ -27,7 +27,6 @@
   --sh-lg:0 8px 30px rgba(14,20,30,.09),0 2px 8px rgba(14,20,30,.05);
   --r:16px; --r-sm:12px; --r-xs:8px;
 }
-    :root{--emerald:#0c8a5b!important;--emerald-d:#0a7049!important;--emerald-soft:#e6f5ee!important;--emerald-ring:#bfe6d3!important;--sidebar:#1a2332!important;--sidebar-2:#1f2c3f!important;--ink:#1a2332!important;--canvas:#f5f6f3!important;--surface:#ffffff!important;--surface-2:#fafaf8!important;--border:#e8e8e2!important;--border-2:#dcdcd4!important;--text:#14181f!important;--text-2:#4a5568!important;--text-3:#718096!important;--on-dark:#e8edf5!important;--on-dark-2:#8fa4c0!important;--on-dark-3:#7e93ae!important;--topbar-bg:rgba(245,246,243,.92)!important;}
 body{background:var(--canvas);}
 .main{background:var(--canvas);}
 .sidebar{background:#1a2332;background-image:radial-gradient(circle at 15% 0%,rgba(12,138,91,.14),transparent 50%);border-right:1px solid rgba(255,255,255,.05);width:252px;}
@@ -1875,6 +1874,11 @@ function applyTheme(k){
   if(!THEMES[k]){var _darks=['escuro','meianoite','carvao','dracula','florestanoturna','ambar','oceanoprofundo','nord','vinho','solar','rosaneon'];k=_darks.indexOf(k)>=0?'noturno':'diurno';try{if(window.state)state.theme=k;}catch(e){}}
   const th=THEMES[k]||THEMES.diurno;const root=document.documentElement;
   ALLVARS.forEach(v=>root.style.removeProperty(v));
+/* alternância de tema: limpa as vars do tema anterior antes de aplicar o novo —
+   sem isso, voltar do escuro para o claro (vars:{} = defaults da folha) mantinha
+   as cores escuras fixadas inline. As vars de accent não entram aqui: cores
+   personalizadas do usuário persistem entre temas. */
+['--canvas','--surface','--surface-2','--border','--border-2','--text','--text-2','--text-3','--ink','--sidebar','--sidebar-2','--topbar-bg','--on-dark','--on-dark-2','--on-dark-3','--red','--amber','--green','--purple','--purple-soft'].forEach(v=>{root.style.removeProperty(v);try{if(document.body)document.body.style.removeProperty(v);}catch(e){}});
 Object.entries(th.vars).forEach(([key,val])=>root.style.setProperty(key,val,'important'));
   ACCENT=th.accent;ACCENT2=th.accent2;
   const s0=document.getElementById('ring-s0'),s1=document.getElementById('ring-s1');
@@ -3953,7 +3957,7 @@ function rolloverDay(){
     if(!a){
       safe(()=>{const old=JSON.parse(localStorage.getItem(LEGACY_ACC)||'null'); if(old){a=old.a;b=old.b;}});
     }
-    return {a:a||'#35c8ff',b:b||'#2468ff'};
+    return {a:a||'#0c8a5b',b:b||'#0a7049'}; /* padrão: esmeralda (design aprovado); presets/custom continuam valendo */
   }
   function applyAccent(a,b){
     const b2=b||shade(a,.18);
@@ -3977,8 +3981,9 @@ function rolloverDay(){
     if(s0)s0.setAttribute('stop-color',a);
     if(s1)s1.setAttribute('stop-color',b||shade(a,.18));
   }
-  function mode(){return localStorage.getItem(MODE_KEY)||'mentor';}
+  function mode(){return localStorage.getItem(MODE_KEY)||'claro';} /* padrão: design Porcelana Esmeralda */
   function applyMode(m){
+    window.__catedraApplyMode=applyMode; /* caminho único de troca de modo p/ outros painéis */
     localStorage.setItem(MODE_KEY,m);
     if(m==='mentor'){
       document.body.classList.add('mentor-video-theme');
@@ -4026,7 +4031,7 @@ function rolloverDay(){
     $('ap-custom-color').oninput=e=>{applyAccent(e.target.value,shade(e.target.value,.18));markActive();};
     $('ap-reset').onclick=()=>{
       localStorage.removeItem(ACC_KEY);localStorage.removeItem(ACC2_KEY);localStorage.removeItem(LEGACY_ACC);
-      applyMode('mentor');applyAccent('#35c8ff','#2468ff');
+      applyMode('mentor');applyAccent('#0c8a5b','#0a7049');
     };
     markActive();
   }
@@ -4038,7 +4043,7 @@ function rolloverDay(){
     const a=savedAccent(); applyAccent(a.a,a.b);
     markActive();
   }
-  function boot(){build();applySaved();}
+  function boot(){window.__catedraApplyMode=applyMode;build();applySaved();}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
   document.addEventListener('click',e=>{
     if(e.target.closest&&e.target.closest('.nav-item[data-view="ajustes"],#theme-btn'))setTimeout(boot,120);
@@ -4228,7 +4233,7 @@ function rolloverDay(){
     panel.innerHTML='<h4>Cor e modo da plataforma</h4><div class="color-sync-row"><button class="color-choice" data-a="#35c8ff" data-b="#2468ff" style="background:linear-gradient(135deg,var(--emerald,#35c8ff),var(--emerald-d,#2468ff))"></button><button class="color-choice" data-a="#0c8a5b" data-b="#0a7049" style="background:linear-gradient(135deg,#0c8a5b,#0a7049)"></button><button class="color-choice" data-a="#8b5cf6" data-b="#5b35d5" style="background:linear-gradient(135deg,#8b5cf6,#5b35d5)"></button><button class="color-choice" data-a="#ff4d9d" data-b="#d63384" style="background:linear-gradient(135deg,#ff4d9d,#d63384)"></button><button class="mode-choice" data-mode="mentor">Azul moderno</button><button class="mode-choice" data-mode="claro">Claro</button></div>';
     host.appendChild(panel);
     qa('.color-choice',panel).forEach(b=>b.onclick=function(){document.documentElement.style.setProperty('--emerald',b.dataset.a);document.documentElement.style.setProperty('--emerald-d',b.dataset.b);localStorage.setItem('catedraAccent',JSON.stringify({a:b.dataset.a,b:b.dataset.b}));});
-    qa('.mode-choice',panel).forEach(b=>b.onclick=function(){document.body.classList.toggle('mentor-video-theme',b.dataset.mode==='mentor');localStorage.setItem('catedraMode',b.dataset.mode);});
+    qa('.mode-choice',panel).forEach(b=>b.onclick=function(){if(window.__catedraApplyMode){window.__catedraApplyMode(b.dataset.mode);}else{document.body.classList.toggle('mentor-video-theme',b.dataset.mode==='mentor');localStorage.setItem('catedraMode',b.dataset.mode);}});
   }
   function finalAll(){
     finalNav(); ensureEditalBar(); installDrag(); finalCycle(); finalStats(); finalSimulados(); finalReport(); finalColorPanel();
@@ -4277,7 +4282,6 @@ function rolloverDay(){
   }
 
   /* Desempenho sai do produto: estatísticas concentra essa leitura */
-  .nav-item[data-view="desempenho"],#view-desempenho{display:none!important;}
 
   /* Edital mais operacional */
   #view-edital .ed-product-actions{
@@ -5248,7 +5252,7 @@ function rolloverDay(){
       '</div>';
     bind(el,list,current);
   };
-  function keepVideoTheme(){ try{ if((localStorage.getItem('catedraMode')||'mentor')==='mentor') document.body.classList.add('mentor-video-theme'); }catch(e){} }
+  function keepVideoTheme(){ try{ if((localStorage.getItem('catedraMode')||'claro')==='mentor') document.body.classList.add('mentor-video-theme'); }catch(e){} }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',keepVideoTheme); else keepVideoTheme();
   window.addEventListener('load',function(){ keepVideoTheme(); setTimeout(keepVideoTheme,500); });
 })();
@@ -5572,8 +5576,13 @@ function rolloverDay(){
   function getA(){try{return localStorage.getItem(KA)||'';}catch(e){return '';}}
   function getB(){try{return localStorage.getItem(KB)||'';}catch(e){return '';}}
   function applyCustom(){
-    var a=getA(), b=getB(), s=document.documentElement.style;
-if(a){s.setProperty('--emerald',a,'important');s.setProperty('--emerald-d',shade(a,0.18),'important');s.setProperty('--emerald-soft',rgba(a,0.14),'important');s.setProperty('--emerald-ring',rgba(a,0.40),'important');}
+    var a=getA(), b=getB();
+    /* escreve no <html> E no <body>: o applyAccent do modo grava as vars no body
+       com !important, e sem o espelho aqui a cor personalizada do usuário não
+       teria efeito (vars do body vencem para todo o conteúdo) */
+    var targets=[document.documentElement.style];
+    if(document.body)targets.push(document.body.style);
+    if(a)targets.forEach(function(s){s.setProperty('--emerald',a,'important');s.setProperty('--emerald-d',shade(a,0.18),'important');s.setProperty('--emerald-soft',rgba(a,0.14),'important');s.setProperty('--emerald-ring',rgba(a,0.40),'important');s.setProperty('--primary',a,'important');s.setProperty('--primary-d',shade(a,0.18),'important');});
     var s0=document.getElementById('ring-s0'),s1=document.getElementById('ring-s1');
     if(a&&s0)s0.setAttribute('stop-color',a);
     if(b&&s1)s1.setAttribute('stop-color',b);
@@ -5600,7 +5609,8 @@ if(a){s.setProperty('--emerald',a,'important');s.setProperty('--emerald-d',shade
     PRESETS.forEach(function(c){var bt=document.createElement('button');bt.type='button';bt.title=c;bt.style.cssText='width:26px;height:26px;border-radius:50%;border:2px solid var(--border);cursor:pointer;background:'+c;bt.onclick=function(){try{localStorage.setItem(KA,c);}catch(e){}var inp=row.querySelector('#cor-accent');if(inp)inp.value=c;applyCustom();};pc.appendChild(bt);});
     var ia=row.querySelector('#cor-accent');ia.oninput=function(){try{localStorage.setItem(KA,ia.value);}catch(e){}applyCustom();};
     var ib=row.querySelector('#cor-accent2');ib.oninput=function(){try{localStorage.setItem(KB,ib.value);}catch(e){}applyCustom();};
-    var rst=row.querySelector('#cor-reset');rst.onclick=function(){try{localStorage.removeItem(KA);localStorage.removeItem(KB);localStorage.removeItem('catedraAccent');}catch(e){}var t=(window.state&&window.state.theme)||'diurno';try{window.applyTheme(t);}catch(e){}var def=getComputedStyle(document.documentElement).getPropertyValue('--emerald').trim();ia.value=def||'#0c8a5b';ib.value='#1eb37a';};
+    var rst=row.querySelector('#cor-reset');rst.onclick=function(){try{localStorage.removeItem(KA);localStorage.removeItem(KB);localStorage.removeItem('catedraAccent');}catch(e){}
+      ['--emerald','--emerald-d','--emerald-soft','--emerald-ring','--primary','--primary-d'].forEach(function(v){try{document.documentElement.style.removeProperty(v);if(document.body)document.body.style.removeProperty(v);}catch(e){}});var t=(window.state&&window.state.theme)||'diurno';try{window.applyTheme(t);}catch(e){}var def=getComputedStyle(document.documentElement).getPropertyValue('--emerald').trim();ia.value=def||'#0c8a5b';ib.value='#1eb37a';};
   }
   var mo=new MutationObserver(function(){if(document.querySelector('#theme-grid')&&!document.querySelector('#cores-row'))buildPanel();});
   function init(){applyCustom();buildPanel();mo.observe(document.body,{childList:true,subtree:true});}
@@ -12876,5 +12886,151 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 else setTimeout(boot,400);
 })();
 </script>
+
+<style id="catedra-design-porcelana-esmeralda">
+/* ============================================================================
+   DESIGN "PORCELANA ESMERALDA" — camada definitiva (aprovada)
+   Mistura: identidade atual (sidebar petróleo + esmeralda) + acabamento
+   minimal luxe (porcelana, Outfit, pílulas, numerais ultraleves).
+   IMPORTANTE: todas as CORES referenciam as variáveis do sistema de temas
+   (var(--emerald), var(--surface), var(--text)...). Os ajustes de aparência do
+   usuário — modo Claro/Escuro/Azul moderno, presets e cores personalizadas —
+   continuam funcionando: eles redefinem as variáveis e esta camada acompanha.
+   Apenas a ESTRUTURA (tipografia, raios, sombras, grid) é fixa.
+   ============================================================================ */
+:root{--r:22px;--r-sm:16px;--r-xs:11px;}
+body{
+  font-family:'Outfit',Inter,system-ui,sans-serif;
+  color:var(--text);
+  background-color:var(--canvas)!important;
+  /* glow decorativo transparente: funciona sobre qualquer cor de tema (claro/escuro) */
+  background-image:radial-gradient(900px 400px at 90% -5%,color-mix(in srgb,var(--emerald) 6%,transparent),transparent 60%)!important;
+}
+::selection{background:var(--emerald-ring);}
+:focus-visible{outline:3px solid var(--emerald)!important;outline-offset:3px!important;border-radius:8px;}
+
+/* --- sidebar: petróleo com navegação em pílulas --- */
+.sidebar{background-image:none!important;border-right:none;box-shadow:8px 0 40px -28px rgba(10,14,20,.45);}
+.brand-mark{border-radius:14px;box-shadow:0 8px 22px -8px color-mix(in srgb,var(--emerald) 60%,transparent);}
+.brand-txt h1{font-family:'Outfit',sans-serif;font-weight:600;letter-spacing:-.02em;}
+.nav-label{letter-spacing:.18em;}
+.nav-item{border-radius:999px!important;font-weight:500;padding:10px 16px!important;transition:all .18s;}
+.nav-item svg{stroke-width:1.7;}
+.nav-item:hover{background:rgba(255,255,255,.07);}
+body:not(.mentor-video-theme) .nav-item.active{background:var(--emerald)!important;color:#fff!important;box-shadow:0 10px 26px -10px color-mix(in srgb,var(--emerald) 70%,transparent);}
+.nav-item.active::before{display:none!important;}
+.nav-badge{background:rgba(255,255,255,.14);color:var(--on-dark);}
+.nav-item.active .nav-badge{background:#fff;color:var(--emerald-d);}
+.streak-card{border-radius:18px;}
+
+/* --- topbar + cronômetro --- */
+.topbar{box-shadow:none;backdrop-filter:blur(18px);}
+#greet{font-family:'Outfit',sans-serif;font-weight:600;letter-spacing:-.03em;}
+#tdisp{font-family:'Outfit',sans-serif;font-weight:200;letter-spacing:-.02em;}
+
+/* --- cards porcelana: sombra difusa, canto 22px --- */
+.card,.dash-card,.ct-card{
+  border-radius:22px;border-color:var(--border);
+  box-shadow:0 1px 2px rgba(20,24,31,.04),0 24px 60px -36px rgba(20,24,31,.14);
+}
+.card-h h3{font-family:'Outfit',sans-serif;font-weight:600;letter-spacing:-.015em;}
+
+/* --- HERO Foco de Agora: tipografia gigante, grid assimétrico --- */
+#view-inicio .dash-root{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;}
+.dash-root>*{grid-column:1/-1;}
+#view-inicio #foco-agora-card{grid-column:1/9;}
+#view-inicio .dash-streak{grid-column:9/13;}
+#view-inicio .dash-kpis{grid-column:9/13;display:grid;grid-template-columns:1fr;gap:18px;}
+#foco-agora-card.foco-agora{
+  background:var(--surface);border:none;border-radius:28px;
+  box-shadow:0 2px 4px rgba(20,24,31,.05),0 40px 90px -45px color-mix(in srgb,var(--emerald) 40%,transparent);
+  padding:42px 44px;
+}
+.foco-agora .fa-eyebrow{color:var(--emerald);letter-spacing:.24em;font-size:10.5px;}
+.foco-agora .fa-eyebrow .fa-reta{background:var(--ink);color:#fff;}
+.foco-agora h2{
+  font-family:'Outfit',sans-serif!important;font-weight:600!important;
+  font-size:clamp(30px,4.4vw,52px)!important;line-height:1.04!important;letter-spacing:-.035em!important;
+  color:var(--text);margin:16px 0 14px!important;
+}
+.foco-agora .fa-reason{color:var(--text-3);font-size:15.5px;line-height:1.65;font-weight:300;max-width:600px;}
+.foco-agora .fa-start{
+  background:var(--emerald);color:#fff;border-radius:999px;
+  padding:16px 34px;font-weight:600;font-size:15px;font-family:'Outfit',sans-serif;border:none;
+  box-shadow:0 16px 36px -14px color-mix(in srgb,var(--emerald) 55%,transparent);
+  transition:transform .2s,box-shadow .2s;
+}
+.foco-agora .fa-start:hover{background:var(--emerald-d);transform:translateY(-2px);box-shadow:0 22px 44px -14px color-mix(in srgb,var(--emerald) 65%,transparent);}
+.foco-agora .fa-alt{background:var(--surface-2);border:1px solid var(--border);color:var(--text);border-radius:999px;padding:15px 26px;font-weight:500;}
+.foco-agora .fa-alert{border-radius:14px;}
+.foco-agora .fa-queue{color:var(--text-3);}
+
+/* --- KPIs: numerais ultraleves gigantes --- */
+.dash-kpi{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:22px 24px;
+  box-shadow:0 1px 2px rgba(20,24,31,.04),0 24px 60px -36px rgba(20,24,31,.12);}
+#view-inicio .dash-kpi .k-l{color:var(--text-3);text-transform:uppercase;letter-spacing:.16em!important;font-size:10px!important;font-weight:600;}
+#view-inicio .dash-kpi .k-v{font-family:'Outfit',sans-serif!important;font-weight:200!important;font-size:44px!important;letter-spacing:-.04em!important;color:var(--text);}
+
+/* --- streak: faixa petróleo (identidade) · countdown porcelana --- */
+.dash-streak{background:var(--sidebar);border:none;color:#fff;border-radius:22px;}
+.dash-streak *{color:#fff;}
+.dash-countdown{background:var(--surface);border:1px solid var(--border);border-radius:22px;}
+.cd-days{font-family:'Outfit',sans-serif;font-weight:200;color:var(--emerald);letter-spacing:-.04em;}
+.cd-eyebrow{color:var(--text-3);letter-spacing:.2em;}
+.gbar{border-radius:99px;}
+.gbar i{border-radius:99px;}
+
+/* --- estatísticas embutidas / análise / componentes --- */
+.stats-embed-head h2{font-family:'Outfit',sans-serif;font-weight:600;letter-spacing:-.03em;font-size:26px;}
+.kpis .kpi{border-radius:18px;box-shadow:none;}
+.kpis .kpi::before{height:2px;}
+.kpis .kpi .kv{font-family:'Outfit',sans-serif;font-weight:300;}
+.ana-tab{font-family:'Outfit',sans-serif;}
+.ct-pill{border-radius:999px;}
+.ct-action{border-radius:999px;}
+.chip{border-radius:999px;}
+.pr-cell{border-radius:16px;}
+.pr-cell b{font-weight:300;font-size:26px;letter-spacing:-.02em;}
+
+/* --- botões base em pílula --- */
+.btn,.btn-ghost,.dash-btn-pri,button[data-open-session]{border-radius:999px;}
+#tstart,#treset,#open-session{border-radius:999px;}
+
+/* --- modais: canto 28, sombra profunda --- */
+.ckin-card,.onb-card,#session-modal-card{
+  border-radius:28px;border:none;
+  box-shadow:0 60px 130px -40px rgba(10,16,26,.5);
+}
+.onb-choice{border-radius:18px;}
+.onb-choice:hover{border-color:var(--emerald);}
+.onb-foot .pri,.ckin-actions .pri{border-radius:999px;}
+
+/* --- FABs petróleo --- */
+.quick-register-fab,.public-center-fab{
+  background:var(--sidebar)!important;color:#fff!important;border:none!important;
+  box-shadow:0 18px 40px -16px rgba(10,16,26,.55)!important;
+}
+
+/* --- painéis escuros legados re-tonalizados no modo claro (o escuro segue o tema) --- */
+body:not(.mentor-video-theme) #view-edital .ed-tab-panel .topic,
+body:not(.mentor-video-theme) .errors-lab-card,
+body:not(.mentor-video-theme) .errors-lab-item{
+  background:var(--surface-2)!important;color:var(--text)!important;border-color:var(--border)!important;
+}
+
+/* --- responsivo --- */
+@media(max-width:1280px){
+  #view-inicio #foco-agora-card,#view-inicio .dash-streak,#view-inicio .dash-kpis{grid-column:1/-1;}
+  #view-inicio .dash-kpis{grid-template-columns:1fr 1fr;}
+  #foco-agora-card.foco-agora{padding:30px 26px;}
+}
+@media(max-width:720px){
+  #view-inicio .dash-kpis{grid-template-columns:1fr;}
+  .foco-agora h2{font-size:clamp(26px,7vw,34px);}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;}
+}
+</style>
 </body>
 </html>
