@@ -2149,6 +2149,17 @@ function genPesos(){var rows=DISCIPLINAS.map(function(d){var p=(state.plano&&sta
   if(!rows.length)return genSugestao();
   var out=[revBlock()];rows.slice(0,6).forEach(function(r){out.push({id:'pp_'+r.d.replace(/\s+/g,'_'),tag:'Prioridade',t:'Estudar '+r.d,d:r.pontos+' ponto(s) no edital · priorizado por peso e fraqueza.',feat:false,rot:true});});return out;}
 function cycleActivities(){if(!state.cycle||typeof state.cycle!=='object')state.cycle={mode:'sugestao',activities:null};
+  /* modo edital é DERIVADO: quando o edital muda (tópico novo, concluído, removido),
+     o ciclo se regenera sozinho — os checks são preservados (ids estáveis edc_+id) */
+  if(state.cycle.mode==='edital'){
+    try{
+      const sig=(state.edital||[]).filter(t=>!t.done).map(t=>t.id).join(',');
+      if(state.cycle.editalSig!==sig){
+        state.cycle.editalSig=sig;
+        state.cycle.activities=genEdital();
+      }
+    }catch(e){}
+  }
   if(!Array.isArray(state.cycle.activities)||!state.cycle.activities.length){state.cycle.activities=genSugestao();if(!state.cycle.mode)state.cycle.mode='sugestao';}
   return state.cycle.activities;}
 function applyCycleMode(mode){if(!state.cycle||typeof state.cycle!=='object')state.cycle={mode:'sugestao',activities:null};state.cycle.mode=mode;
@@ -7703,7 +7714,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </style>
 <script id="catedra-desempenho-js">
 (function(){
-  function fmtH(m){m=+m||0;return m>=60?((m/60).toFixed(1).replace('.0','')+'h'):(m+'m');}
+  function fmtH(m){m=+m||0;try{if(typeof fmtHMS==='function')return fmtHMS(m*60);}catch(e){}return Math.floor(m/60)+':'+String(Math.round(m%60)).padStart(2,'0')+':00';}
   window.renderDesempenho=function(){
     var root=document.getElementById('dz-root');if(!root)return;
     var DISC=(typeof DISCIPLINAS!=='undefined'&&DISCIPLINAS)?DISCIPLINAS:[];
@@ -8134,7 +8145,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function localISO(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
   function today(){ return localISO(new Date()); }
   function addDays(s,n){ var d = new Date((s || today()) + 'T00:00:00'); d.setDate(d.getDate()+n); return localISO(d); }
-  function fmtMin(m){ m = Math.max(0, +m || 0); return m >= 60 ? ((m/60).toFixed(1).replace('.0','') + 'h') : (m + 'm'); }
+  function fmtMin(m){ m = Math.max(0, +m || 0); try{ if(typeof fmtHMS==='function') return fmtHMS(m*60); }catch(e){} return Math.floor(m/60)+':'+String(Math.round(m%60)).padStart(2,'0')+':00'; }
   function toastSafe(msg){ try{ if(typeof toast === 'function') toast(msg); }catch(e){} }
   function S(){
     try{ if(typeof state !== 'undefined' && state){ window.state = state; return state; } }catch(e){}
@@ -8747,7 +8758,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   function wkStart(){try{if(typeof weekStart==='function')return weekStart();}catch(e){}var d=new Date();var k=(d.getDay()+6)%7;d.setDate(d.getDate()-k);return d.toISOString().slice(0,10);}
   function col(d){try{if(typeof colorOfSafe==='function')return colorOfSafe(d);if(typeof colorOf==='function')return colorOf(d);}catch(e){}return 'var(--emerald)';}
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
-  function fmtH(m){m=Math.max(0,Math.round(+m||0));var h=Math.floor(m/60),mm=m%60;return h>0?(h+'h'+(mm?(' '+mm+'m'):'')):(mm+'m');}
+  function fmtH(m){m=Math.max(0,Math.round(+m||0));try{if(typeof fmtHMS==='function')return fmtHMS(m*60);}catch(e){}return Math.floor(m/60)+':'+String(m%60).padStart(2,'0')+':00';}
   function fmtHM(m){m=Math.max(0,Math.round(+m||0));var h=Math.floor(m/60),mm=m%60;return h+':'+String(mm).padStart(2,'0');}
   function addDaysISO(base,n){var d=new Date(base+'T00:00:00');d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
@@ -8936,82 +8947,268 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 .cal-field input,.cal-field select,.cal-field textarea{padding:8px 10px;border:1px solid var(--border);border-radius:9px;background:var(--canvas);color:var(--text);font-size:14px;font-family:inherit;width:100%;box-sizing:border-box}
 .cal-modal-actions{display:flex;gap:8px;justify-content:space-between;margin-top:16px;flex-wrap:wrap}
 @media(max-width:640px){.cal-day{min-height:64px}.cal-ev{font-size:9.5px}#calendario-mes-atual{min-width:120px;font-size:16px}}
+/* ===== calendário v2: semana/dia, drag & drop, filtros ===== */
+.cal-views{display:flex;gap:4px;background:var(--surface-2);border-radius:999px;padding:3px}
+.cal-view-btn{border:none;background:none;border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:600;color:var(--text-3);cursor:pointer}
+.cal-view-btn.active{background:var(--emerald);color:#fff}
+.cal-filters{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.cal-fchip{border:1px solid var(--border);background:var(--surface-2);border-radius:999px;padding:5px 12px;font-size:11.5px;font-weight:600;color:var(--text-3);cursor:pointer;display:flex;align-items:center;gap:6px}
+.cal-fchip.on{color:var(--text);border-color:var(--border-2)}
+.cal-fchip i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.cal-day.cal-dragover{outline:2px dashed var(--emerald);outline-offset:-2px;background:var(--emerald-soft)}
+.cal-ev[draggable="true"]{cursor:grab}
+.cal-week{display:grid;grid-template-columns:52px repeat(var(--cal-cols,7),1fr);border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;background:var(--border);gap:1px}
+.cal-wk-head{background:var(--surface);padding:8px 4px;text-align:center;font-size:11px;font-weight:700;color:var(--text-3)}
+.cal-wk-head b{display:block;font-size:16px;color:var(--text);font-weight:700}
+.cal-wk-head.cal-today b{color:var(--emerald)}
+.cal-allday{background:var(--canvas);min-height:30px;padding:3px;display:flex;flex-direction:column;gap:2px}
+.cal-hourlbl{background:var(--surface);font-size:9.5px;color:var(--text-3);text-align:right;padding:2px 5px 0 0;height:40px;box-sizing:border-box}
+.cal-slot{background:var(--canvas);height:40px;box-sizing:border-box;position:relative;cursor:pointer}
+.cal-slot:hover{background:var(--surface-2)}
+.cal-slot.cal-dragover{outline:2px dashed var(--emerald);outline-offset:-2px;background:var(--emerald-soft)}
+.cal-tev{position:absolute;left:2px;right:2px;border-radius:6px;color:#fff;font-size:10px;line-height:1.2;padding:2px 5px;overflow:hidden;z-index:2;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.cal-nowline{position:absolute;left:0;right:0;height:2px;background:var(--red);z-index:3;pointer-events:none}
+.cal-nowline::before{content:'';position:absolute;left:-4px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--red)}
+@media(max-width:760px){.cal-week{grid-template-columns:40px repeat(var(--cal-cols,7),1fr)}.cal-hourlbl{font-size:8.5px}}
 </style>
 <script id="catedra-calendario-js">
+/* ===== CALENDÁRIO v2 — mês · semana · dia, arrastar-e-soltar, criação rápida =====
+   Mantém o armazenamento (state.events) e os pontos de integração antigos
+   (window.__catedraRenderCalendario, modal cal-ev-*). Provas, simulados e
+   revisões entram como camadas somente-leitura, com filtros persistentes. */
 (function(){
 "use strict";
 var MONTHS=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
 var WD=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
-var EVKEY="catedra_eventos";
-var curY,curM,editId=null;
+var EVKEY="catedra_eventos", FKEY="catedra:cal:filters";
+var curRef=null, curView="month", editId=null;
+var H0=6,H1=23; /* grade horária 06h–23h */
 function st(){try{return (typeof state!=="undefined"&&state)?state:JSON.parse(localStorage.getItem("catedra:state")||"{}");}catch(e){return {};}}
 function persist(){try{if(typeof save==="function"){save();}else{localStorage.setItem("catedra:state",JSON.stringify(st()));}}catch(e){}}
-function esc(s){try{if(typeof escapeHtml==="function")return escapeHtml(s);}catch(e){}return String(s==null?"":s).replace(/[&<>\"]/g,function(c){return ({"&":"&amp;","<":"&lt;",">":"&gt;"})[c]||"&quot;";});}
-function today(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
-function sync(){try{if(window.__catedraRefreshAll){window.__catedraRefreshAll("calendario");}}catch(e){}}
-function migrate(){var s=st();if(!s)return;if(!Array.isArray(s.events))s.events=[];var legacy=["catedra:calendario:v2","catedra:eventos","catedra_eventos_old"];var changed=false;legacy.forEach(function(k){try{var raw=localStorage.getItem(k);if(!raw)return;var arr=JSON.parse(raw);if(!Array.isArray(arr))arr=(arr&&arr.events)||[];if(!Array.isArray(arr))return;arr.forEach(function(ev){if(!ev)return;var d=ev.date||ev.due||ev.day;if(!d)return;var exists=s.events.some(function(x){return x&&(x.id===ev.id||(x.date===d&&(x.title||x.note||"")===(ev.title||ev.note||"")));});if(!exists){s.events.push({id:ev.id||(Date.now()+Math.floor(Math.random()*1000)),date:d,title:ev.title||ev.name||ev.note||"Evento",type:ev.type||"evento",note:ev.note||"",time:ev.time||"",done:!!ev.done});changed=true;}});}catch(e){}});if(changed)persist();try{localStorage.setItem(EVKEY,JSON.stringify(s.events||[]));}catch(e){}}
-function collect(){var s=st();var out=[];(s.events||[]).forEach(function(e){if(e&&e.date)out.push({id:e.id,date:e.date,title:e.title||e.note||"Evento",type:(e.type||"evento"),note:e.note||"",time:e.time||"",src:"event"});});(s.exams||[]).forEach(function(e){if(e&&e.date)out.push({id:"exam-"+e.id,date:e.date,title:e.name||"Prova",type:"prova",src:"exam",ro:true});});(s.simulados||[]).forEach(function(e){if(e&&e.date)out.push({id:"sim-"+e.id,date:e.date,title:e.name||"Simulado",type:"simulado",src:"sim",ro:true});});(s.revisions||[]).forEach(function(e){if(e&&(e.due||e.date))out.push({id:"rev-"+e.id,date:e.due||e.date,title:e.topic||e.label||"Revisão",type:"revisao",note:e.disc||"",src:"rev",ro:true});});return out;}
-window.__catedraEventos=collect;
+function esc(s){try{if(typeof escapeHtml==="function")return escapeHtml(s);}catch(e){}return String(s==null?"":s).replace(/[&<>"]/g,function(c){return ({"&":"&amp;","<":"&lt;",">":"&gt;"})[c]||"&quot;";});}
 function pad(n){return String(n).padStart(2,"0");}
-function ymd(y,m,d){return y+"-"+pad(m+1)+"-"+pad(d);}
-function render(){var host=document.getElementById("calendario-grid");var lbl=document.getElementById("calendario-mes-atual");if(!host||!lbl)return;if(curY==null){var n=new Date();curY=n.getFullYear();curM=n.getMonth();}
-lbl.textContent=MONTHS[curM]+" "+curY;
-var evs=collect();var byDay={};evs.forEach(function(e){(byDay[e.date]=byDay[e.date]||[]).push(e);});
-var first=new Date(curY,curM,1);var startDow=first.getDay();var dim=new Date(curY,curM+1,0).getDate();var prevDim=new Date(curY,curM,0).getDate();
-var html="";WD.forEach(function(w){html+="<div class=\"cal-wd\">"+w+"</div>";});
-var tdy=today();var cells=[];for(var i=0;i<startDow;i++){cells.push({d:prevDim-startDow+1+i,out:true,m:curM-1});}for(var d=1;d<=dim;d++){cells.push({d:d,out:false,m:curM});}while(cells.length%7!==0){cells.push({d:cells.length-(startDow+dim)+1,out:true,m:curM+1});}
-cells.forEach(function(c){var yy=curY,mm=c.m;if(mm<0){mm=11;yy--;}if(mm>11){mm=0;yy++;}var key=ymd(yy,mm,c.d);var dayEvs=byDay[key]||[];var cls="cal-day"+(c.out?" cal-out":"")+(key===tdy?" cal-today":"");var inner="<div class=\"cal-daynum\">"+c.d+"</div>";var shown=dayEvs.slice(0,3);shown.forEach(function(e){var past=e.date<tdy?" cal-past":"";inner+="<div class=\"cal-ev cal-ev-"+(e.type||"evento")+past+"\" data-evid=\""+esc(String(e.id))+"\" title=\""+esc(e.title)+"\">"+esc(e.title)+"</div>";});if(dayEvs.length>3){inner+="<div class=\"cal-more\" data-day=\""+key+"\">+"+(dayEvs.length-3)+" mais</div>";}html+="<div class=\""+cls+"\" data-day=\""+key+"\">"+inner+"</div>";});
-host.innerHTML=html;
-var totalShown=evs.length;var emptyBox=document.getElementById("calendario-vazio");if(emptyBox){emptyBox.style.display=totalShown?"none":"block";}
-host.querySelectorAll(".cal-ev").forEach(function(el){el.onclick=function(ev){ev.stopPropagation();openModal(el.getAttribute("data-evid"));};});
-host.querySelectorAll(".cal-day").forEach(function(el){el.onclick=function(){openModal(null,el.getAttribute("data-day"));};});
-host.querySelectorAll(".cal-more").forEach(function(el){el.onclick=function(ev){ev.stopPropagation();openModal(null,el.getAttribute("data-day"));};});
+function iso(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+function today(){return iso(new Date());}
+function fromISO(k){var p=k.split("-");return new Date(+p[0],+p[1]-1,+p[2]);}
+function sync(){try{if(window.__catedraRefreshAll){window.__catedraRefreshAll("calendario");}}catch(e){}}
+function filters(){try{var f=JSON.parse(localStorage.getItem(FKEY));if(f&&typeof f==="object")return f;}catch(e){}return {event:true,rev:true,sim:true,exam:true,cycle:false};}
+function setFilter(k,v){var f=filters();f[k]=v;try{localStorage.setItem(FKEY,JSON.stringify(f));}catch(e){}}
+function migrate(){var s=st();if(!s)return;if(!Array.isArray(s.events))s.events=[];var legacy=["catedra:calendario:v2","catedra:eventos","catedra_eventos_old"];var changed=false;legacy.forEach(function(k){try{var raw=localStorage.getItem(k);if(!raw)return;var arr=JSON.parse(raw);if(!Array.isArray(arr))arr=(arr&&arr.events)||[];if(!Array.isArray(arr))return;arr.forEach(function(ev){if(!ev)return;var d=ev.date||ev.due||ev.day;if(!d)return;var exists=s.events.some(function(x){return x&&(x.id===ev.id||(x.date===d&&(x.title||x.note||"")===(ev.title||ev.note||"")));});if(!exists){s.events.push({id:ev.id||(Date.now()+Math.floor(Math.random()*1000)),date:d,title:ev.title||ev.name||ev.note||"Evento",type:ev.type||"evento",note:ev.note||"",time:ev.time||"",done:!!ev.done});changed=true;}});}catch(e){}});if(changed)persist();try{localStorage.setItem(EVKEY,JSON.stringify(s.events||[]));}catch(e){}}
+function collect(){
+  var s=st(); var f=filters(); var out=[];
+  if(f.event!==false)(s.events||[]).forEach(function(e){if(e&&e.date)out.push({id:e.id,date:e.date,title:e.title||e.note||"Evento",type:(e.type||"evento"),note:e.note||"",time:e.time||"",src:"event"});});
+  if(f.exam!==false)(s.exams||[]).forEach(function(e){if(e&&e.date)out.push({id:"exam-"+e.id,date:e.date,title:e.name||"Prova",type:"prova",src:"exam",ro:true});});
+  if(f.sim!==false)(s.simulados||[]).forEach(function(e){if(e&&e.date)out.push({id:"sim-"+e.id,date:e.date,title:e.name||"Simulado",type:"simulado",src:"sim",ro:true});});
+  if(f.rev!==false)(s.revisions||[]).forEach(function(e){if(e&&!e.done&&(e.due||e.date))out.push({id:"rev-"+e.id,date:e.due||e.date,title:e.topic||e.label||"Revisão",type:"revisao",note:e.disc||"",src:"rev",ro:true});});
+  return out;
 }
-function openModal(id,presetDate){var modal=document.getElementById("calendario-modal-evento");if(!modal)return;editId=null;var s=st();var ev=null;if(id){ (s.events||[]).forEach(function(e){if(String(e.id)===String(id))ev=e;}); }
-var ro=false;if(id&&!ev){ var all=collect();all.forEach(function(e){if(String(e.id)===String(id))ev=e;}); if(ev)ro=true; }
-document.getElementById("cal-ev-title").value=ev?(ev.title||""):"";
-document.getElementById("cal-ev-date").value=ev?(ev.date||""):(presetDate||today());
-document.getElementById("cal-ev-time").value=ev?(ev.time||""):"";
-document.getElementById("cal-ev-type").value=ev?((ev.type==="estudo"||ev.type==="evento"||ev.type==="tarefa"||ev.type==="meta")?ev.type:"evento"):"evento";
-document.getElementById("cal-ev-note").value=ev?(ev.note||""):"";
-editId=(ev&&!ro)?ev.id:null;
-var delBtn=document.getElementById("calendario-btn-excluir");if(delBtn)delBtn.style.display=(editId!=null)?"inline-block":"none";
-var saveBtn=document.getElementById("calendario-btn-salvar");var roMsg=document.getElementById("cal-ro-msg");
-document.getElementById("calendario-modal-titulo").textContent=ro?"Evento (somente leitura)":(editId!=null?"Editar evento":"Novo evento");
-var fields=["cal-ev-title","cal-ev-date","cal-ev-time","cal-ev-type","cal-ev-note"];fields.forEach(function(f){var el=document.getElementById(f);if(el)el.disabled=ro;});
-if(saveBtn)saveBtn.style.display=ro?"none":"inline-block";if(roMsg)roMsg.style.display=ro?"block":"none";
-modal.classList.add("cal-open");}
+window.__catedraEventos=collect;
+function ref(){if(!curRef)curRef=fromISO(today());return curRef;}
+function weekStartOf(d){var x=new Date(d);x.setDate(x.getDate()-x.getDay());return x;}
+function labelFor(){
+  var d=ref();
+  if(curView==="month")return MONTHS[d.getMonth()]+" "+d.getFullYear();
+  if(curView==="day")return d.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});
+  var a=weekStartOf(d),b=new Date(a);b.setDate(a.getDate()+6);
+  return a.getDate()+" – "+b.getDate()+" de "+MONTHS[b.getMonth()]+" "+b.getFullYear();
+}
+function evHtml(e,extraCls){
+  var drag=e.src==="event"?' draggable="true"':'';
+  return '<div class="cal-ev cal-ev-'+(e.type||"evento")+(e.date<today()?" cal-past":"")+(extraCls||"")+'" data-evid="'+esc(String(e.id))+'"'+drag+' title="'+esc(e.title)+(e.time?(" · "+e.time):"")+'">'+(e.time?('<b>'+e.time.slice(0,5)+'</b> '):'')+esc(e.title)+'</div>';
+}
+function renderMonth(host,byDay){
+  var d=ref(), curY=d.getFullYear(), curM=d.getMonth();
+  var first=new Date(curY,curM,1), startDow=first.getDay(), dim=new Date(curY,curM+1,0).getDate(), prevDim=new Date(curY,curM,0).getDate();
+  var html="";WD.forEach(function(w){html+='<div class="cal-wd">'+w+'</div>';});
+  var tdy=today(), cells=[];
+  for(var i=0;i<startDow;i++)cells.push({d:prevDim-startDow+1+i,m:curM-1});
+  for(var dd=1;dd<=dim;dd++)cells.push({d:dd,m:curM,inMonth:true});
+  while(cells.length%7!==0)cells.push({d:cells.length-(startDow+dim)+1,m:curM+1});
+  cells.forEach(function(c){
+    var yy=curY,mm=c.m;if(mm<0){mm=11;yy--;}if(mm>11){mm=0;yy++;}
+    var key=yy+"-"+pad(mm+1)+"-"+pad(c.d);
+    var evs=(byDay[key]||[]).slice().sort(function(a,b){return String(a.time||"99").localeCompare(String(b.time||"99"));});
+    var inner='<div class="cal-daynum">'+c.d+'</div>';
+    evs.slice(0,3).forEach(function(e){inner+=evHtml(e);});
+    if(evs.length>3)inner+='<div class="cal-more" data-day="'+key+'">+'+(evs.length-3)+' mais</div>';
+    html+='<div class="cal-day'+(c.inMonth?"":" cal-out")+(key===tdy?" cal-today":"")+'" data-day="'+key+'">'+inner+'</div>';
+  });
+  host.innerHTML='<div id="calendario-grid">'+html+'</div>';
+}
+function renderWeekOrDay(host,byDay){
+  var days=[];
+  if(curView==="day"){days=[new Date(ref())];}
+  else{var a=weekStartOf(ref());for(var i=0;i<7;i++){var x=new Date(a);x.setDate(a.getDate()+i);days.push(x);}}
+  var tdy=today();
+  var html='<div class="cal-week" style="--cal-cols:'+days.length+'">';
+  html+='<div class="cal-wk-head"></div>';
+  days.forEach(function(d){var k=iso(d);html+='<div class="cal-wk-head'+(k===tdy?" cal-today":"")+'">'+WD[d.getDay()]+'<b>'+d.getDate()+'</b></div>';});
+  /* faixa "o dia todo" (eventos sem horário) */
+  html+='<div class="cal-hourlbl" style="height:auto;min-height:30px;padding-top:8px">dia</div>';
+  days.forEach(function(d){
+    var k=iso(d);
+    var evs=(byDay[k]||[]).filter(function(e){return !e.time;});
+    html+='<div class="cal-allday" data-day="'+k+'">'+evs.map(function(e){return evHtml(e);}).join('')+'</div>';
+  });
+  for(var h=H0;h<=H1;h++){
+    html+='<div class="cal-hourlbl">'+pad(h)+':00</div>';
+    days.forEach(function(d){
+      var k=iso(d);
+      html+='<div class="cal-slot" data-day="'+k+'" data-hour="'+h+'"></div>';
+    });
+  }
+  html+='</div>';
+  host.innerHTML=html;
+  /* posiciona eventos com horário */
+  var grid=host.querySelector(".cal-week");
+  days.forEach(function(d){
+    var k=iso(d);
+    var evs=(byDay[k]||[]).filter(function(e){return e.time;});
+    evs.forEach(function(e){
+      var hh=+e.time.slice(0,2),mm=+e.time.slice(3,5)||0;
+      if(hh<H0||hh>H1)return;
+      var slot=grid.querySelector('.cal-slot[data-day="'+k+'"][data-hour="'+hh+'"]');
+      if(!slot)return;
+      var el=document.createElement("div");
+      el.className="cal-tev cal-ev-"+(e.type||"evento");
+      el.dataset.evid=String(e.id);
+      if(e.src==="event")el.setAttribute("draggable","true");
+      el.style.top=(mm/60*40)+"px";el.style.height="36px";
+      el.title=e.title+" · "+e.time;
+      el.innerHTML="<b>"+e.time.slice(0,5)+"</b> "+esc(e.title);
+      slot.appendChild(el);
+    });
+    /* linha de "agora" */
+    if(k===tdy){
+      var now=new Date(),nh=now.getHours();
+      if(nh>=H0&&nh<=H1){
+        var slot2=grid.querySelector('.cal-slot[data-day="'+k+'"][data-hour="'+nh+'"]');
+        if(slot2){var ln=document.createElement("div");ln.className="cal-nowline";ln.style.top=(now.getMinutes()/60*40)+"px";slot2.appendChild(ln);}
+      }
+    }
+  });
+}
+function render(){
+  var host=document.getElementById("calendario-body");
+  var lbl=document.getElementById("calendario-mes-atual");
+  if(!host||!lbl)return;
+  lbl.textContent=labelFor();
+  var evs=collect(),byDay={};
+  evs.forEach(function(e){(byDay[e.date]=byDay[e.date]||[]).push(e);});
+  if(curView==="month")renderMonth(host,byDay);else renderWeekOrDay(host,byDay);
+  /* filtros */
+  var f=filters(),fr=document.getElementById("calendario-filtros");
+  if(fr){
+    var defs=[["event","Eventos","#475569"],["rev","Revisões","#0891b2"],["sim","Simulados","#7c3aed"],["exam","Provas","#dc2626"]];
+    fr.innerHTML=defs.map(function(d){return '<button type="button" class="cal-fchip'+(f[d[0]]!==false?" on":"")+'" data-f="'+d[0]+'"><i style="background:'+d[2]+'"></i>'+d[1]+'</button>';}).join("");
+    fr.querySelectorAll(".cal-fchip").forEach(function(b){b.onclick=function(){setFilter(b.dataset.f,!(filters()[b.dataset.f]!==false));render();};});
+  }
+  /* listeners */
+  host.querySelectorAll(".cal-ev,.cal-tev").forEach(function(el){
+    el.onclick=function(ev){ev.stopPropagation();openModal(el.getAttribute("data-evid"));};
+    if(el.getAttribute("draggable")==="true"){
+      el.addEventListener("dragstart",function(ev){ev.dataTransfer.setData("text/catedra-ev",el.getAttribute("data-evid"));ev.dataTransfer.effectAllowed="move";});
+    }
+  });
+  host.querySelectorAll(".cal-day,.cal-allday").forEach(function(el){
+    el.onclick=function(){openModal(null,el.getAttribute("data-day"));};
+    wireDrop(el,el.getAttribute("data-day"),null);
+  });
+  host.querySelectorAll(".cal-slot").forEach(function(el){
+    el.onclick=function(ev){if(ev.target!==el)return;openModal(null,el.getAttribute("data-day"),pad(+el.getAttribute("data-hour"))+":00");};
+    wireDrop(el,el.getAttribute("data-day"),pad(+el.getAttribute("data-hour"))+":00");
+  });
+  host.querySelectorAll(".cal-more").forEach(function(el){
+    el.onclick=function(ev){ev.stopPropagation();curRef=fromISO(el.getAttribute("data-day"));setView("day");};
+  });
+}
+function wireDrop(el,day,time){
+  el.addEventListener("dragover",function(ev){if([].indexOf.call(ev.dataTransfer.types,"text/catedra-ev")>=0){ev.preventDefault();el.classList.add("cal-dragover");}});
+  el.addEventListener("dragleave",function(){el.classList.remove("cal-dragover");});
+  el.addEventListener("drop",function(ev){
+    ev.preventDefault();el.classList.remove("cal-dragover");
+    var id=ev.dataTransfer.getData("text/catedra-ev");if(!id)return;
+    var s=st(),found=null;(s.events||[]).forEach(function(e){if(String(e.id)===String(id))found=e;});
+    if(!found)return;
+    found.date=day;if(time!=null)found.time=time;
+    persist();try{localStorage.setItem(EVKEY,JSON.stringify(s.events||[]));}catch(e){}
+    render();sync();
+    try{if(typeof toast==="function")toast("evento movido para "+fromISO(day).toLocaleDateString("pt-BR")+(time?(" às "+time):"")+" ✓");}catch(e){}
+  });
+}
+function setView(v){curView=v;["month","week","day"].forEach(function(k){var b=document.getElementById("cal-view-"+k);if(b)b.classList.toggle("active",k===v);});render();}
+function openModal(id,presetDate,presetTime){
+  var modal=document.getElementById("calendario-modal-evento");if(!modal)return;editId=null;
+  var s=st(),ev=null;
+  if(id){(s.events||[]).forEach(function(e){if(String(e.id)===String(id))ev=e;});}
+  var ro=false;
+  if(id&&!ev){collect().forEach(function(e){if(String(e.id)===String(id))ev=e;});if(ev)ro=true;}
+  document.getElementById("cal-ev-title").value=ev?(ev.title||""):"";
+  document.getElementById("cal-ev-date").value=ev?(ev.date||""):(presetDate||today());
+  document.getElementById("cal-ev-time").value=ev?(ev.time||""):(presetTime||"");
+  document.getElementById("cal-ev-type").value=ev?((["estudo","evento","tarefa","meta"].indexOf(ev.type)>=0)?ev.type:"evento"):"evento";
+  document.getElementById("cal-ev-note").value=ev?(ev.note||""):"";
+  editId=(ev&&!ro)?ev.id:null;
+  var delBtn=document.getElementById("calendario-btn-excluir");if(delBtn)delBtn.style.display=(editId!=null)?"inline-block":"none";
+  var saveBtn=document.getElementById("calendario-btn-salvar"),roMsg=document.getElementById("cal-ro-msg");
+  document.getElementById("calendario-modal-titulo").textContent=ro?"Evento (somente leitura)":(editId!=null?"Editar evento":"Novo evento");
+  ["cal-ev-title","cal-ev-date","cal-ev-time","cal-ev-type","cal-ev-note"].forEach(function(f){var el=document.getElementById(f);if(el)el.disabled=ro;});
+  if(saveBtn)saveBtn.style.display=ro?"none":"inline-block";if(roMsg)roMsg.style.display=ro?"block":"none";
+  modal.classList.add("cal-open");
+  if(!ro)setTimeout(function(){var t=document.getElementById("cal-ev-title");if(t)t.focus();},60);
+}
 function closeModal(){var m=document.getElementById("calendario-modal-evento");if(m)m.classList.remove("cal-open");editId=null;}
-function saveEvent(){var s=st();if(!Array.isArray(s.events))s.events=[];var title=(document.getElementById("cal-ev-title").value||"").trim();var date=document.getElementById("cal-ev-date").value;if(!title){title="Evento";}if(!date)return;var obj={title:title,date:date,time:document.getElementById("cal-ev-time").value||"",type:document.getElementById("cal-ev-type").value||"evento",note:(document.getElementById("cal-ev-note").value||"").trim()};
-if(editId!=null){var found=false;s.events.forEach(function(e){if(String(e.id)===String(editId)){e.title=obj.title;e.date=obj.date;e.time=obj.time;e.type=obj.type;e.note=obj.note;found=true;}});if(!found){obj.id=editId;s.events.push(obj);}}else{obj.id=Date.now()+Math.floor(Math.random()*1000);obj.done=false;s.events.push(obj);}
-persist();try{localStorage.setItem(EVKEY,JSON.stringify(s.events||[]));}catch(e){}closeModal();render();sync();}
-function delEvent(){if(editId==null)return;var s=st();s.events=(s.events||[]).filter(function(e){return String(e.id)!==String(editId);});persist();try{localStorage.setItem(EVKEY,JSON.stringify(s.events||[]));}catch(e){}closeModal();render();sync();}
-function go(delta){if(curY==null){var n=new Date();curY=n.getFullYear();curM=n.getMonth();}curM+=delta;if(curM<0){curM=11;curY--;}if(curM>11){curM=0;curY++;}render();}
-function goToday(){var n=new Date();curY=n.getFullYear();curM=n.getMonth();render();}
-function ensureView(){if(document.getElementById("view-calendario"))return document.getElementById("view-calendario");var anchor=document.getElementById("view-inicio");var main=anchor?anchor.parentNode:(document.querySelector(".content")||document.body);var v=document.createElement("div");v.className="view";v.id="view-calendario";
-v.innerHTML=[
-'<div class="card-h" style="margin-bottom:14px"><h3><span class="ico"></span>Calendário</h3></div>',
-'<div id="calendario-container">',
-'<div class="cal-toolbar">',
-'<div class="cal-nav"><button type="button" class="cal-btn" id="calendario-btn-anterior" aria-label="Mês anterior">&#8249;</button><div id="calendario-mes-atual"></div><button type="button" class="cal-btn" id="calendario-btn-proximo" aria-label="Próximo mês">&#8250;</button></div>',
-'<div class="cal-nav"><button type="button" class="cal-btn" id="calendario-btn-hoje">Hoje</button><button type="button" class="cal-btn cal-btn-pri" id="calendario-btn-novo-evento">+ Novo evento</button></div>',
-'</div>',
-'<div id="calendario-grid"></div>',
-'<div id="calendario-vazio" class="cal-empty" style="display:none">Nenhum evento cadastrado.</div>',
-'</div>'
-].join('');
-main.appendChild(v);
-var modal=document.createElement("div");modal.id="calendario-modal-evento";
-modal.innerHTML=['<div class="cal-modal-card">','<h3 id="calendario-modal-titulo">Novo evento</h3>','<form id="calendario-form-evento" onsubmit="return false">','<div class="cal-field"><label>Título</label><input id="cal-ev-title" type="text" placeholder="Ex.: Estudar Direito Constitucional"></div>','<div class="cal-field"><label>Data</label><input id="cal-ev-date" type="date"></div>','<div class="cal-field"><label>Horário (opcional)</label><input id="cal-ev-time" type="time"></div>','<div class="cal-field"><label>Tipo</label><select id="cal-ev-type"><option value="evento">Evento</option><option value="estudo">Bloco de estudo</option><option value="tarefa">Tarefa</option><option value="meta">Meta</option></select></div>','<div class="cal-field"><label>Observação (opcional)</label><textarea id="cal-ev-note" rows="2"></textarea></div>','<div id="cal-ro-msg" class="cal-empty" style="display:none">Provas, simulados e revisões são gerenciados em suas próprias abas.</div>','<div class="cal-modal-actions"><button type="button" class="cal-btn" id="calendario-btn-fechar">Fechar</button><div style="display:flex;gap:8px"><button type="button" class="cal-btn" id="calendario-btn-excluir" style="display:none;color:#dc2626">Excluir</button><button type="button" class="cal-btn cal-btn-pri" id="calendario-btn-salvar">Salvar evento</button></div></div>','</form>','</div>'].join('');
-document.body.appendChild(modal);
-modal.addEventListener("click",function(e){if(e.target===modal)closeModal();});
-return v;}
+function saveEvent(){
+  var s=st();if(!Array.isArray(s.events))s.events=[];
+  var title=(document.getElementById("cal-ev-title").value||"").trim()||"Evento";
+  var date=document.getElementById("cal-ev-date").value;if(!date)return;
+  var obj={title:title,date:date,time:document.getElementById("cal-ev-time").value||"",type:document.getElementById("cal-ev-type").value||"evento",note:(document.getElementById("cal-ev-note").value||"").trim()};
+  if(editId!=null){var found=false;s.events.forEach(function(e){if(String(e.id)===String(editId)){Object.assign(e,obj);found=true;}});if(!found){obj.id=editId;s.events.push(obj);}}
+  else{obj.id=Date.now()+Math.floor(Math.random()*1000);obj.done=false;s.events.push(obj);}
+  persist();try{localStorage.setItem(EVKEY,JSON.stringify(s.events||[]));}catch(e){}
+  closeModal();render();sync();
+}
+function delEvent(){if(editId==null)return;var s=st();try{if(window.catedraTombstone)catedraTombstone("events",editId);}catch(e){}s.events=(s.events||[]).filter(function(e){return String(e.id)!==String(editId);});persist();try{localStorage.setItem(EVKEY,JSON.stringify(s.events||[]));}catch(e){}closeModal();render();sync();}
+function go(delta){
+  var d=ref();
+  if(curView==="month")d.setMonth(d.getMonth()+delta);
+  else if(curView==="week")d.setDate(d.getDate()+7*delta);
+  else d.setDate(d.getDate()+delta);
+  curRef=d;render();
+}
+function goToday(){curRef=fromISO(today());render();}
+function ensureView(){
+  var v=document.getElementById("view-calendario");
+  if(v&&v.dataset.calV2==="1")return v;
+  if(!v){var anchor=document.getElementById("view-inicio");var main=anchor?anchor.parentNode:(document.querySelector(".content")||document.body);v=document.createElement("div");v.className="view";v.id="view-calendario";main.appendChild(v);}
+  v.dataset.calV2="1";
+  v.innerHTML=[
+  '<div id="calendario-container">',
+  '<div class="cal-toolbar">',
+  '<div class="cal-nav"><button type="button" class="cal-btn" id="calendario-btn-anterior" aria-label="Anterior">&#8249;</button><div id="calendario-mes-atual"></div><button type="button" class="cal-btn" id="calendario-btn-proximo" aria-label="Próximo">&#8250;</button><button type="button" class="cal-btn" id="calendario-btn-hoje">Hoje</button></div>',
+  '<div class="cal-nav"><div class="cal-views"><button type="button" class="cal-view-btn active" id="cal-view-month">Mês</button><button type="button" class="cal-view-btn" id="cal-view-week">Semana</button><button type="button" class="cal-view-btn" id="cal-view-day">Dia</button></div><button type="button" class="cal-btn cal-btn-pri" id="calendario-btn-novo-evento">+ Evento</button></div>',
+  '</div>',
+  '<div class="cal-filters" id="calendario-filtros"></div>',
+  '<div id="calendario-body"></div>',
+  '</div>'
+  ].join("");
+  if(!document.getElementById("calendario-modal-evento")){
+    var modal=document.createElement("div");modal.id="calendario-modal-evento";
+    modal.innerHTML=['<div class="cal-modal-card">','<h3 id="calendario-modal-titulo">Novo evento</h3>','<form id="calendario-form-evento" onsubmit="return false">','<div class="cal-field"><label>Título</label><input id="cal-ev-title" type="text" placeholder="Ex.: Estudar Direito Constitucional"></div>','<div class="cal-field"><label>Data</label><input id="cal-ev-date" type="date"></div>','<div class="cal-field"><label>Horário (opcional)</label><input id="cal-ev-time" type="time"></div>','<div class="cal-field"><label>Tipo</label><select id="cal-ev-type"><option value="evento">Evento</option><option value="estudo">Bloco de estudo</option><option value="tarefa">Tarefa</option><option value="meta">Meta</option></select></div>','<div class="cal-field"><label>Observação (opcional)</label><textarea id="cal-ev-note" rows="2"></textarea></div>','<div id="cal-ro-msg" class="cal-empty" style="display:none">Provas, simulados e revisões são gerenciados em suas próprias abas.</div>','<div class="cal-modal-actions"><button type="button" class="cal-btn" id="calendario-btn-fechar">Fechar</button><div style="display:flex;gap:8px"><button type="button" class="cal-btn" id="calendario-btn-excluir" style="display:none;color:#dc2626">Excluir</button><button type="button" class="cal-btn cal-btn-pri" id="calendario-btn-salvar">Salvar evento</button></div></div>','</form>','</div>'].join("");
+    document.body.appendChild(modal);
+    modal.addEventListener("click",function(e){if(e.target===modal)closeModal();});
+  }
+  return v;
+}
 function ensureNav(){var nav=document.getElementById("nav")||document.querySelector(".nav");if(!nav)return;if(nav.querySelector('[data-view="calendario"]'))return;
 var btn=document.createElement("button");btn.className="nav-item";btn.setAttribute("data-view","calendario");
 btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="16" y1="2" x2="16" y2="6"></line></svg>Calendário';
-var ref=nav.querySelector('[data-view="edital"]');if(ref&&ref.parentNode===nav){nav.insertBefore(btn,ref.nextSibling);}else{nav.appendChild(btn);}
+var ref2=nav.querySelector('[data-view="edital"]');if(ref2&&ref2.parentNode===nav){nav.insertBefore(btn,ref2.nextSibling);}else{nav.appendChild(btn);}
 btn.onclick=function(){document.querySelectorAll(".nav-item").forEach(function(x){x.classList.remove("active");});document.querySelectorAll(".view").forEach(function(x){x.classList.remove("active");});btn.classList.add("active");var v=document.getElementById("view-calendario");if(v)v.classList.add("active");migrate();render();};}
-function wire(){var map={"calendario-btn-anterior":function(){go(-1);},"calendario-btn-proximo":function(){go(1);},"calendario-btn-hoje":goToday,"calendario-btn-novo-evento":function(){openModal(null);},"calendario-btn-salvar":saveEvent,"calendario-btn-excluir":delEvent,"calendario-btn-fechar":closeModal};Object.keys(map).forEach(function(id){var el=document.getElementById(id);if(el&&!el.__calWired){el.onclick=map[id];el.__calWired=true;}});}
+function wire(){
+  var map={"calendario-btn-anterior":function(){go(-1);},"calendario-btn-proximo":function(){go(1);},"calendario-btn-hoje":goToday,"calendario-btn-novo-evento":function(){openModal(null);},"calendario-btn-salvar":saveEvent,"calendario-btn-excluir":delEvent,"calendario-btn-fechar":closeModal,"cal-view-month":function(){setView("month");},"cal-view-week":function(){setView("week");},"cal-view-day":function(){setView("day");}};
+  Object.keys(map).forEach(function(id){var el=document.getElementById(id);if(el&&!el.__calWired){el.onclick=map[id];el.__calWired=true;}});
+}
 window.__catedraRenderCalendario=function(){try{ensureView();ensureNav();wire();migrate();render();}catch(e){}};
 function hookRefresh(){try{var prev=window.__catedraRefreshAll;if(prev&&!window.__calRefreshHooked){window.__calRefreshHooked=true;var wrapped=function(){var r=prev.apply(this,arguments);try{var v=document.getElementById("view-calendario");if(v&&v.classList.contains("active")){render();}}catch(e){}return r;};wrapped.__calHooked=true;window.__catedraRefreshAll=wrapped;}}catch(e){}}
 function boot(){try{ensureView();ensureNav();wire();hookRefresh();migrate();render();}catch(e){}}
@@ -11079,6 +11276,7 @@ h1,h2,h3,h4,.blk-t{letter-spacing:-.015em;}
     }
   }
 
+  window.catedraEnsureRetest=function(){try{ensureRetestMeta();}catch(e){}};
   function ensureRetestMeta(){
     var s=data(); s.errors=s.errors||[]; s.revisions=s.revisions||[];
     s.errors.forEach(function(er){
@@ -11574,6 +11772,16 @@ h1,h2,h3,h4,.blk-t{letter-spacing:-.015em;}
       cur.ease=Math.min(3.2,(+cur.ease||2.3)+0.06);
       cur.interval=Math.min(365,Math.max(1,Math.round(((+cur.interval||0)||0.6)*cur.ease)));
       cur.step=Math.min(IV.length-1,(+cur.step||0)+1); /* compat com leitores antigos */
+      /* ciclo virtuoso: intervalo ≥21d = dominado → fecha o erro e o card sai sozinho */
+      if(cur.interval>=21){
+        try{
+          var er=errors().find(function(e2){return String(e2.id)===k;});
+          if(er&&(er.status||'pendente')!=='resolvido'){
+            er.status='resolvido';er.resolvedAt=T();er.dominado=true;
+            say('dominado ✓ — erro fechado, card arquivado');
+          }
+        }catch(e2){}
+      }
     }
     cur.due=addD(T(),cur.interval);
     cur.history=cur.history||[];cur.history.push({date:T(),g:g,iv:cur.interval});
@@ -11604,6 +11812,11 @@ h1,h2,h3,h4,.blk-t{letter-spacing:-.015em;}
       if(c.fix)back+='<div><span class="lbl">Correção</span><p>'+esc(c.fix)+'</p></div>';
       if(c.cause)back+='<div><span class="lbl">Causa do erro</span><p>'+esc(c.cause)+'</p></div>';
       if(c.action)back+='<div><span class="lbl">Ação combinada</span><p>'+esc(c.action)+'</p></div>';
+      /* sem correção registrada: a plataforma sugere o verso do card */
+      if(!c.fix){
+        var idea=(typeof window.catedraCardIdea==='function')?window.catedraCardIdea(c):null;
+        if(idea)back='<div><span class="lbl">💡 Verso sugerido pela plataforma</span><p>'+esc(idea.back)+'</p><button class="ct-action" type="button" data-usaideia="1" style="margin-top:8px">Usar como correção do erro</button></div>'+back;
+      }
       if(!back)back='<div><span class="lbl">Sem correção registrada</span><p>Abra o Caderno de Erros e preencha “como corrigir” para enriquecer este cartão.</p></div>';
       host.innerHTML='<div class="ct-card flash-wrap" style="margin:0 auto">'+head
         +'<div class="flash-back">'+back+'</div>'
@@ -11613,6 +11826,12 @@ h1,h2,h3,h4,.blk-t{letter-spacing:-.015em;}
         +'<button class="flash-grade acertei" data-g="acertei" type="button">Acertei<small>intervalo adaptativo</small></button>'
         +'</div></div>';
       qa('[data-g]',host).forEach(function(b){b.onclick=function(){grade(this.dataset.g);};});
+      var ui=host.querySelector('[data-usaideia]');
+      if(ui)ui.onclick=function(){
+        var idea=(typeof window.catedraCardIdea==='function')?window.catedraCardIdea(c):null;
+        if(!idea)return;
+        c.fix=idea.back; saveAll(); say('correção registrada no caderno ✓'); renderStudy();
+      };
     }
   }
 
@@ -12285,7 +12504,7 @@ window.renderFocoAgora=function(){
   host.innerHTML='<div class="fa-eyebrow">Foco de agora'+(f.reta?'<span class="fa-reta">⚡ modo reta final ativo</span>':'')+'</div>'
     +'<h2>'+esc(titulo)+'</h2>'
     +'<p class="fa-reason">'+esc(motivo.charAt(0).toUpperCase()+motivo.slice(1))+'.</p>'
-    +'<div class="fa-row"><button class="fa-start" id="fa-start" type="button">▶ Começar ('+it.min+'min)</button><button class="fa-alt" id="fa-reg" type="button">Já estudei — registrar</button></div>'
+    +'<div class="fa-row"><button class="fa-start" id="fa-start" type="button">▶ Começar ('+((typeof fmtHMS==='function')?fmtHMS(it.min*60):it.min+'min')+')</button><button class="fa-alt" id="fa-reg" type="button">Já estudei — registrar</button></div>'
     +(alerts.length?'<div class="fa-alert">⚠ <span>'+esc(alerts[0].txt)+'</span></div>':'')
     +(next?'<div class="fa-queue">Depois: '+esc(next)+'</div>':'');
   var bSt=$('fa-start');
@@ -12327,7 +12546,7 @@ function openCheckin(elapsedSec){
   var min=Math.max(1,Math.round(elapsedSec/60));
   var ov=document.createElement('div');
   ov.className='ckin-overlay'; ov.id='ckin-overlay';
-  ov.innerHTML='<div class="ckin-card" role="dialog" aria-modal="true"><h3>Sessão de '+min+'min — como foi?</h3><p class="ck-sub">4 respostas e eu atualizo ciclo, revisões, estatísticas e caderno de erros por você.</p>'
+  ov.innerHTML='<div class="ckin-card" role="dialog" aria-modal="true"><h3>Sessão de '+((typeof fmtHMS==='function')?fmtHMS(elapsedSec):min+'min')+' — como foi?</h3><p class="ck-sub">4 respostas e eu atualizo ciclo, revisões, estatísticas e caderno de erros por você.</p>'
     +'<div class="ckin-grid">'
     +'<label>Disciplina<select id="ck-disc">'+discs.map(function(d){return '<option'+(d===disc?' selected':'')+'>'+esc(d)+'</option>';}).join('')+'</select></label>'
     +'<label>Tópico<input type="text" id="ck-topic" value="'+esc(topic)+'" placeholder="o que você estudou"></label>'
@@ -12341,7 +12560,7 @@ function openCheckin(elapsedSec){
   document.body.appendChild(ov);
   $('ck-later').onclick=function(){ov.remove();};
   $('ck-discard').onclick=function(){
-    if(!confirm('Descartar '+min+'min do cronômetro?'))return;
+    if(!confirm('Descartar '+((typeof fmtHMS==='function')?fmtHMS(elapsedSec):min+'min')+' do cronômetro?'))return;
     var s2=S(); s2.timerSec=Math.max(0,(+s2.timerSec||0)-elapsedSec);
     baselineSet(s2.timerSec);
     saveSafe(); try{if(typeof renderTimer==='function')renderTimer();}catch(e){}
@@ -13032,5 +13251,339 @@ body:not(.mentor-video-theme) .errors-lab-item{
   *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;}
 }
 </style>
+
+<style id="catedra-upgrades-v2-css">
+/* ===== topbar refinada: cluster em pílula única (foco · aparência · notificações · sair) ===== */
+.topbar-actions{background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:4px;gap:2px;display:flex;align-items:center;}
+.topbar-actions .icon-btn{background:none!important;border:none!important;border-radius:999px!important;width:38px;height:38px;display:flex;align-items:center;justify-content:center;color:var(--text-2)!important;box-shadow:none!important;transition:background .15s,color .15s;}
+.topbar-actions .icon-btn:hover{background:var(--surface)!important;color:var(--text)!important;box-shadow:0 2px 8px rgba(20,24,31,.1)!important;}
+.topbar-actions .icon-btn svg{width:17px;height:17px;}
+.topbar-notif-badge{position:absolute;top:2px;right:2px;min-width:15px;height:15px;border-radius:99px;background:var(--red)!important;color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--surface-2);}
+/* plano do dia no Foco */
+.fa-plan{margin:14px 0 4px;border-top:1px dashed var(--border);padding-top:12px;}
+.fa-plan .fp-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;}
+.fa-plan .fp-t{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);}
+.fa-plan .fp-toggle{border:1px solid var(--border);background:var(--surface-2);border-radius:999px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--text-2);cursor:pointer;}
+.fa-plan ol{margin:0;padding:0 0 0 4px;list-style:none;display:flex;flex-direction:column;gap:5px;}
+.fa-plan li{font-size:12.5px;color:var(--text-2);display:flex;gap:8px;align-items:baseline;}
+.fa-plan li b.fp-n{color:var(--emerald);font-size:11px;}
+.fa-plan li .fp-min{margin-left:auto;font-size:11px;color:var(--text-3);font-variant-numeric:tabular-nums;}
+.mot-frase{display:block;font-size:12px;color:var(--text-3);font-style:italic;margin-top:3px;}
+.sim-analysis-note{font-size:11.5px;color:var(--text-3);margin-top:4px;}
+.mentor-insights .mi-line{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-2);}
+.mentor-insights .mi-line:last-child{border-bottom:none;}
+.mentor-insights .mi-ico{flex:none;}
+.min-preview{font-size:11px;color:var(--text-3);font-variant-numeric:tabular-nums;margin-top:3px;display:block;}
+</style>
+<script id="catedra-upgrades-v2">
+/* ============================================================================
+   UPGRADES v2 — simulados (3 análises), piloto automático, motivação,
+   detecção de sobrecarga, insights do mentor, gerador de flashcards,
+   sincronização automática erro→reteste, prévia hh:mm:ss nos campos de minutos.
+   ============================================================================ */
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var qa=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+var esc=function(v){return String(v==null?'':v).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+function S(){try{if(typeof state!=='undefined'&&state)return state;}catch(e){}return window.state||{};}
+function tISO(){try{return todayStr();}catch(e){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}}
+function hms(sec){try{return fmtHMS(sec);}catch(e){var m=Math.round(sec/60);return m+'min';}}
+function toastSafe(m,t){try{toast(m,t);}catch(e){}}
+function saveSafe(){try{if(typeof window.save==='function')window.save();}catch(e){}}
+
+/* ===== 1) GERADOR DE IDEIA DE FLASHCARD (template, sem IA externa) ===== */
+window.catedraCardIdea=function(er){
+  if(!er)return null;
+  var note=String(er.note||'').trim(), topic=String(er.topic||'').trim(), disc=String(er.disc||'').trim();
+  var m=note.match(/confundi\s+(.+?)\s+com\s+(.+?)([.;,]|$)/i);
+  if(m)return {front:'Qual a diferença entre '+m[1].trim()+' e '+m[2].trim()+'?',back:'Anote a distinção objetiva entre '+m[1].trim()+' e '+m[2].trim()+' — foi exatamente aqui que você errou: "'+note.slice(0,120)+'"'};
+  m=note.match(/(?:^|\s)(?:é|sao|são|prazo de|prazo:?)\s+(.{3,60}?)([.;,]|$)/i);
+  if(m&&topic)return {front:topic+' ('+disc+'): qual é o ponto exato?',back:m[0].trim()+' — confirme na lei seca e refaça 5 questões do tópico.'};
+  if(er.cause&&/lei seca/i.test(er.cause))return {front:'O que diz a literalidade sobre "'+(topic||note.slice(0,50))+'"?',back:'Releia o dispositivo legal aplicável e destaque a palavra que derruba: o seu erro foi de literalidade. '+(note?('Contexto: '+note.slice(0,100)):'')};
+  return {front:'O que você precisa lembrar sobre "'+(topic||note.slice(0,50)||'este erro')+'" em '+(disc||'sua disciplina')+'?',back:(note?('Ponto do erro: '+note.slice(0,140)+'. '):'')+'Formule a regra em UMA frase sua e valide com 5 questões.'};
+};
+
+/* ===== 2) SIMULADOS — três formas de análise no registro ===== */
+function bootSimAnalysis(){
+  var anchor=$('s-type'); if(!anchor||$('sim-analysis'))return;
+  var field=anchor.closest('.field'); if(!field)return;
+  var wrap=document.createElement('div'); wrap.className='field';
+  wrap.innerHTML='<label>Forma de análise</label><select id="sim-analysis">'
+    +'<option value="me">Múltipla escolha — % bruto (FGV/FCC/Vunesp)</option>'
+    +'<option value="liquida">Certo/errado — nota líquida C−E (Cespe/Cebraspe)</option>'
+    +'<option value="disc">Discursiva / prova prática — por nota</option>'
+    +'</select><span class="sim-analysis-note" id="sim-analysis-note"></span>';
+  field.parentNode.insertBefore(wrap,field);
+  var discFields=document.createElement('div'); discFields.id='sim-disc-fields'; discFields.style.display='none';
+  discFields.innerHTML='<div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px">'
+    +'<div class="field"><label>Nota obtida</label><input id="sim-disc-nota" type="number" min="0" step="0.01" placeholder="ex.: 7,40"></div>'
+    +'<div class="field"><label>Nota máxima</label><input id="sim-disc-max" type="number" min="0.01" step="0.01" placeholder="ex.: 10,00"></div>'
+    +'</div>';
+  wrap.parentNode.insertBefore(discFields,wrap.nextSibling);
+  var sel=$('sim-analysis');
+  var NOTES={me:'pontuação = acertos ÷ total.',liquida:'pontuação líquida = (acertos − erros) ÷ total · brancos não pontuam nem descontam.',disc:'registre a nota da banca/corretor — o desempenho entra nos gráficos como % da nota máxima.'};
+  function apply(){
+    var v=sel.value;
+    $('sim-analysis-note').textContent=NOTES[v];
+    discFields.style.display=v==='disc'?'block':'none';
+    ['s-total','s-c','s-w','s-b'].forEach(function(id){var el=$(id);if(el){var f=el.closest('.field');if(f)f.style.opacity=v==='disc'?'.4':'1';el.disabled=(v==='disc');}});
+    try{localStorage.setItem('catedra:simAnalysis',v);}catch(e){}
+  }
+  sel.onchange=apply;
+  try{sel.value=localStorage.getItem('catedra:simAnalysis')||'me';}catch(e){}
+  apply();
+  /* salvar: discursiva tem caminho próprio; líquida/ME carimbam o registro */
+  var btn=$('sim-save');
+  if(btn&&!btn.dataset.an2){
+    btn.dataset.an2='1';
+    btn.addEventListener('click',function(e){
+      var v=sel.value;
+      if(v==='disc'){
+        e.preventDefault();e.stopImmediatePropagation();
+        var nota=parseFloat($('sim-disc-nota').value)||0;
+        var max=parseFloat($('sim-disc-max').value)||0;
+        if(max<=0){toastSafe('informe a nota máxima da prova discursiva');return;}
+        nota=Math.min(nota,max);
+        var st2=S(); st2.simulados=st2.simulados||[];
+        var score=Math.round(nota/max*100);
+        st2.simulados.push({
+          id:Date.now(),date:($('s-date').value||tISO()),name:($('s-name').value||'').trim()||'Prova discursiva',
+          type:$('s-type')?$('s-type').value:'Discursiva / prova prática',
+          analysis:'disc',notaObtida:nota,notaMax:max,
+          total:Math.round(max*100)/1,c:Math.round(nota*100)/1,blank:0,wrong:Math.round((max-nota)*100)/1,
+          score:score,timeSpent:($('s-time').value||'').trim(),errorReason:$('s-reason')?$('s-reason').value:'',
+          notes:($('s-notes').value||'').trim(),subjects:[],weak:'—'
+        });
+        if(st2.simulados[st2.simulados.length-1].date===tISO()&&st2.studyDays.indexOf(tISO())<0)st2.studyDays.push(tISO());
+        ['s-name','s-time','s-notes','sim-disc-nota','sim-disc-max'].forEach(function(id){var el=$(id);if(el)el.value='';});
+        saveSafe();
+        try{renderSimulados();}catch(e2){}
+        try{renderHome();}catch(e2){}
+        toastSafe('prova discursiva registrada: '+score+'% da nota máxima ✓',3200);
+        return;
+      }
+      /* ME / líquida: deixa o fluxo original salvar e carimba a análise em seguida */
+      setTimeout(function(){
+        try{
+          var st2=S(); var sim=(st2.simulados||[])[ (st2.simulados||[]).length-1 ];
+          if(!sim||Date.now()-(+sim.id||0)>4000)return;
+          sim.analysis=v;
+          var total=+sim.total||((+sim.c||0)+(+sim.wrong||0)+(+sim.blank||0));
+          if(v==='liquida'&&total>0){
+            sim.computo='liquido';
+            sim.liquidoScore=(+sim.c||0)-(+sim.wrong||0);
+            sim.pctFinal=Math.max(0,sim.liquidoScore)/total*100;
+            sim.score=Math.round(sim.pctFinal);
+            toastSafe('nota líquida (C−E): '+sim.liquidoScore+' de '+total+' → '+sim.score+'%',3200);
+          }else if(total>0){
+            sim.computo='bruto';
+            sim.pctFinal=(+sim.c||0)/total*100;
+            sim.score=Math.round(sim.pctFinal);
+          }
+          saveSafe();
+          try{renderSimulados();}catch(e2){}
+        }catch(e2){}
+      },350);
+    },true);
+  }
+}
+
+/* ===== 3) SINCRONIZAÇÃO AUTOMÁTICA: todo erro novo ganha reteste/flashcard na hora ===== */
+var retestT=null;
+document.addEventListener('catedra:statechange',function(){
+  clearTimeout(retestT);
+  retestT=setTimeout(function(){try{if(window.catedraEnsureRetest)catedraEnsureRetest();}catch(e){}},800);
+});
+
+/* ===== 4) FRASES MOTIVACIONAIS (contextuais, rotação diária) ===== */
+var FRASES=[
+ 'A aprovação é a soma de dias comuns bem usados.',
+ 'Quem revisa não esquece; quem não revisa estuda duas vezes.',
+ 'Constância vence intensidade — todos os dias, um tijolo.',
+ 'A banca não pergunta o que você leu. Pergunta o que você reteve.',
+ 'Errar aqui é barato. Errar na prova é caro. Erre agora.',
+ 'Seu concorrente também está cansado. A diferença é quem senta assim mesmo.',
+ 'Não existe matéria difícil — existe matéria ainda não dominada.',
+ 'O edital é finito. Sua constância decide quando ele acaba.',
+ 'Uma questão por vez. Um tópico por vez. Um dia por vez.',
+ 'Revisão atrasada é conhecimento evaporando. Recupere hoje.',
+ 'Você não precisa de motivação — precisa do próximo bloco de 50 minutos.',
+ 'Quem mede o próprio desempenho não depende de sorte.',
+ 'O nome na lista de aprovados começa com o estudo de hoje.',
+ 'Domínio é acertar de novo amanhã o que você acertou hoje.'
+];
+function fraseDoDia(){
+  var d=new Date(); var seed=d.getFullYear()*372+(d.getMonth()+1)*31+d.getDate();
+  var st2=S(); var dd=null; try{dd=(typeof daysToExam==='function')?daysToExam():null;}catch(e){}
+  if(dd!=null&&dd>=0&&dd<=21)return 'Reta final: '+dd+' dia'+(dd===1?'':'s')+'. Agora é lapidar, não acumular.';
+  return FRASES[seed%FRASES.length];
+}
+
+/* ===== 5) DETECÇÃO DE SOBRECARGA ===== */
+function sobrecarga(){
+  try{
+    var st2=S(); var t=tISO();
+    var goalMin=(st2.goals&&(+st2.goals.dailyMin))||Math.round(((st2.goals&&+st2.goals.hoursWk||15)*60)/((st2.goals&&+st2.goals.daysWk)||5))||120;
+    var hoje=(st2.sessions||[]).filter(function(x){return x.date===t;}).reduce(function(a,x){return a+(+x.min||0);},0);
+    var d7=(function(){var d=new Date();d.setDate(d.getDate()-6);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');})();
+    var sem=(st2.sessions||[]).filter(function(x){return x.date>=d7;}).reduce(function(a,x){return a+(+x.min||0);},0);
+    var goalSem=(st2.goals&&+st2.goals.hoursWk?+st2.goals.hoursWk*60:goalMin*7);
+    if(hoje>goalMin*1.8&&hoje>180)return 'Você já passou '+hms((hoje-goalMin)*60)+' da meta de hoje. Estudo cansado fixa menos: considere encerrar com uma revisão leve e dormir o suficiente.';
+    if(sem>goalSem*1.5&&sem>900)return 'Sua semana está '+Math.round((sem/goalSem-1)*100)+'% acima da meta. Sobrecarga sustentada derruba a retenção — programe um descanso antes que ele se imponha.';
+    var dias=new Set((st2.sessions||[]).filter(function(x){return x.date>=(function(){var d=new Date();d.setDate(d.getDate()-13);return d.toISOString().slice(0,10);})();}).map(function(x){return x.date;})).size;
+    if(dias>=14)return '14 dias seguidos sem folga. Constância inclui descanso programado — escolha meio dia livre esta semana.';
+    return null;
+  }catch(e){return null;}
+}
+
+/* ===== 6) FOCO DE AGORA: piloto automático + plano do dia + frase + sobrecarga ===== */
+function pilotMode(){var st2=S();return st2.pilotMode||'auto';}
+(function(){
+  var tries=0;
+  var iv=setInterval(function(){
+    if(typeof window.renderFocoAgora!=='function'){if(++tries>40)clearInterval(iv);return;}
+    clearInterval(iv);
+    var orig=window.renderFocoAgora;
+    window.renderFocoAgora=function(){
+      var r=orig.apply(this,arguments);
+      try{decorateFoco();}catch(e){}
+      return r;
+    };
+  },250);
+})();
+function decorateFoco(){
+  var card=$('foco-agora-card'); if(!card)return;
+  /* frase do dia no cabeçalho do dashboard */
+  try{
+    var hello=document.querySelector('#view-inicio .dash-hello p');
+    if(hello&&!hello.querySelector('.mot-frase')){
+      var sp=document.createElement('span'); sp.className='mot-frase'; sp.textContent='“'+fraseDoDia()+'”';
+      hello.appendChild(sp);
+    }
+  }catch(e){}
+  if(card.querySelector('.fa-plan'))return;
+  var mode=pilotMode();
+  var plan=document.createElement('div'); plan.className='fa-plan';
+  var inner='<div class="fp-h"><span class="fp-t">'+(mode==='auto'?'Piloto automático — plano de hoje':'Modo manual — seu cronograma')+'</span>'
+    +'<button class="fp-toggle" id="fp-toggle" type="button">'+(mode==='auto'?'prefiro definir manualmente':'voltar ao piloto automático')+'</button></div>';
+  if(mode==='auto'){
+    var q=null; try{q=window.CatedraEngine&&CatedraEngine.queue();}catch(e){}
+    if(q&&q.items.length){
+      var total=q.items.reduce(function(a,x){return a+(+x.min||0);},0);
+      inner+='<ol>'+q.items.slice(0,4).map(function(x,i){
+        return '<li><b class="fp-n">'+(i+1)+'.</b> <span>'+(x.kind==='revisao'?'Revisar: ':'')+esc(x.topic||x.disc)+'</span><span class="fp-min">'+hms(x.min*60)+'</span></li>';
+      }).join('')+'</ol>';
+      inner+='<div style="font-size:11.5px;color:var(--text-3);margin-top:8px">Hoje: <b>'+hms(total*60)+'</b> no total · termine um bloco, faça o check-in, e o próximo assume sozinho.</div>';
+    }
+  }else{
+    var st2=S(); var acts=(st2.cycle&&st2.cycle.activities)||[];
+    var checks=(st2.checks&&st2.checks[st2.dia])||{};
+    var pend=acts.filter(function(b){return !checks[b.id];}).slice(0,4);
+    inner+=pend.length?('<ol>'+pend.map(function(b,i){return '<li><b class="fp-n">'+(i+1)+'.</b> <span>'+esc(b.t||b.tag)+'</span></li>';}).join('')+'</ol>'):'<div style="font-size:12px;color:var(--text-3)">Sem blocos pendentes no seu ciclo de hoje.</div>';
+    inner+='<div style="font-size:11.5px;color:var(--text-3);margin-top:8px">O Foco segue a ordem do SEU ciclo — edite a rotina na aba Ciclo de Estudos.</div>';
+  }
+  plan.innerHTML=inner;
+  var queueEl=card.querySelector('.fa-queue');
+  if(queueEl)card.insertBefore(plan,queueEl);else card.appendChild(plan);
+  var tg=plan.querySelector('#fp-toggle');
+  if(tg)tg.onclick=function(){
+    var st2=S(); st2.pilotMode=pilotMode()==='auto'?'manual':'auto'; saveSafe();
+    try{renderFocoAgora&&renderFocoAgora();}catch(e){ }
+    try{var c=$('foco-agora-card');var pl=c&&c.querySelector('.fa-plan');if(pl)pl.remove();decorateFoco();}catch(e){}
+    toastSafe(st2.pilotMode==='auto'?'piloto automático ligado — o mentor monta seu dia ✓':'modo manual — seu ciclo manda ✓',2500);
+  };
+  /* sobrecarga */
+  var ov=sobrecarga();
+  if(ov&&!card.querySelector('.fa-overload')){
+    var al=document.createElement('div'); al.className='fa-alert fa-overload';
+    al.innerHTML='🛑 <span><b>Sinal de sobrecarga.</b> '+esc(ov)+'</span>';
+    card.appendChild(al);
+  }
+}
+
+/* ===== 7) INSIGHTS DO MENTOR na Análise ===== */
+function retencaoDelta(){
+  try{
+    var st2=S(); var cut=(function(){var d=new Date();d.setDate(d.getDate()-21);return d.toISOString().slice(0,10);})();
+    var by={};
+    (st2.sessions||[]).forEach(function(x){
+      if(!(+x.q>0))return;
+      var k=x.disc||'—'; by[k]=by[k]||{oldQ:0,oldC:0,newQ:0,newC:0};
+      if(x.date<cut){by[k].oldQ+=(+x.q||0);by[k].oldC+=(+x.c||0);}
+      else{by[k].newQ+=(+x.q||0);by[k].newC+=(+x.c||0);}
+    });
+    var best=null;
+    Object.keys(by).forEach(function(k){
+      var b=by[k]; if(b.oldQ<10||b.newQ<10)return;
+      var o=Math.round(b.oldC/b.oldQ*100), n=Math.round(b.newC/b.newQ*100);
+      if(!best||Math.abs(n-o)>Math.abs(best.n-best.o))best={k:k,o:o,n:n};
+    });
+    return best;
+  }catch(e){return null;}
+}
+(function(){
+  var tries=0;
+  var iv=setInterval(function(){
+    if(typeof window.renderAnalise!=='function'){if(++tries>40)clearInterval(iv);return;}
+    clearInterval(iv);
+    var orig=window.renderAnalise;
+    window.renderAnalise=function(){
+      var r=orig.apply(this,arguments);
+      try{mentorInsights();}catch(e){}
+      return r;
+    };
+  },300);
+})();
+function mentorInsights(){
+  var panel=$('ana-visao'); if(!panel)return;
+  var card=$('mentor-insights');
+  if(!card){card=document.createElement('div');card.className='card mentor-insights';card.id='mentor-insights';card.style.marginBottom='16px';panel.insertBefore(card,panel.firstChild);}
+  var lines=[];
+  var d=retencaoDelta();
+  if(d){
+    var up=d.n>=d.o;
+    lines.push((up?'📈':'📉')+'|Sua taxa de acerto em <b>'+esc(d.k)+'</b> '+(up?'subiu':'caiu')+' de <b>'+d.o+'%</b> para <b>'+d.n+'%</b> nas últimas 3 semanas'+(up?' — o método está funcionando, mantenha.':' — volte ao básico do tópico antes de avançar.'));
+  }
+  try{
+    var cov=window.CatedraEngine&&CatedraEngine.coverage();
+    if(cov&&cov.daysNeeded!=null){
+      var dt=new Date(); dt.setDate(dt.getDate()+cov.daysNeeded);
+      lines.push('🗓️|No seu ritmo atual, você cobre o edital até <b>'+dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})+'</b>.');
+    }else if(cov){lines.push('🗓️|'+esc(cov.text));}
+  }catch(e){}
+  try{
+    var rows=window.CatedraEngine&&CatedraEngine.rows()||[];
+    var pronto=rows.filter(function(r){return r.studied&&r.retention>=0.7;}).length;
+    var estudados=rows.filter(function(r){return r.studied;}).length;
+    if(estudados)lines.push('🎯|<b>'+pronto+' de '+estudados+'</b> tópicos estudados estão com retenção de prova (≥70%).');
+  }catch(e){}
+  var ov=sobrecarga(); if(ov)lines.push('🛑|<b>Sobrecarga:</b> '+esc(ov));
+  if(!lines.length)lines.push('💡|Registre sessões com questões para o mentor medir sua evolução por disciplina.');
+  card.innerHTML='<div class="card-h"><h3>Leituras do mentor</h3><span class="hint">evolução · projeção · prontidão</span></div>'
+    +lines.map(function(l){var p=l.split('|');return '<div class="mi-line"><span class="mi-ico">'+p[0]+'</span><span>'+p[1]+'</span></div>';}).join('');
+}
+
+/* ===== 8) prévia hh:mm:ss nos campos de minutos ===== */
+function minPreview(id){
+  var el=$(id); if(!el||el.dataset.mp)return; el.dataset.mp='1';
+  var sp=document.createElement('span'); sp.className='min-preview';
+  el.parentNode&&el.parentNode.appendChild(sp);
+  var upd=function(){var v=+el.value||0; sp.textContent=v>0?('= '+hms(v*60)):'';};
+  el.addEventListener('input',upd); upd();
+}
+
+/* ===== boot ===== */
+function boot(){
+  bootSimAnalysis();
+  ['f-min','qr-min','ck-q'].forEach(function(){}); /* ck é dinâmico */
+  minPreview('f-min'); minPreview('qr-min'); minPreview('atv-min');
+  try{decorateFoco();}catch(e){}
+  setInterval(function(){bootSimAnalysis();minPreview('f-min');minPreview('qr-min');minPreview('atv-min');},4000);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,600);});
+else setTimeout(boot,600);
+})();
+</script>
 </body>
 </html>
